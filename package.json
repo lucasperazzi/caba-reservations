@@ -1,0 +1,18 @@
+{
+  "name": "caba-reservations",
+  "version": "0.1.0",
+  "private": true,
+  "description": "App para ver y reservar turnos de CABA (proxy sobre Odoo)",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev:backend": "npm run dev --workspace backend",
+    "dev:frontend": "npm run dev --workspace frontend",
+    "build": "npm run build --workspace backend && npm run build --workspace frontend"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
