@@ -1,17 +1,78 @@
 import { Hono } from "hono";
+import { requireAuth } from "../middleware.js";
+import { OdooEvent, OdooRegistration, toArgentinaISO, sedeFromOrganizer, occupancyLevel } from "../odooClient.js";
 
-/**
- * Rutas de turnos. Por ahora es un esqueleto: la lógica que habla con Odoo
- * (leer disponibilidad y reservar) se implementa en el siguiente paso.
- */
 export const turnos = new Hono();
 
-// GET /api/turnos  -> lista de turnos disponibles (a implementar)
-turnos.get("/", (c) => {
-  return c.json({ message: "TODO: listar turnos desde Odoo", data: [] });
+turnos.use("*", requireAuth);
+
+// GET /api/turnos?from=YYYY-MM-DD&to=YYYY-MM-DD&sede=bucarelli|centro
+turnos.get("/", async (c) => {
+  const odoo = c.get("odoo");
+  const from = c.req.query("from") ?? new Date().toISOString().slice(0, 10);
+  const to = c.req.query("to") ?? new Date(Date.now() + 30 * 864e5).toISOString().slice(0, 10);
+  const sede = c.req.query("sede") as "bucarelli" | "centro" | undefined;
+
+  // Odoo espera UTC; le pasamos inicio del día from y fin del día to en UTC
+  const dateFrom = `${from} 00:00:00`;
+  const dateTo = `${to} 23:59:59`;
+
+  const events = await odoo.searchEvents(dateFrom, dateTo, sede);
+  return c.json({ data: events.map(normalizeTurno) });
 });
 
-// POST /api/turnos/reservar -> reservar un turno (a implementar)
-turnos.post("/reservar", (c) => {
-  return c.json({ message: "TODO: reservar turno vía Odoo" }, 501);
+// GET /api/mis-turnos
+turnos.get("/mios", async (c) => {
+  const odoo = c.get("odoo");
+  const regs = await odoo.searchMyRegistrations();
+  return c.json({ data: regs.map(normalizeMiTurno) });
 });
+
+// POST /api/turnos/:id/reservar
+turnos.post("/:id/reservar", async (c) => {
+  const odoo = c.get("odoo");
+  const eventId = Number(c.req.param("id"));
+  if (!eventId) return c.json({ error: "ID inválido" }, 400);
+
+  // Chequear cupos
+  const events = await odoo.callKw("event.event", "read", [[eventId], ["seats_available", "name"]]) as Array<{ seats_available: number; name: string }>;
+  if (!events?.[0]) return c.json({ error: "Evento no encontrado" }, 404);
+  if (events[0].seats_available <= 0) return c.json({ error: "No hay cupos disponibles" }, 409);
+
+  // Chequear si ya está inscripto
+  const yaInscripto = await odoo.isRegistered(eventId);
+  if (yaInscripto) return c.json({ error: "Ya tenés una reserva para este turno" }, 409);
+
+  try {
+    await odoo.registerForEvent(eventId);
+    return c.json({ ok: true });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Error al reservar";
+    return c.json({ error: msg }, 500);
+  }
+});
+
+// ── Normalización ──────────────────────────────────────────────
+
+function normalizeTurno(e: OdooEvent) {
+  return {
+    id: e.id,
+    nombre: e.name,
+    sede: sedeFromOrganizer(e.organizer_id[0]),
+    inicio: toArgentinaISO(e.date_begin),
+    fin: toArgentinaISO(e.date_end),
+    cuposMax: e.seats_max,
+    cuposLibres: e.seats_available,
+    ocupados: e.seats_reserved,
+    nivel: occupancyLevel(e.seats_reserved, e.seats_max),
+  };
+}
+
+function normalizeMiTurno(r: OdooRegistration) {
+  return {
+    registrationId: r.id,
+    estado: r.state,
+    create_date: r.create_date,
+    evento: { id: r.event_id[0], nombre: r.event_id[1] },
+  };
+}

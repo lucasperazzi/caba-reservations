@@ -12,12 +12,12 @@ export const config = {
     db: process.env.ODOO_DB ?? "odoocaba",
   },
 
-  /**
-   * Cuenta de servicio (opcional) para leer disponibilidad sin login del usuario.
-   * Se completa vía variables de entorno cuando se implemente la lectura pública.
-   */
-  serviceAccount: {
-    user: process.env.ODOO_SERVICE_USER ?? "",
-    password: process.env.ODOO_SERVICE_PASSWORD ?? "",
-  },
+  /** Secreto para firmar la cookie de sesión. Obligatorio en producción. */
+  sessionSecret: process.env.SESSION_SECRET ?? "dev-secret-change-me",
+
+  /** Nombre de la cookie de sesión. */
+  cookieName: "caba_session",
+
+  /** Duración de la cookie en días (Odoo mantiene la sesión ~90 días). */
+  cookieMaxAgeDays: 90,
 } as const;
