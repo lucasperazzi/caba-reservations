@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "../auth";
 import { apiClient } from "../api";
-import type { MiTurno } from "../types";
+import type { MiTurno, Paquete } from "../types";
 
 export function HomePage() {
   const { user, logout } = useAuth();
@@ -11,6 +11,11 @@ export function HomePage() {
   const { data: misTurnos } = useQuery<{ data: MiTurno[] }>({
     queryKey: ["mis-turnos"],
     queryFn: apiClient.misTurnos,
+  });
+
+  const { data: paquetesData } = useQuery({
+    queryKey: ["paquetes"],
+    queryFn: apiClient.paquetes,
   });
 
   const ahora = new Date();
@@ -21,44 +26,85 @@ export function HomePage() {
     .sort((a, b) => (a.fecha?.getTime() ?? 0) - (b.fecha?.getTime() ?? 0));
 
   const proximo = proximos[0];
+  const paquetesActivos = paquetesData?.data.activos ?? [];
 
   return (
     <div className="min-h-screen">
-      <Header user={user?.name ?? ""} onLogout={logout} />
-      <main className="mx-auto max-w-3xl px-4 py-10 sm:py-16">
+      <Header user={user?.name ?? ""} userEmail={user?.email} onLogout={logout} />
+      <main className="mx-auto max-w-3xl px-4 pt-16 pb-10 sm:pt-24 sm:pb-16">
         {/* Saludo directo sobre el fondo, sin caja */}
         <h2 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
           Hola, {primerNombre(user?.name)}
         </h2>
-        <p className="mt-2 text-sm text-neutral-500">{user?.email}</p>
 
         {/* Próximo turno — llamativo, con acento emerald */}
-        <section className={`mt-10 border-l-2 pl-5 sm:pl-6 ${proximo ? "border-emerald-400" : "border-neutral-700"}`}>
+        <section className={`mt-16 border-l-2 pl-5 sm:mt-20 sm:pl-6 ${proximo ? "border-emerald-400" : "border-neutral-700"}`}>
           <h3 className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider ${proximo ? "text-emerald-400" : "text-neutral-500"}`}>
             {proximo && <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400" />}
             Tu próximo turno
           </h3>
           {proximo ? (
-            <div className="mt-2">
+            <div className="mt-3">
               <p className="text-2xl font-bold leading-tight tracking-tight text-white sm:text-3xl">
                 {proximo.evento.nombre.split(" (")[0]}
               </p>
-              <p className="mt-1.5 text-base capitalize text-neutral-400 sm:text-lg">
+              <p className="mt-2 text-base capitalize text-neutral-400 sm:text-lg">
                 {proximo.fecha?.toLocaleDateString("es-AR", { weekday: "long", day: "numeric", month: "long" })}
               </p>
             </div>
           ) : (
-            <p className="mt-2 text-lg text-neutral-500">No hay próximos turnos reservados.</p>
+            <p className="mt-3 text-lg text-neutral-500">No hay próximos turnos reservados.</p>
           )}
         </section>
 
+        {/* Paquetes activos — resumido */}
+        {paquetesActivos.length > 0 && (
+          <section className="mt-12 border-l-2 border-emerald-400 pl-5 sm:pl-6">
+            <h3 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-emerald-400">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400" />
+              Paquetes activos
+            </h3>
+            <div className="mt-4">
+              {paquetesActivos.map((p) => (
+                <PaqueteCompacto key={p.id} p={p} />
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Navegación — estilo role-selector del portfolio */}
-        <nav className="mt-16 border-t border-white/20 sm:mt-12">
+        <nav className="mt-20 border-t border-white/20 sm:mt-16">
           {NAV_CARDS.map((item, i) => (
             <NavRow key={item.to} to={item.to} index={i + 1} title={item.title} desc={item.desc} />
           ))}
         </nav>
       </main>
+    </div>
+  );
+}
+
+function fechaCorta(iso: string): string {
+  if (!iso) return "—";
+  const d = new Date(iso + (iso.length === 10 ? "T00:00:00-03:00" : "Z"));
+  return d.toLocaleDateString("es-AR", { day: "numeric", month: "short" });
+}
+
+function PaqueteCompacto({ p }: { p: Paquete }) {
+  const pct = p.creditosTotales > 0 ? (p.creditosDisponibles / p.creditosTotales) * 100 : 0;
+  return (
+    <div className="py-3.5 first:pt-0 last:pb-0">
+      <div className="flex items-baseline justify-between gap-3">
+        <p className="truncate text-sm font-bold tracking-tight text-white">{p.descripcion}</p>
+        <span className="flex-shrink-0 text-xs font-semibold text-neutral-400">
+          {p.creditosDisponibles}/{p.creditosTotales}
+        </span>
+      </div>
+      <div className="mt-2 flex items-center gap-3">
+        <span className="text-xs text-neutral-500">{fechaCorta(p.fechaInicio)} → {fechaCorta(p.fechaFin)}</span>
+        <div className="h-1 flex-1 bg-white/10">
+          <div className="h-full bg-emerald-400 transition-all" style={{ width: `${pct}%` }} />
+        </div>
+      </div>
     </div>
   );
 }
@@ -119,7 +165,7 @@ const NAV_ITEMS = [
   { to: "/paquetes", label: "Paquetes" },
 ];
 
-export function Header({ user, onLogout }: { user: string; onLogout: () => void }) {
+export function Header({ user, userEmail, onLogout }: { user: string; userEmail?: string; onLogout: () => void }) {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
@@ -216,6 +262,9 @@ export function Header({ user, onLogout }: { user: string; onLogout: () => void 
                 );
               })}
             </nav>
+            {userEmail && (
+              <p className="text-xs text-neutral-600">{userEmail}</p>
+            )}
             <button
               onClick={() => {
                 closeMenu();

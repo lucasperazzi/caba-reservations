@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 import { apiClient } from "../api";
 import { Header } from "./HomePage";
 import { useAuth } from "../auth";
@@ -18,7 +19,7 @@ function fechaStr(d: Date): string {
 }
 
 export function MisTurnosPage() {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const { data, isLoading } = useQuery({ queryKey: ["mis-turnos"], queryFn: apiClient.misTurnos });
 
   const ahora = new Date();
@@ -40,11 +41,11 @@ export function MisTurnosPage() {
 
   return (
     <div className="min-h-screen">
-      <Header user="" onLogout={logout} />
+      <Header user={user?.name ?? ""} userEmail={user?.email} onLogout={logout} />
       <main className="mx-auto max-w-3xl space-y-6 px-4 py-8">
-        <h2 className="text-xl font-bold tracking-tight text-white">Mis turnos</h2>
+        <h2 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Mis turnos</h2>
 
-        {isLoading && <p className="text-neutral-500">Cargando…</p>}
+        {isLoading && <p className="text-neutral-400">Cargando…</p>}
 
         {/* Próximo turno: caja destacada, distinta a los items de lista */}
         {!isLoading && (
@@ -59,7 +60,12 @@ export function MisTurnosPage() {
                 <p className="mt-1 text-sm capitalize text-neutral-400">{fechaStr(proximo.fecha!)}</p>
               </div>
             ) : (
-              <p className="text-sm text-neutral-500">No tenés turnos reservados.</p>
+              <div>
+                <p className="text-sm text-neutral-400">No tenés turnos reservados.</p>
+                <Link to="/turnos" className="mt-3 inline-block text-sm font-semibold text-emerald-400 hover:text-emerald-300">
+                  Reservar un turno →
+                </Link>
+              </div>
             )}
           </section>
         )}
@@ -94,8 +100,14 @@ export function MisTurnosPage() {
 
 const estadoColor: Record<string, string> = {
   open: "text-emerald-400",
-  done: "text-neutral-500",
+  done: "text-neutral-400",
   cancel: "text-red-400",
+};
+
+const estadoDot: Record<string, string> = {
+  open: "bg-emerald-400",
+  done: "bg-neutral-400",
+  cancel: "bg-red-400",
 };
 
 const estadoLabel: Record<string, string> = {
@@ -119,10 +131,11 @@ function MiTurnoRow({ t, index, total }: { t: MiTurno & { fecha: Date }; index: 
         <p className="break-words text-lg font-bold leading-tight tracking-tight text-white sm:text-xl">
           {nombreLargo(t.evento.nombre)}
         </p>
-        <p className="mt-1 text-xs capitalize text-neutral-500">{fechaStr(t.fecha)}</p>
+        <p className="mt-1 text-xs capitalize text-neutral-400">{fechaStr(t.fecha)}</p>
       </div>
 
-      <span className={`self-start text-xs font-semibold uppercase tracking-wider ${estadoColor[t.estado] ?? "text-neutral-500"}`}>
+      <span className={`flex items-center gap-1.5 self-start text-xs font-semibold uppercase tracking-wider ${estadoColor[t.estado] ?? "text-neutral-400"}`}>
+        <span className={`inline-block h-1.5 w-1.5 rounded-full ${estadoDot[t.estado] ?? "bg-neutral-400"}`} />
         {estadoLabel[t.estado] ?? t.estado}
       </span>
     </div>
