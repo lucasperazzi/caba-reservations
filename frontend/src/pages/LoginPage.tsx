@@ -26,11 +26,11 @@ export function LoginPage() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center px-4">
-      <div className={`w-full max-w-sm transition ${loading ? "pointer-events-none blur-sm" : ""}`}>
-        <h1 className="mb-1 text-3xl font-bold tracking-tight text-white">CABA · TURNOS</h1>
-        <p className="mb-6 text-sm text-neutral-500">Iniciá sesión con tu cuenta del Centro Andino</p>
+      <div className={`w-full max-w-sm text-center transition ${loading ? "pointer-events-none blur-sm" : ""}`}>
+        <h1 className="mb-1 text-3xl font-bold tracking-tight text-white">CABA</h1>
+        <p className="mb-6 text-sm text-neutral-400">Iniciá sesión con tu cuenta del Centro Andino</p>
 
-        <form onSubmit={submit} className="space-y-4 border border-white/20 bg-neutral-950 p-6">
+        <form onSubmit={submit} className="space-y-4 border border-white/20 p-6">
           <div>
             <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-neutral-400">Usuario / Email</label>
             <input
@@ -39,7 +39,7 @@ export function LoginPage() {
               onChange={(e) => setUser(e.target.value)}
               required
               autoFocus
-              className="w-full border border-white/20 bg-black px-3 py-2 text-base text-white focus:border-white focus:outline-none sm:text-sm"
+              className="w-full border-b border-white/20 bg-transparent px-1 py-2 text-base text-white placeholder-neutral-600 focus:border-white focus:outline-none sm:text-sm"
             />
           </div>
           <div>
@@ -49,7 +49,7 @@ export function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full border border-white/20 bg-black px-3 py-2 text-base text-white focus:border-white focus:outline-none sm:text-sm"
+              className="w-full border-b border-white/20 bg-transparent px-1 py-2 text-base text-white placeholder-neutral-600 focus:border-white focus:outline-none sm:text-sm"
             />
           </div>
 
@@ -58,17 +58,16 @@ export function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-white px-4 py-2 text-sm font-bold uppercase tracking-wider text-black transition-colors hover:bg-neutral-300 disabled:opacity-50"
+            className="w-full bg-white px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-black transition-colors hover:bg-neutral-300 disabled:opacity-50"
           >
             {loading ? "Ingresando…" : "Ingresar"}
           </button>
         </form>
 
-        <div className="mt-4 border border-white/10 bg-neutral-950 px-4 py-3 text-xs text-neutral-400">
-          <p className="font-semibold text-neutral-300">🔒 Tus datos están seguros</p>
-          <p className="mt-1">
+        <div className="mt-4 px-4 text-xs text-neutral-400">
+          <p>
             Tu contraseña se usa una sola vez para autenticarte contra el sitio oficial de CABA y
-            nunca se guarda ni la ve nadie. Solo se conserva la sesión, igual que en el sitio real.
+            nunca se guarda. Solo se conserva la sesión, igual que en el sitio real.
           </p>
         </div>
       </div>

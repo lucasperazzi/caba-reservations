@@ -3,11 +3,6 @@
 
 html {
   background-color: #000;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.78)), url("/paredescalada.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
   min-height: 100%;
 }
 
@@ -15,6 +10,24 @@ body {
   background-color: transparent;
   color: #f5f5f4;
   font-family: "Inter", sans-serif;
+  position: relative;
+}
+
+/* Fondo fijo: pseudo-elemento ::before con position:fixed.
+   Es la forma más confiable en iOS Safari, que no respeta
+   background-attachment:fixed ni position:fixed en divs anidados. */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.78)), url("/paredescalada.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 /* ── Animaciones del menú fullscreen (estilo brutalista) ── */
