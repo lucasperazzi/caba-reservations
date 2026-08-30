@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, type ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient, AuthError } from "./api";
 import type { UserInfo } from "./types";
@@ -14,7 +14,6 @@ const Ctx = createContext<AuthCtx>(null!);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const qc = useQueryClient();
-  const [loggingIn, setLoggingIn] = useState(false);
 
   const { data: user, isLoading } = useQuery<UserInfo | null>({
     queryKey: ["me"],
@@ -30,13 +29,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   });
 
   const login = async (user: string, password: string) => {
-    setLoggingIn(true);
-    try {
-      const u = await apiClient.login(user, password);
-      qc.setQueryData(["me"], u);
-    } finally {
-      setLoggingIn(false);
-    }
+    const u = await apiClient.login(user, password);
+    qc.setQueryData(["me"], u);
   };
 
   const logout = async () => {
@@ -46,7 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <Ctx.Provider value={{ user: user ?? null, isLoading: isLoading || loggingIn, login, logout }}>
+    <Ctx.Provider value={{ user: user ?? null, isLoading, login, logout }}>
       {children}
     </Ctx.Provider>
   );

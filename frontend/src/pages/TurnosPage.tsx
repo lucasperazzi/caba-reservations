@@ -92,7 +92,7 @@ export function TurnosPage() {
             <select
               value={sede}
               onChange={(e) => setSede(e.target.value as "todas" | Sede)}
-              className="rounded-md border border-slate-300 px-3 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+              className="rounded-md border border-slate-300 px-3 py-1.5 text-base sm:text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-white"
             >
               <option value="todas">Todas las sedes</option>
               <option value="bucarelli">Bucarelli</option>

@@ -31,7 +31,7 @@ export function LoginPage() {
       <button onClick={toggle} className="absolute right-4 top-4 text-sm text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white" title="Cambiar tema">
         {theme === "dark" ? "☀️" : "🌙"}
       </button>
-      <div className="w-full max-w-sm">
+      <div className={`w-full max-w-sm transition ${loading ? "pointer-events-none blur-sm" : ""}`}>
         <h1 className="mb-1 text-2xl font-bold text-slate-900 dark:text-white">CABA · Turnos</h1>
         <p className="mb-6 text-sm text-slate-500 dark:text-slate-400">Iniciá sesión con tu cuenta del Centro Andino</p>
 
@@ -44,7 +44,7 @@ export function LoginPage() {
               onChange={(e) => setUser(e.target.value)}
               required
               autoFocus
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-base focus:border-slate-500 focus:outline-none sm:text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-white"
             />
           </div>
           <div>
@@ -54,7 +54,7 @@ export function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-base focus:border-slate-500 focus:outline-none sm:text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-white"
             />
           </div>
 
@@ -77,6 +77,16 @@ export function LoginPage() {
           </p>
         </div>
       </div>
+
+      {loading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white/40 backdrop-blur-sm dark:bg-slate-950/40">
+          <div
+            role="status"
+            aria-label="Ingresando…"
+            className="h-10 w-10 animate-spin rounded-full border-4 border-slate-300 border-t-slate-900 dark:border-slate-700 dark:border-t-white"
+          />
+        </div>
+      )}
     </div>
   );
 }
