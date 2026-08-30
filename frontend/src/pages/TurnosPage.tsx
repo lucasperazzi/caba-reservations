@@ -5,12 +5,10 @@ import { es } from "date-fns/locale";
 import { apiClient } from "../api";
 import { Header } from "./HomePage";
 import { useAuth } from "../auth";
-import { useTheme } from "../theme";
 import type { Turno, Sede } from "../types";
 
 export function TurnosPage() {
   const { logout } = useAuth();
-  const { theme, toggle } = useTheme();
   const qc = useQueryClient();
   const [sede, setSede] = useState<"todas" | Sede>("todas");
   const [diaSeleccionado, setDiaSeleccionado] = useState<Date | undefined>(new Date());
@@ -73,18 +71,21 @@ export function TurnosPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
-      <Header user="" onLogout={logout} theme={theme} onToggleTheme={toggle} />
+    <div className="min-h-screen bg-black">
+      <Header user="" onLogout={logout} />
       <main className="mx-auto max-w-3xl px-4 py-8">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-bold dark:text-white">Turnos disponibles</h2>
-          <div className="flex items-center gap-2">
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h2 className="text-xl font-bold tracking-tight text-white">Turnos disponibles</h2>
+            <p className="mt-1 text-sm text-neutral-500">Clickeá sobre un evento para reservarlo.</p>
+          </div>
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:w-auto">
             <button
               onClick={() => setSoloFavoritos((v) => !v)}
-              className={`rounded-md border px-3 py-1.5 text-sm ${
+              className={`h-10 border px-3 text-sm ${
                 soloFavoritos
-                  ? "border-amber-400 bg-amber-50 text-amber-700 dark:border-amber-500 dark:bg-amber-950/40 dark:text-amber-300"
-                  : "border-slate-300 text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800"
+                  ? "border-white bg-white text-black"
+                  : "border-white/20 text-neutral-400 hover:border-white hover:text-white"
               }`}
             >
               {soloFavoritos ? "★ Favoritos" : "☆ Favoritos"}
@@ -92,7 +93,7 @@ export function TurnosPage() {
             <select
               value={sede}
               onChange={(e) => setSede(e.target.value as "todas" | Sede)}
-              className="rounded-md border border-slate-300 px-3 py-1.5 text-base sm:text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+              className="h-10 border border-white/20 bg-black px-3 text-base text-white sm:text-sm"
             >
               <option value="todas">Todas las sedes</option>
               <option value="bucarelli">Bucarelli</option>
@@ -103,7 +104,7 @@ export function TurnosPage() {
 
         <div className="grid gap-6 md:grid-cols-2">
           {/* Calendario */}
-          <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 dark:text-white">
+          <div className="flex justify-center overflow-x-auto border border-white/20 bg-neutral-950 p-4 text-white">
             <DayPicker
               mode="single"
               selected={diaSeleccionado}
@@ -111,58 +112,73 @@ export function TurnosPage() {
               locale={es}
               disabled={[{ before: hoy }, { after: hasta }]}
               weekStartsOn={1}
+              style={{
+                "--rdp-accent-color": "#fff",
+                "--rdp-accent-background-color": "#262626",
+                "--rdp-today-color": "#fff",
+                "--rdp-day_button-border-radius": "0px",
+                "--rdp-day-width": "2.25rem",
+                "--rdp-day-height": "2.25rem",
+                "--rdp-day_button-width": "2rem",
+                "--rdp-day_button-height": "2rem",
+                "--rdp-selected-border": "none",
+              } as React.CSSProperties}
             />
           </div>
 
           {/* Lista de turnos del día */}
-          <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-            <h3 className="mb-3 text-sm font-medium text-slate-700 dark:text-slate-300">
+          <div className="border border-white/20 bg-neutral-950 p-4">
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-400">
               {diaSeleccionado
                 ? diaSeleccionado.toLocaleDateString("es-AR", { weekday: "long", day: "numeric", month: "long" })
                 : "Seleccioná un día"}
             </h3>
-            {isLoading && <p className="text-sm text-slate-400">Cargando…</p>}
+            {isLoading && <p className="text-sm text-neutral-500">Cargando…</p>}
             {!isLoading && turnosDelDia.length === 0 && (
-              <p className="text-sm text-slate-400">No hay turnos para este día.</p>
+              <p className="text-sm text-neutral-500">No hay turnos para este día.</p>
             )}
-            <div className="space-y-2">
-              {turnosDelDia.map((t) => (
-                <TurnoBox
-                  key={t.id}
-                  turno={t}
-                  esFavorito={favs.has(claveFavorito(t.nombre))}
-                  onToggleFavorito={() => toggleFavorito(t.nombre)}
-                  onReservar={() => { setReservaOk(false); setReservaError(""); setTurnoAReservar(t); }}
-                />
-              ))}
-            </div>
+            {turnosDelDia.length > 0 && (
+              <div className="border-y border-white/25">
+                {turnosDelDia.map((t, i) => (
+                  <TurnoRow
+                    key={t.id}
+                    turno={t}
+                    index={i}
+                    total={turnosDelDia.length}
+                    esFavorito={favs.has(claveFavorito(t.nombre))}
+                    onToggleFavorito={() => toggleFavorito(t.nombre)}
+                    onReservar={() => { setReservaOk(false); setReservaError(""); setTurnoAReservar(t); }}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </main>
 
       {/* Modal de confirmación */}
       {turnoAReservar && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40 px-4">
-          <div className="w-full max-w-sm rounded-lg bg-white p-6 dark:bg-slate-900 dark:text-white">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/70 px-4">
+          <div className="w-full max-w-sm border border-white/20 bg-neutral-950 p-6 text-white">
             {reservaOk ? (
-              <p className="text-center text-lg font-medium text-emerald-600">¡Reserva confirmada!</p>
+              <p className="text-center text-lg font-bold text-white">¡Reserva confirmada!</p>
             ) : (
               <>
-                <h3 className="mb-2 text-lg font-semibold">¿Reservar?</h3>
-                <p className="mb-1 text-sm text-slate-700 dark:text-slate-300">{turnoAReservar.nombre}</p>
-                <p className="mb-4 text-xs text-slate-500 dark:text-slate-400">
-                  {turnoAReservar.inicio.slice(11, 16)} hs · {turnoAReservar.cuposLibres} cupos libres
+                <h3 className="mb-2 text-lg font-bold tracking-tight">¿Reservar?</h3>
+                <p className="mb-1 text-sm text-neutral-300">{turnoAReservar.nombre}</p>
+                <p className="mb-4 text-xs text-neutral-500">
+                  {turnoAReservar.inicio.slice(11, 16)}–{turnoAReservar.fin.slice(11, 16)} hs · {turnoAReservar.cuposLibres} cupos libres
                 </p>
-                {reservaError && <p className="mb-3 text-sm text-red-600">{reservaError}</p>}
+                {reservaError && <p className="mb-3 text-sm text-red-400">{reservaError}</p>}
                 <div className="flex gap-3">
                   <button
                     onClick={() => setTurnoAReservar(null)}
-                    className="flex-1 rounded-md border border-slate-300 px-4 py-2 text-sm hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
+                    className="flex-1 border border-white/20 px-4 py-2 text-sm hover:border-white"
                   >Cancelar</button>
                   <button
                     onClick={confirmarReserva}
                     disabled={reservando}
-                    className="flex-1 rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50 dark:bg-slate-700 dark:hover:bg-slate-600"
+                    className="flex-1 bg-white px-4 py-2 text-sm font-bold uppercase tracking-wider text-black hover:bg-neutral-300 disabled:opacity-50"
                   >{reservando ? "Reservando…" : "Confirmar"}</button>
                 </div>
               </>
@@ -175,9 +191,9 @@ export function TurnosPage() {
 }
 
 const nivelColor: Record<string, string> = {
-  green: "border-l-emerald-500 dark:border-l-emerald-400",
-  orange: "border-l-amber-500 dark:border-l-amber-400",
-  red: "border-l-red-500 dark:border-l-red-400",
+  green: "text-emerald-400",
+  orange: "text-amber-400",
+  red: "text-red-400",
 };
 
 // ── Favoritos (localStorage, identificados por nombre sin fecha) ──
@@ -206,38 +222,58 @@ function useFavoritos() {
   return { favs, toggle };
 }
 
-function TurnoBox({ turno, onReservar, esFavorito, onToggleFavorito }: { turno: Turno; onReservar: () => void; esFavorito: boolean; onToggleFavorito: () => void }) {
+function TurnoRow({
+  turno,
+  index,
+  total,
+  onReservar,
+  esFavorito,
+  onToggleFavorito,
+}: {
+  turno: Turno;
+  index: number;
+  total: number;
+  onReservar: () => void;
+  esFavorito: boolean;
+  onToggleFavorito: () => void;
+}) {
+  const disabled = turno.cuposLibres <= 0;
+  const indexLabel = String(index + 1).padStart(2, "0");
+  const totalLabel = String(total).padStart(2, "0");
+
+  const stateClasses = disabled
+    ? "cursor-not-allowed opacity-40"
+    : esFavorito
+      ? "cursor-pointer ring-1 ring-inset ring-amber-400/70 bg-amber-400/5 hover:bg-amber-400 hover:ring-amber-400"
+      : "cursor-pointer hover:bg-white";
+
   return (
     <div
-      className={`w-full rounded-md border border-l-4 p-3 ${nivelColor[turno.nivel]} ${
-        esFavorito
-          ? "border-amber-400 ring-1 ring-amber-400 dark:border-amber-500 dark:ring-amber-500 bg-amber-50 dark:bg-amber-950/30"
-          : "border-slate-200 dark:border-slate-700"
-      }`}
+      onClick={disabled ? undefined : onReservar}
+      className={`group grid grid-cols-[auto_1fr_auto] items-center gap-x-3 border-t border-white/15 px-3 py-4 transition-colors first:border-t-0 sm:gap-x-4 ${stateClasses}`}
     >
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-medium dark:text-white">{turno.nombre}</span>
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-500 dark:text-slate-400">{turno.inicio.slice(11, 16)} hs</span>
-          <button
-            onClick={(e) => { e.stopPropagation(); onToggleFavorito(); }}
-            className="text-base leading-none transition-transform hover:scale-125"
-            title={esFavorito ? "Quitar de favoritos" : "Marcar como favorito"}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill={esFavorito ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" className={esFavorito ? "text-amber-500" : "text-slate-400 dark:text-slate-500"}>
-              <path d="M12 21s-7-4.5-9.5-9C1 9 2.5 5 6.5 5c2 0 3.5 1 5.5 3 2-2 3.5-3 5.5-3 4 0 5.5 4 4 7-2.5 4.5-9.5 9-9.5 9z" />
-            </svg>
-          </button>
-        </div>
-      </div>
-      <button
-        onClick={onReservar}
-        disabled={turno.cuposLibres <= 0}
-        className="mt-1 w-full text-left disabled:opacity-50"
-      >
-        <p className="text-xs text-slate-500 dark:text-slate-400">
-          {turno.cuposLibres}/{turno.cuposMax} libres · {turno.sede}
+      <span className="min-w-[3.5ch] self-start text-xs font-bold tracking-wide text-neutral-500 group-hover:text-black/60">
+        {indexLabel}
+        <span className="opacity-60">/{totalLabel}</span>
+      </span>
+
+      <div className="min-w-0">
+        <p className="break-words text-lg font-bold leading-tight tracking-tight text-white group-hover:text-black sm:text-xl">
+          {turno.nombre}
         </p>
+        <p className="mt-1 text-xs text-neutral-500 group-hover:text-black/70">
+          {turno.inicio.slice(11, 16)}–{turno.fin.slice(11, 16)} hs · <span className={nivelColor[turno.nivel]}>{turno.cuposLibres}/{turno.cuposMax} libres</span> · {turno.sede}
+        </p>
+      </div>
+
+      <button
+        onClick={(e) => { e.stopPropagation(); onToggleFavorito(); }}
+        className="self-start p-1 leading-none transition-transform hover:scale-125"
+        title={esFavorito ? "Quitar de favoritos" : "Marcar como favorito"}
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill={esFavorito ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" className={esFavorito ? "text-amber-400 group-hover:text-black" : "text-neutral-500 group-hover:text-black/60"}>
+          <path d="M12 21s-7-4.5-9.5-9C1 9 2.5 5 6.5 5c2 0 3.5 1 5.5 3 2-2 3.5-3 5.5-3 4 0 5.5 4 4 7-2.5 4.5-9.5 9-9.5 9z" />
+        </svg>
       </button>
     </div>
   );
