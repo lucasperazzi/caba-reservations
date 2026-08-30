@@ -17,8 +17,11 @@ app.route("/api/auth", auth);
 app.route("/api/me", me);
 app.route("/api/turnos", turnos);
 
-serve({ fetch: app.fetch, port: config.port }, (info) => {
-  console.log(`Backend escuchando en http://localhost:${info.port}`);
-});
+// En desarrollo, levantar el servidor. En Vercel (serverless), no.
+if (process.env.NODE_ENV !== "production") {
+  serve({ fetch: app.fetch, port: config.port }, (info) => {
+    console.log(`Backend escuchando en http://localhost:${info.port}`);
+  });
+}
 
 export default app;
