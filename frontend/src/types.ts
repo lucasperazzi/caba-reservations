@@ -24,6 +24,15 @@ export interface UserInfo {
   uid: number;
   name: string;
   email: string;
+  username?: string;
+  phone?: string;
+  mobile?: string;
+  street?: string;
+  city?: string;
+  zip?: string;
+  country?: string;
+  vat?: string;
+  image?: string;
 }
 
 export interface Paquete {

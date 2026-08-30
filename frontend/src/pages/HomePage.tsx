@@ -163,6 +163,7 @@ const NAV_ITEMS = [
   { to: "/turnos", label: "Turnos" },
   { to: "/mis-turnos", label: "Mis turnos" },
   { to: "/paquetes", label: "Paquetes" },
+  { to: "/mi-cuenta", label: "Mi cuenta" },
 ];
 
 export function Header({ user, userEmail, onLogout }: { user: string; userEmail?: string; onLogout: () => void }) {
