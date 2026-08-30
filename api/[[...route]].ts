@@ -1,4 +1,4 @@
-import app from "../backend/src/index.js";
+import app from "../backend/src/app.js";
 
 export const GET = (req: Request) => app.fetch(req);
 export const POST = (req: Request) => app.fetch(req);
