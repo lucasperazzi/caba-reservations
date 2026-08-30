@@ -1,8 +1,18 @@
-import app from "../backend/src/app.js";
+import type { Hono } from "hono";
 
-export const GET = (req: Request) => app.fetch(req);
-export const POST = (req: Request) => app.fetch(req);
-export const PUT = (req: Request) => app.fetch(req);
-export const DELETE = (req: Request) => app.fetch(req);
-export const PATCH = (req: Request) => app.fetch(req);
-export const OPTIONS = (req: Request) => app.fetch(req);
+let app: Hono | null = null;
+
+async function getApp() {
+  if (!app) {
+    const mod = await import("../backend/src/app.js");
+    app = mod.default;
+  }
+  return app;
+}
+
+export const GET = async (req: Request) => (await getApp()).fetch(req);
+export const POST = async (req: Request) => (await getApp()).fetch(req);
+export const PUT = async (req: Request) => (await getApp()).fetch(req);
+export const DELETE = async (req: Request) => (await getApp()).fetch(req);
+export const PATCH = async (req: Request) => (await getApp()).fetch(req);
+export const OPTIONS = async (req: Request) => (await getApp()).fetch(req);
