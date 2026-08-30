@@ -25,46 +25,91 @@ export function HomePage() {
   return (
     <div className="min-h-screen">
       <Header user={user?.name ?? ""} onLogout={logout} />
-      <main className="mx-auto max-w-3xl space-y-6 px-4 py-8">
-        <section className="border border-white/20 bg-neutral-950 p-6">
-          <h2 className="text-lg font-bold tracking-tight text-white">Hola, {user?.name}</h2>
-          <p className="text-sm text-neutral-500">{user?.email}</p>
-        </section>
+      <main className="mx-auto max-w-3xl px-4 py-10 sm:py-16">
+        {/* Saludo directo sobre el fondo, sin caja */}
+        <h2 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
+          Hola, {primerNombre(user?.name)}
+        </h2>
+        <p className="mt-2 text-sm text-neutral-500">{user?.email}</p>
 
-        <section className="border border-white/20 bg-neutral-950 p-6">
-          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500">Tu próximo turno</h3>
+        {/* Próximo turno — llamativo, con acento emerald */}
+        <section className={`mt-10 border-l-2 pl-5 sm:pl-6 ${proximo ? "border-emerald-400" : "border-neutral-700"}`}>
+          <h3 className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider ${proximo ? "text-emerald-400" : "text-neutral-500"}`}>
+            {proximo && <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400" />}
+            Tu próximo turno
+          </h3>
           {proximo ? (
-            <div>
-              <p className="text-lg font-bold text-white">{proximo.evento.nombre.split(" (")[0]}</p>
-              <p className="text-sm text-neutral-400">
+            <div className="mt-2">
+              <p className="text-2xl font-bold leading-tight tracking-tight text-white sm:text-3xl">
+                {proximo.evento.nombre.split(" (")[0]}
+              </p>
+              <p className="mt-1.5 text-base capitalize text-neutral-400 sm:text-lg">
                 {proximo.fecha?.toLocaleDateString("es-AR", { weekday: "long", day: "numeric", month: "long" })}
               </p>
             </div>
           ) : (
-            <p className="text-sm text-neutral-500">No hay próximos turnos reservados.</p>
+            <p className="mt-2 text-lg text-neutral-500">No hay próximos turnos reservados.</p>
           )}
         </section>
 
-        <div className="grid gap-3 sm:grid-cols-3">
-          <NavCard to="/mis-turnos" title="Mis turnos" desc="Turnos reservados" />
-          <NavCard to="/turnos" title="Turnos CABA" desc="Ver y reservar" />
-          <NavCard to="/paquetes" title="Mis paquetes" desc="Historial" />
-        </div>
+        {/* Navegación — estilo role-selector del portfolio */}
+        <nav className="mt-16 border-t border-white/20 sm:mt-12">
+          {NAV_CARDS.map((item, i) => (
+            <NavRow key={item.to} to={item.to} index={i + 1} title={item.title} desc={item.desc} />
+          ))}
+        </nav>
       </main>
     </div>
   );
 }
 
-function NavCard({ to, title, desc }: { to: string; title: string; desc: string }) {
+const NAV_CARDS = [
+  { to: "/turnos", title: "Turnos CABA", desc: "Ver y reservar" },
+  { to: "/mis-turnos", title: "Mis turnos", desc: "Turnos reservados" },
+  { to: "/paquetes", title: "Mis paquetes", desc: "Paquetes e historial" },
+];
+
+function NavRow({ to, index, title, desc }: { to: string; index: number; title: string; desc: string }) {
+  const indexLabel = String(index).padStart(2, "0");
   return (
     <Link
       to={to}
-      className="block border border-white/20 bg-neutral-950 p-4 transition-colors hover:border-white hover:bg-neutral-900"
+      className="group flex items-baseline gap-4 border-b border-white/20 py-5 transition-colors hover:bg-white/[0.03] sm:gap-5 sm:py-6"
     >
-      <p className="font-bold text-white">{title}</p>
-      <p className="text-xs text-neutral-500">{desc}</p>
+      <span className="text-sm font-semibold tracking-wide text-neutral-600 transition-colors group-hover:text-neutral-400">
+        {indexLabel}
+      </span>
+      <div className="min-w-0 flex-1">
+        <p className="text-2xl font-bold leading-tight tracking-tight text-white transition-colors group-hover:text-neutral-400 sm:text-3xl">
+          {title}
+        </p>
+        <p className="mt-0.5 text-xs text-neutral-600 transition-colors group-hover:text-neutral-500">
+          {desc}
+        </p>
+      </div>
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        className="flex-shrink-0 text-neutral-600 transition-all group-hover:translate-x-1 group-hover:text-neutral-400"
+      >
+        <path d="M9 18l6-6-6-6" />
+      </svg>
     </Link>
   );
+}
+
+function primerNombre(nombre?: string): string {
+  if (!nombre) return "";
+  // "Perazzi, Lucas" → "Lucas", o "Lucas Perazzi" → "Lucas"
+  if (nombre.includes(",")) {
+    const after = nombre.split(",")[1]?.trim();
+    return after?.split(" ")[0] ?? nombre;
+  }
+  return nombre.split(" ")[0];
 }
 
 const NAV_ITEMS = [
@@ -112,7 +157,7 @@ export function Header({ user, onLogout }: { user: string; onLogout: () => void 
       <header className="border-b border-white/20 bg-black">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
           <Link to="/" className="text-lg font-bold tracking-tight text-white">
-            CABA · TURNOS
+            CABA
           </Link>
           <div className="flex items-center gap-4">
             {user && <span className="hidden text-sm text-neutral-400 sm:inline">{user}</span>}

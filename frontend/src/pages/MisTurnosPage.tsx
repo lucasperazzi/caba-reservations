@@ -48,8 +48,11 @@ export function MisTurnosPage() {
 
         {/* Próximo turno: caja destacada, distinta a los items de lista */}
         {!isLoading && (
-          <section className="border-2 border-white bg-neutral-950 p-6">
-            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-400">Turno reservado más cercano:</h3>
+          <section className={`border-2 bg-neutral-950 p-6 ${proximo ? "border-emerald-400" : "border-white"}`}>
+            <h3 className={`mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider ${proximo ? "text-emerald-400" : "text-neutral-400"}`}>
+              {proximo && <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400" />}
+              Turno reservado más cercano:
+            </h3>
             {proximo ? (
               <div>
                 <p className="text-2xl font-bold leading-tight tracking-tight text-white">{nombreLargo(proximo.evento.nombre)}</p>
