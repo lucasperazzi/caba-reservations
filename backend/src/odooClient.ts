@@ -178,8 +178,8 @@ export class OdooClient {
       ["date_end", "<=", dateTo],
       ["website_published", "=", true],
     ];
-    if (sedeFilter === "bucarelli") domain.push(["organizer_id", "=", 15968]);
-    if (sedeFilter === "centro") domain.push(["organizer_id", "=", 16299]);
+    if (sedeFilter === "bucarelli") domain.push(["name", "ilike", "bucarelli"]);
+    if (sedeFilter === "centro") domain.push(["name", "ilike", "centro"]);
 
     const fields = [
       "id",
