@@ -45,10 +45,10 @@ export function HomePage() {
           </h3>
           {proximo ? (
             <div className="mt-3">
-              <p className="text-2xl font-bold leading-tight tracking-tight text-white sm:text-3xl">
+              <p className="text-lg font-bold leading-tight tracking-tight text-white sm:text-xl">
                 {proximo.evento.nombre.split(" (")[0]}
               </p>
-              <p className="mt-2 text-base capitalize text-neutral-400 sm:text-lg">
+              <p className="mt-1.5 text-sm capitalize text-neutral-400">
                 {proximo.fecha?.toLocaleDateString("es-AR", { weekday: "long", day: "numeric", month: "long" })}
               </p>
             </div>
@@ -94,13 +94,13 @@ function PaqueteCompacto({ p }: { p: Paquete }) {
   return (
     <div className="py-3.5 first:pt-0 last:pb-0">
       <div className="flex items-baseline justify-between gap-3">
-        <p className="truncate text-sm font-bold tracking-tight text-white">{p.descripcion}</p>
-        <span className="flex-shrink-0 text-xs font-semibold text-neutral-400">
+        <p className="truncate text-lg font-bold tracking-tight text-white sm:text-xl">{p.descripcion}</p>
+        <span className="flex-shrink-0 text-sm font-semibold text-neutral-400">
           {p.creditosDisponibles}/{p.creditosTotales}
         </span>
       </div>
       <div className="mt-2 flex items-center gap-3">
-        <span className="text-xs text-neutral-500">{fechaCorta(p.fechaInicio)} → {fechaCorta(p.fechaFin)}</span>
+        <span className="text-sm text-neutral-500">{fechaCorta(p.fechaInicio)} → {fechaCorta(p.fechaFin)}</span>
         <div className="h-1 flex-1 bg-white/10">
           <div className="h-full bg-emerald-400 transition-all" style={{ width: `${pct}%` }} />
         </div>
