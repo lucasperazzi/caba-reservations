@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { apiClient } from "../api";
 import { Header } from "./HomePage";
 import { useAuth } from "../auth";
@@ -20,6 +20,7 @@ function fechaStr(d: Date): string {
 
 export function MisTurnosPage() {
   const { user, logout } = useAuth();
+  const nav = useNavigate();
   const { data, isLoading } = useQuery({ queryKey: ["mis-turnos"], queryFn: apiClient.misTurnos });
 
   const ahora = new Date();
@@ -34,6 +35,15 @@ export function MisTurnosPage() {
 
   const proximo = futuros[0];
   const siguientes = futuros.slice(1);
+
+  const repetirProximaSemana = (t: MiTurno & { fecha: Date }) => {
+    const baseName = t.evento.nombre.split(" (")[0];
+    // Sumar 7 días a la fecha en formato string para evitar issues de zona horaria
+    const fecha = t.fecha;
+    const target = new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate() + 7);
+    const targetStr = `${target.getFullYear()}-${String(target.getMonth() + 1).padStart(2, "0")}-${String(target.getDate()).padStart(2, "0")}`;
+    nav("/turnos", { state: { searchName: baseName, targetDate: targetStr } });
+  };
 
   const historial = conFecha
     .filter((t) => t.estado !== "open" || t.fecha! < ahora)
@@ -76,7 +86,7 @@ export function MisTurnosPage() {
             <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-400">Próximos turnos reservados</h3>
             <div className="border-y border-white/25">
               {siguientes.map((t, i) => (
-                <MiTurnoRow key={t.registrationId} t={t} index={i} total={siguientes.length} />
+                <MiTurnoRow key={t.registrationId} t={t} index={i} total={siguientes.length} onRepetir={() => repetirProximaSemana(t)} />
               ))}
             </div>
           </section>
@@ -116,7 +126,7 @@ const estadoLabel: Record<string, string> = {
   cancel: "Cancelado",
 };
 
-function MiTurnoRow({ t, index, total }: { t: MiTurno & { fecha: Date }; index: number; total: number }) {
+function MiTurnoRow({ t, index, total, onRepetir }: { t: MiTurno & { fecha: Date }; index: number; total: number; onRepetir?: () => void }) {
   const indexLabel = String(index + 1).padStart(2, "0");
   const totalLabel = String(total).padStart(2, "0");
 
@@ -132,6 +142,14 @@ function MiTurnoRow({ t, index, total }: { t: MiTurno & { fecha: Date }; index: 
           {nombreLargo(t.evento.nombre)}
         </p>
         <p className="mt-1 text-xs capitalize text-neutral-400">{fechaStr(t.fecha)}</p>
+        {onRepetir && (
+          <button
+            onClick={onRepetir}
+            className="mt-2 text-xs font-semibold text-emerald-400 transition-colors hover:text-emerald-300"
+          >
+            Repetir próxima semana →
+          </button>
+        )}
       </div>
 
       <span className={`flex items-center gap-1.5 self-start text-xs font-semibold uppercase tracking-wider ${estadoColor[t.estado] ?? "text-neutral-400"}`}>

@@ -91,20 +91,30 @@ function fechaCorta(iso: string): string {
 
 function PaqueteCompacto({ p }: { p: Paquete }) {
   const pct = p.creditosTotales > 0 ? (p.creditosDisponibles / p.creditosTotales) * 100 : 0;
+
+  // Alerta: solo cuando queda 1 crédito
+  const alerta = p.creditosDisponibles === 1;
+  const barraColor = alerta ? "bg-amber-400" : "bg-emerald-400";
+
   return (
     <div className="py-3.5 first:pt-0 last:pb-0">
       <div className="flex items-baseline justify-between gap-3">
         <p className="truncate text-lg font-bold tracking-tight text-white sm:text-xl">{p.descripcion}</p>
-        <span className="flex-shrink-0 text-sm font-semibold text-neutral-400">
+        <span className={`flex-shrink-0 text-sm font-semibold ${alerta ? "text-amber-400" : "text-neutral-400"}`}>
           {p.creditosDisponibles}/{p.creditosTotales}
         </span>
       </div>
       <div className="mt-2 flex items-center gap-3">
         <span className="text-sm text-neutral-500">{fechaCorta(p.fechaInicio)} → {fechaCorta(p.fechaFin)}</span>
         <div className="h-1 flex-1 bg-white/10">
-          <div className="h-full bg-emerald-400 transition-all" style={{ width: `${pct}%` }} />
+          <div className={`h-full ${barraColor} transition-all`} style={{ width: `${pct}%` }} />
         </div>
       </div>
+      {alerta && (
+        <p className="mt-1.5 text-xs font-semibold text-amber-400">
+          Te queda 1 crédito
+        </p>
+      )}
     </div>
   );
 }

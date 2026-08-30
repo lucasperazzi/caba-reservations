@@ -1,5 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useLocation } from "react-router-dom";
 import { DayPicker } from "react-day-picker";
 import { es } from "date-fns/locale";
 import { apiClient } from "../api";
@@ -14,6 +15,7 @@ const RESERVA_HABILITADA = false;
 export function TurnosPage() {
   const { user, logout } = useAuth();
   const qc = useQueryClient();
+  const location = useLocation();
   const [sede, setSede] = useState<"todas" | Sede>("todas");
   const [diaSeleccionado, setDiaSeleccionado] = useState<Date | undefined>(new Date());
   const [turnoAReservar, setTurnoAReservar] = useState<Turno | null>(null);
@@ -23,9 +25,17 @@ export function TurnosPage() {
   const { favs, toggle: toggleFavorito } = useFavoritos();
   const [soloFavoritos, setSoloFavoritos] = useState(false);
 
+  // Si venimos de "Repetir próxima semana", leer el state
+  const repeatState = location.state as { searchName?: string; targetDate?: string } | null;
+  // targetDate viene como "YYYY-MM-DD" (sin zona horaria)
+  const targetDateStr = repeatState?.targetDate ?? null;
+  const targetDate = targetDateStr ? new Date(targetDateStr + "T00:00:00") : null;
+
   const hoy = new Date();
   const desde = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, "0")}-01`;
-  const hasta = new Date(hoy.getFullYear(), hoy.getMonth() + 2, 0);
+  // Si venimos de "repetir", extender el rango para incluir la fecha target
+  const hastaDefault = new Date(hoy.getFullYear(), hoy.getMonth() + 2, 0);
+  const hasta = targetDate && targetDate > hastaDefault ? targetDate : hastaDefault;
   const hastaStr = `${hasta.getFullYear()}-${String(hasta.getMonth() + 1).padStart(2, "0")}-${String(hasta.getDate()).padStart(2, "0")}`;
 
   const { data, isLoading } = useQuery({
@@ -55,6 +65,25 @@ export function TurnosPage() {
     ? `${diaSeleccionado.getFullYear()}-${String(diaSeleccionado.getMonth() + 1).padStart(2, "0")}-${String(diaSeleccionado.getDate()).padStart(2, "0")}`
     : "";
   const turnosDelDia = turnosPorDia.get(diaKey) ?? [];
+
+  // Auto-seleccionar fecha y abrir modal si venimos de "Repetir próxima semana"
+  useEffect(() => {
+    if (!targetDateStr || !repeatState?.searchName || isLoading) return;
+    const target = new Date(targetDateStr + "T00:00:00");
+    setDiaSeleccionado(target);
+
+    // targetDateStr ya es "YYYY-MM-DD", mismo formato que las keys de turnosPorDia
+    const turnosTarget = turnosPorDia.get(targetDateStr) ?? [];
+    const match = turnosTarget.find((t) => t.nombre.startsWith(repeatState.searchName!));
+    if (match) {
+      setReservaOk(false);
+      setReservaError("");
+      setTurnoAReservar(match);
+    }
+    // Limpiar el state para que no se re-ejecute
+    window.history.replaceState({}, document.title);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [targetDateStr, repeatState, isLoading, turnosPorDia]);
 
   const confirmarReserva = async () => {
     if (!turnoAReservar) return;
