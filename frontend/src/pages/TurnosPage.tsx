@@ -71,7 +71,7 @@ export function TurnosPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen">
       <Header user="" onLogout={logout} />
       <main className="mx-auto max-w-3xl px-4 py-8">
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -190,11 +190,16 @@ export function TurnosPage() {
   );
 }
 
-const nivelColor: Record<string, string> = {
-  green: "text-emerald-400",
-  orange: "text-amber-400",
-  red: "text-red-400",
-};
+/**
+ * Color progresivo según cupos libres: arranca verde con cupos llenos y va
+ * virando (verde → amarillo → naranja → rojo) a medida que se ocupan,
+ * de forma continua en vez de saltar entre 2-3 colores fijos.
+ */
+function cupoColor(libres: number, max: number): string {
+  const ratio = max > 0 ? Math.max(0, Math.min(1, libres / max)) : 0;
+  const hue = ratio * 130; // 130 = verde, 0 = rojo
+  return `hsl(${hue}, 80%, 55%)`;
+}
 
 // ── Favoritos (localStorage, identificados por nombre sin fecha) ──
 
@@ -262,7 +267,11 @@ function TurnoRow({
           {turno.nombre}
         </p>
         <p className="mt-1 text-xs text-neutral-500 group-hover:text-black/70">
-          {turno.inicio.slice(11, 16)}–{turno.fin.slice(11, 16)} hs · <span className={nivelColor[turno.nivel]}>{turno.cuposLibres}/{turno.cuposMax} libres</span> · {turno.sede}
+          {turno.inicio.slice(11, 16)}–{turno.fin.slice(11, 16)} hs ·{" "}
+          <span style={{ color: cupoColor(turno.cuposLibres, turno.cuposMax) }} className="font-semibold">
+            {turno.cuposLibres}/{turno.cuposMax} libres
+          </span>{" "}
+          · {turno.sede}
         </p>
       </div>
 

@@ -23,7 +23,7 @@ export function HomePage() {
   const proximo = proximos[0];
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen">
       <Header user={user?.name ?? ""} onLogout={logout} />
       <main className="mx-auto max-w-3xl space-y-6 px-4 py-8">
         <section className="border border-white/20 bg-neutral-950 p-6">

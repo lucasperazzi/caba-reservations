@@ -39,7 +39,7 @@ export function MisTurnosPage() {
     .sort((a, b) => b.fecha!.getTime() - a.fecha!.getTime());
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen">
       <Header user="" onLogout={logout} />
       <main className="mx-auto max-w-3xl space-y-6 px-4 py-8">
         <h2 className="text-xl font-bold tracking-tight text-white">Mis turnos</h2>

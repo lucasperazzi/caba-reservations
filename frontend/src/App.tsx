@@ -7,7 +7,7 @@ import { TurnosPage } from "./pages/TurnosPage";
 
 function Loading() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-black">
+    <div className="flex min-h-screen items-center justify-center">
       <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-800 border-t-white" />
     </div>
   );
@@ -31,7 +31,7 @@ function App() {
       <Route path="/" element={<Protected><HomePage /></Protected>} />
       <Route path="/mis-turnos" element={<Protected><MisTurnosPage /></Protected>} />
       <Route path="/turnos" element={<Protected><TurnosPage /></Protected>} />
-      <Route path="/paquetes" element={<Protected><div className="min-h-screen bg-black p-8 text-neutral-500">Próximamente</div></Protected>} />
+      <Route path="/paquetes" element={<Protected><div className="min-h-screen p-8 text-neutral-500">Próximamente</div></Protected>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

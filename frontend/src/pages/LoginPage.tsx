@@ -25,7 +25,7 @@ export function LoginPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-black px-4">
+    <div className="relative flex min-h-screen items-center justify-center px-4">
       <div className={`w-full max-w-sm transition ${loading ? "pointer-events-none blur-sm" : ""}`}>
         <h1 className="mb-1 text-3xl font-bold tracking-tight text-white">CABA · TURNOS</h1>
         <p className="mb-6 text-sm text-neutral-500">Iniciá sesión con tu cuenta del Centro Andino</p>
