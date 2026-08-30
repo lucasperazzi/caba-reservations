@@ -27,17 +27,14 @@ function App() {
   if (isLoading) return <Loading />;
 
   return (
-    <>
-      <div className="bg-fixed" aria-hidden />
-      <Routes>
+    <Routes>
       <Route path="/login" element={user ? <Navigate to="/" replace /> : <LoginPage />} />
       <Route path="/" element={<Protected><HomePage /></Protected>} />
       <Route path="/mis-turnos" element={<Protected><MisTurnosPage /></Protected>} />
       <Route path="/turnos" element={<Protected><TurnosPage /></Protected>} />
       <Route path="/paquetes" element={<Protected><PaquetesPage /></Protected>} />
       <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </>
+    </Routes>
   );
 }
 

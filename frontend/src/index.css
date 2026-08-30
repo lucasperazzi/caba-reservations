@@ -3,29 +3,18 @@
 
 html {
   background-color: #000;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.78)), url("/paredescalada.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100%;
 }
 
 body {
   background-color: transparent;
   color: #f5f5f4;
   font-family: "Inter", sans-serif;
-}
-
-/* Fondo de la app: foto de pared de escalada + capa oscura encima.
-   El navbar y el menú fullscreen tienen su propio fondo negro sólido
-   que tapa esta imagen.
-
-   Se usa un div con position:fixed en vez de background-attachment:fixed
-   en body porque este último es buggy en iOS Safari (parpadea / se
-   reposiciona al hacer scroll con muchos items). */
-.bg-fixed {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.78)), url("/paredescalada.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
 }
 
 /* ── Animaciones del menú fullscreen (estilo brutalista) ── */
