@@ -4,6 +4,7 @@ import { LoginPage } from "./pages/LoginPage";
 import { HomePage } from "./pages/HomePage";
 import { MisTurnosPage } from "./pages/MisTurnosPage";
 import { TurnosPage } from "./pages/TurnosPage";
+import { PaquetesPage } from "./pages/PaquetesPage";
 
 function Loading() {
   return (
@@ -33,7 +34,7 @@ function App() {
       <Route path="/" element={<Protected><HomePage /></Protected>} />
       <Route path="/mis-turnos" element={<Protected><MisTurnosPage /></Protected>} />
       <Route path="/turnos" element={<Protected><TurnosPage /></Protected>} />
-      <Route path="/paquetes" element={<Protected><div className="min-h-screen p-8 text-neutral-500">Próximamente</div></Protected>} />
+      <Route path="/paquetes" element={<Protected><PaquetesPage /></Protected>} />
       <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>

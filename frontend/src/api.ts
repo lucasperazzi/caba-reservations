@@ -1,4 +1,4 @@
-import type { UserInfo, Turno, MiTurno } from "./types";
+import type { UserInfo, Turno, MiTurno, PaquetesData } from "./types";
 
 async function api<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(path, { credentials: "include", ...options });
@@ -26,4 +26,5 @@ export const apiClient = {
   misTurnos: () => api<{ data: MiTurno[] }>("/api/turnos/mios"),
   reservar: (eventId: number) =>
     api<{ ok: boolean }>(`/api/turnos/${eventId}/reservar`, { method: "POST" }),
+  paquetes: () => api<{ data: PaquetesData }>("/api/paquetes"),
 };

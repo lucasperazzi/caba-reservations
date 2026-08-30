@@ -25,3 +25,24 @@ export interface UserInfo {
   name: string;
   email: string;
 }
+
+export interface Paquete {
+  id: number;
+  nombre: string; // "MAP-XXXXX"
+  descripcion: string; // tipo de paquete
+  producto: string | null;
+  estado: "active" | "completed" | "cancelled" | "draft" | "expired";
+  estadoLabel: string;
+  creditosTotales: number;
+  creditosDisponibles: number;
+  fechaInicio: string;
+  fechaFin: string;
+  duracionDias: number;
+  fechaCreacion: string;
+  reservas: number;
+}
+
+export interface PaquetesData {
+  activos: Paquete[];
+  historial: Paquete[];
+}

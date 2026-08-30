@@ -232,6 +232,57 @@ export class OdooClient {
     return result as OdooRegistration[];
   }
 
+  /** Lee los paquetes de acceso del usuario actual (climbing_gym.member_access_package). */
+  async searchMyAccessPackages(): Promise<OdooAccessPackage[]> {
+    const info = await this.getSessionInfo();
+    if (!info) throw new OdooError("No autenticado", "session");
+
+    // Obtener el partner_id del usuario (search_read con partner_id.email falla en este modelo)
+    const userData = await this.callKw("res.users", "read", [
+      [info.uid],
+      ["partner_id"],
+    ]) as Array<{ partner_id: [number, string] }>;
+    if (!userData?.[0]?.partner_id) return [];
+    const partnerId = userData[0].partner_id[0];
+
+    // Buscar IDs de paquetes del partner
+    const ids = await this.callKw(
+      "climbing_gym.member_access_package",
+      "search",
+      [[["partner_id", "=", partnerId]]],
+    ) as number[];
+    if (ids.length === 0) return [];
+
+    // Leer los registros
+    const fields = [
+      "id",
+      "name",
+      "state",
+      "access_credits",
+      "remaining_credits",
+      "date_start",
+      "date_finish",
+      "days_duration",
+      "completed_date",
+      "activated_date",
+      "create_date",
+      "access_package",
+      "product",
+      "event_registrations",
+    ];
+
+    const records = await this.callKw(
+      "climbing_gym.member_access_package",
+      "read",
+      [ids, fields],
+    ) as OdooAccessPackage[];
+
+    // Ordenar por create_date desc
+    records.sort((a, b) => (b.create_date > a.create_date ? 1 : -1));
+
+    return records;
+  }
+
   /** Verifica si el usuario ya está inscripto en un evento. */
   async isRegistered(eventId: number): Promise<boolean> {
     const info = await this.getSessionInfo();
@@ -338,6 +389,23 @@ export interface OdooRegistration {
   state: "open" | "done" | "cancel";
   create_date: string;
   name: string;
+}
+
+export interface OdooAccessPackage {
+  id: number;
+  name: string; // "MAP-XXXXX"
+  state: "active" | "completed" | "cancelled" | "draft" | "expired";
+  access_credits: number; // créditos totales
+  remaining_credits: number; // créditos disponibles
+  date_start: string; // "YYYY-MM-DD"
+  date_finish: string; // "YYYY-MM-DD"
+  days_duration: number;
+  completed_date: string | false;
+  activated_date: string | false;
+  create_date: string; // "YYYY-MM-DD HH:MM:SS"
+  access_package: [number, string] | false; // tipo de paquete
+  product: [number, string] | false; // producto comprado
+  event_registrations: number[]; // IDs de reservas asociadas
 }
 
 // ── Error personalizado ────────────────────────────────────────
