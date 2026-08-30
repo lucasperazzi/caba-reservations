@@ -25,6 +25,7 @@ auth.post("/login", async (c) => {
   try {
     const info = await client.login(user, password);
     const sessionId = client.getSessionId();
+    console.log("Login OK:", { uid: info.uid, hasSession: !!sessionId });
     if (!sessionId) {
       return c.json({ error: "No se pudo establecer la sesión" }, 500);
     }
@@ -39,6 +40,7 @@ auth.post("/login", async (c) => {
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Error de autenticación";
+    console.error("Login error:", msg, err instanceof Error ? err.stack : err);
     return c.json({ error: msg }, 401);
   }
 });

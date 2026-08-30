@@ -64,13 +64,23 @@ export class OdooClient {
       redirect: "manual", // manejamos redirects manualmente para capturar cookies
     });
 
-    // Capturar Set-Cookie
-    const setCookies = res.headers.getSetCookie?.() ?? [];
+    // Capturar Set-Cookie (getSetCookie puede no existir en todos los runtimes)
+    let setCookies: string[] = [];
+    if (typeof res.headers.getSetCookie === "function") {
+      setCookies = res.headers.getSetCookie();
+    } else {
+      // Fallback: parsear manualmente del header Set-Cookie
+      const raw = res.headers.get("set-cookie");
+      if (raw) {
+        // En algunos runtimes vienen todas en una sola línea separadas por coma
+        // pero las cookies pueden tener comas en expires, así que split simple
+        setCookies = [raw];
+      }
+    }
     for (const sc of setCookies) {
       const cookiePart = sc.split(";")[0];
       if (cookiePart) {
         const name = cookiePart.split("=")[0];
-        // Reemplazar cookie existente o agregar nueva
         this.cookies = this.cookies.filter((c) => !c.startsWith(`${name}=`));
         this.cookies.push(cookiePart);
       }
