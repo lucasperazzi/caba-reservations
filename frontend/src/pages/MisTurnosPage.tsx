@@ -55,23 +55,23 @@ export function MisTurnosPage() {
       <main className="mx-auto max-w-3xl space-y-6 px-4 py-8">
         <h2 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Mis turnos</h2>
 
-        {isLoading && <p className="text-neutral-400">Cargando…</p>}
+        {isLoading && <p className="text-neutral-300">Cargando…</p>}
 
         {/* Próximo turno: caja destacada, distinta a los items de lista */}
         {!isLoading && (
           <section className={`border-2 bg-neutral-950 p-6 ${proximo ? "border-emerald-400" : "border-white"}`}>
-            <h3 className={`mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider ${proximo ? "text-emerald-400" : "text-neutral-400"}`}>
+            <h3 className={`mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider ${proximo ? "text-emerald-400" : "text-neutral-300"}`}>
               {proximo && <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400" />}
               Turno reservado más cercano:
             </h3>
             {proximo ? (
               <div>
                 <p className="text-2xl font-bold leading-tight tracking-tight text-white">{nombreLargo(proximo.evento.nombre)}</p>
-                <p className="mt-1 text-sm capitalize text-neutral-400">{fechaLarga(proximo.fecha!)}</p>
+                <p className="mt-1 text-sm capitalize text-neutral-300">{fechaLarga(proximo.fecha!)}</p>
               </div>
             ) : (
               <div>
-                <p className="text-sm text-neutral-400">No tenés turnos reservados.</p>
+                <p className="text-sm text-neutral-300">No tenés turnos reservados.</p>
                 <Link to="/turnos" className="mt-3 inline-block text-sm font-semibold text-emerald-400 hover:text-emerald-300">
                   Reservar un turno →
                 </Link>
@@ -83,7 +83,7 @@ export function MisTurnosPage() {
         {/* Siguientes turnos */}
         {!isLoading && siguientes.length > 0 && (
           <section>
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-400">Próximos turnos reservados</h3>
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-300">Próximos turnos reservados</h3>
             <div className="border-y border-white/25">
               {siguientes.map((t, i) => (
                 <MiTurnoRow key={t.registrationId} t={t} index={i} total={siguientes.length} onRepetir={() => repetirProximaSemana(t)} />
@@ -95,7 +95,7 @@ export function MisTurnosPage() {
         {/* Historial */}
         {!isLoading && historial.length > 0 && (
           <section>
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-400">Historial</h3>
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-300">Historial</h3>
             <div className="border-y border-white/25">
               {historial.map((t, i) => (
                 <MiTurnoRow key={t.registrationId} t={t} index={i} total={historial.length} />
@@ -110,7 +110,7 @@ export function MisTurnosPage() {
 
 const estadoColor: Record<string, string> = {
   open: "text-emerald-400",
-  done: "text-neutral-400",
+  done: "text-neutral-300",
   cancel: "text-red-400",
 };
 
@@ -132,7 +132,7 @@ function MiTurnoRow({ t, index, total, onRepetir }: { t: MiTurno & { fecha: Date
 
   return (
     <div className="group grid grid-cols-[auto_1fr_auto] items-center gap-x-3 border-t border-white/15 px-3 py-4 transition-colors first:border-t-0 sm:gap-x-4">
-      <span className="min-w-[3.5ch] self-start text-xs font-bold tracking-wide text-neutral-500">
+      <span className="min-w-[3.5ch] self-start text-xs font-bold tracking-wide text-neutral-400">
         {indexLabel}
         <span className="opacity-60">/{totalLabel}</span>
       </span>
@@ -141,7 +141,7 @@ function MiTurnoRow({ t, index, total, onRepetir }: { t: MiTurno & { fecha: Date
         <p className="break-words text-lg font-bold leading-tight tracking-tight text-white sm:text-xl">
           {nombreLargo(t.evento.nombre)}
         </p>
-        <p className="mt-1 text-xs capitalize text-neutral-400">{fechaLarga(t.fecha)}</p>
+        <p className="mt-1 text-xs capitalize text-neutral-300">{fechaLarga(t.fecha)}</p>
         {onRepetir && (
           <button
             onClick={onRepetir}
@@ -152,7 +152,7 @@ function MiTurnoRow({ t, index, total, onRepetir }: { t: MiTurno & { fecha: Date
         )}
       </div>
 
-      <span className={`flex items-center gap-1.5 self-start text-xs font-semibold uppercase tracking-wider ${estadoColor[t.estado] ?? "text-neutral-400"}`}>
+      <span className={`flex items-center gap-1.5 self-start text-xs font-semibold uppercase tracking-wider ${estadoColor[t.estado] ?? "text-neutral-300"}`}>
         <span className={`inline-block h-1.5 w-1.5 rounded-full ${estadoDot[t.estado] ?? "bg-neutral-400"}`} />
         {estadoLabel[t.estado] ?? t.estado}
       </span>

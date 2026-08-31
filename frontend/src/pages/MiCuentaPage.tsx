@@ -17,7 +17,7 @@ export function MiCuentaPage() {
     <div className="min-h-screen">
       <Header user={user?.name ?? ""} userEmail={user?.email} onLogout={logout} />
       <main className="mx-auto max-w-3xl px-4 pt-16 pb-10 sm:pt-20 sm:pb-16">
-        {isLoading && <p className="text-neutral-400">Cargando…</p>}
+        {isLoading && <p className="text-neutral-300">Cargando…</p>}
 
         {!isLoading && cuenta && (
           <>
@@ -28,13 +28,13 @@ export function MiCuentaPage() {
                 <h2 className="truncate text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
                   {cuenta.name}
                 </h2>
-                <p className="mt-1 truncate text-sm text-neutral-400 sm:text-base">{cuenta.email}</p>
+                <p className="mt-1 truncate text-sm text-neutral-300 sm:text-base">{cuenta.email}</p>
               </div>
             </div>
 
             {/* Datos personales */}
             <section className="mt-12">
-              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-neutral-400">
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-neutral-300">
                 Datos personales
               </h3>
               <dl className="divide-y divide-white/10 border-y border-white/10">
@@ -47,7 +47,7 @@ export function MiCuentaPage() {
 
             {/* Contacto */}
             <section className="mt-10">
-              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-neutral-400">
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-neutral-300">
                 Contacto
               </h3>
               <dl className="divide-y divide-white/10 border-y border-white/10">
@@ -58,7 +58,7 @@ export function MiCuentaPage() {
 
             {/* Dirección */}
             <section className="mt-10">
-              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-neutral-400">
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-neutral-300">
                 Dirección
               </h3>
               <dl className="divide-y divide-white/10 border-y border-white/10">
@@ -78,9 +78,9 @@ export function MiCuentaPage() {
 function Row({ label, value }: { label: string; value?: string }) {
   return (
     <div className="flex items-center justify-between gap-4 py-3.5">
-      <dt className="text-sm text-neutral-500">{label}</dt>
+      <dt className="text-sm text-neutral-400">{label}</dt>
       <dd className="text-right text-sm font-medium text-white">
-        {value || <span className="text-neutral-600">—</span>}
+        {value || <span className="text-neutral-500">—</span>}
       </dd>
     </div>
   );

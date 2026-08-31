@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "../auth";
 import { apiClient } from "../api";
 import type { MiTurno, Paquete } from "../types";
-import { fechaLarga } from "../utils/fecha";
+import { fechaLarga, diasHastaVencimiento } from "../utils/fecha";
 
 export function HomePage() {
   const { user, logout } = useAuth();
@@ -43,7 +43,7 @@ export function HomePage() {
 
         {/* Próximo turno — llamativo, con acento emerald */}
         <section className={`mt-16 border-l-2 pl-5 sm:mt-20 sm:pl-6 ${proximo ? "border-emerald-400" : "border-neutral-700"}`}>
-          <h3 className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider ${proximo ? "text-emerald-400" : "text-neutral-500"}`}>
+          <h3 className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider ${proximo ? "text-emerald-400" : "text-neutral-400"}`}>
             {proximo && <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400" />}
             Tu próximo turno
           </h3>
@@ -52,18 +52,18 @@ export function HomePage() {
               <p className="text-lg font-bold leading-tight tracking-tight text-white sm:text-xl">
                 {proximo.evento.nombre.split(" (")[0]}
               </p>
-              <p className="mt-1.5 text-sm capitalize text-neutral-400">
+              <p className="mt-1.5 text-sm capitalize text-neutral-300">
                 {proximo.fecha ? fechaLarga(proximo.fecha) : ""}
               </p>
             </div>
           ) : (
-            <p className="mt-3 text-lg text-neutral-500">No hay próximos turnos reservados.</p>
+            <p className="mt-3 text-lg text-neutral-400">No hay próximos turnos reservados.</p>
           )}
         </section>
 
         {/* Paquetes activos — resumido */}
         <section className={`mt-12 border-l-2 pl-5 sm:pl-6 ${paquetesActivos.length > 0 ? "border-emerald-400" : "border-neutral-700"}`}>
-          <h3 className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider ${paquetesActivos.length > 0 ? "text-emerald-400" : "text-neutral-500"}`}>
+          <h3 className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider ${paquetesActivos.length > 0 ? "text-emerald-400" : "text-neutral-400"}`}>
             {paquetesActivos.length > 0 && <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400" />}
             Paquetes activos
           </h3>
@@ -74,7 +74,7 @@ export function HomePage() {
               ))}
             </div>
           ) : (
-            <p className="mt-3 text-lg text-neutral-500">No tenés paquetes de acceso activos.</p>
+            <p className="mt-3 text-lg text-neutral-400">No tenés paquetes de acceso activos.</p>
           )}
         </section>
 
@@ -102,16 +102,20 @@ function PaqueteCompacto({ p }: { p: Paquete }) {
   const alerta = p.creditosDisponibles === 1;
   const barraColor = alerta ? "bg-amber-400" : "bg-emerald-400";
 
+  // Vencimiento cercano: quedan créditos y vence en 7 días o menos
+  const diasVenc = p.creditosDisponibles > 0 ? diasHastaVencimiento(p.fechaFin) : null;
+  const vencCercano = diasVenc !== null && diasVenc >= 0 && diasVenc <= 7;
+
   return (
     <div className="py-3.5 first:pt-0 last:pb-0">
       <div className="flex items-baseline justify-between gap-3">
         <p className="truncate text-lg font-bold tracking-tight text-white sm:text-xl">{p.descripcion}</p>
-        <span className={`flex-shrink-0 text-sm font-semibold ${alerta ? "text-amber-400" : "text-neutral-400"}`}>
+        <span className={`flex-shrink-0 text-sm font-semibold ${alerta ? "text-amber-400" : "text-neutral-300"}`}>
           {p.creditosDisponibles}/{p.creditosTotales}
         </span>
       </div>
       <div className="mt-2 flex items-center gap-3">
-        <span className="text-sm text-neutral-500">{fechaCorta(p.fechaInicio)} → {fechaCorta(p.fechaFin)}</span>
+        <span className="text-sm text-neutral-400">{fechaCorta(p.fechaInicio)} → {fechaCorta(p.fechaFin)}</span>
         <div className="h-1 flex-1 bg-white/10">
           <div className={`h-full ${barraColor} transition-all`} style={{ width: `${pct}%` }} />
         </div>
@@ -119,6 +123,11 @@ function PaqueteCompacto({ p }: { p: Paquete }) {
       {alerta && (
         <p className="mt-1.5 text-xs font-semibold text-amber-400">
           Te queda 1 crédito
+        </p>
+      )}
+      {vencCercano && (
+        <p className="mt-1.5 text-xs font-semibold text-amber-400">
+          Se te está por vencer{diasVenc === 0 ? " hoy" : `, te quedan ${diasVenc} día${diasVenc === 1 ? "" : "s"}`} para usar este paquete
         </p>
       )}
     </div>
@@ -138,14 +147,14 @@ function NavRow({ to, index, title, desc }: { to: string; index: number; title: 
       to={to}
       className="group flex items-baseline gap-4 border-b border-white/20 py-5 transition-colors hover:bg-white/[0.03] sm:gap-5 sm:py-6"
     >
-      <span className="text-sm font-semibold tracking-wide text-neutral-600 transition-colors group-hover:text-neutral-400">
+      <span className="text-sm font-semibold tracking-wide text-neutral-500 transition-colors group-hover:text-neutral-300">
         {indexLabel}
       </span>
       <div className="min-w-0 flex-1">
-        <p className="text-2xl font-bold leading-tight tracking-tight text-white transition-colors group-hover:text-neutral-400 sm:text-3xl">
+        <p className="text-2xl font-bold leading-tight tracking-tight text-white transition-colors group-hover:text-neutral-300 sm:text-3xl">
           {title}
         </p>
-        <p className="mt-0.5 text-xs text-neutral-600 transition-colors group-hover:text-neutral-500">
+        <p className="mt-0.5 text-xs text-neutral-500 transition-colors group-hover:text-neutral-400">
           {desc}
         </p>
       </div>
@@ -156,7 +165,7 @@ function NavRow({ to, index, title, desc }: { to: string; index: number; title: 
         fill="none"
         stroke="currentColor"
         strokeWidth="1.5"
-        className="flex-shrink-0 text-neutral-600 transition-all group-hover:translate-x-1 group-hover:text-neutral-400"
+        className="flex-shrink-0 text-neutral-500 transition-all group-hover:translate-x-1 group-hover:text-neutral-300"
       >
         <path d="M9 18l6-6-6-6" />
       </svg>
@@ -223,7 +232,7 @@ export function Header({ user, userEmail, onLogout }: { user: string; userEmail?
             CABA
           </Link>
           <div className="flex items-center gap-4">
-            {user && <span className="hidden text-sm text-neutral-400 sm:inline">{user}</span>}
+            {user && <span className="hidden text-sm text-neutral-300 sm:inline">{user}</span>}
             <button
               onClick={toggleMenu}
               aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
@@ -270,7 +279,7 @@ export function Header({ user, userEmail, onLogout }: { user: string; userEmail?
                     to={item.to}
                     onClick={closeMenu}
                     className={`menu-item-animated text-2xl font-semibold leading-tight tracking-tight transition-colors sm:text-3xl ${
-                      active ? "text-white" : "text-neutral-500 hover:text-white"
+                      active ? "text-white" : "text-neutral-400 hover:text-white"
                     }`}
                     style={{ animationDelay: `${i * 0.05}s` }}
                   >
@@ -280,14 +289,14 @@ export function Header({ user, userEmail, onLogout }: { user: string; userEmail?
               })}
             </nav>
             {userEmail && (
-              <p className="text-xs text-neutral-600">{userEmail}</p>
+              <p className="text-xs text-neutral-500">{userEmail}</p>
             )}
             <button
               onClick={() => {
                 closeMenu();
                 onLogout();
               }}
-              className="self-start text-sm text-neutral-500 hover:text-white"
+              className="self-start text-sm text-neutral-400 hover:text-white"
             >
               Salir
             </button>

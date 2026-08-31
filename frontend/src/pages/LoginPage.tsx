@@ -36,11 +36,11 @@ export function LoginPage() {
     <div className="relative flex min-h-screen items-center justify-center px-4">
       <div className={`w-full max-w-sm text-center transition ${loading ? "pointer-events-none blur-sm" : ""}`}>
         <h1 className="mb-1 text-3xl font-bold tracking-tight text-white">CABA</h1>
-        <p className="mb-6 text-sm text-neutral-400">Iniciá sesión con tu cuenta del Centro Andino</p>
+        <p className="mb-6 text-sm text-neutral-300">Iniciá sesión con tu cuenta del Centro Andino</p>
 
         <form onSubmit={submit} className="space-y-4 border border-white/20 p-6">
           <div>
-            <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-neutral-400">Usuario / Email</label>
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-neutral-300">Usuario / Email</label>
             <input
               type="text"
               value={user}
@@ -51,7 +51,7 @@ export function LoginPage() {
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-neutral-400">Contraseña</label>
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-neutral-300">Contraseña</label>
             <input
               type="password"
               value={password}
@@ -71,7 +71,7 @@ export function LoginPage() {
             {loading ? "Ingresando…" : "Ingresar"}
           </button>
 
-          <div className="flex items-center gap-3 py-1 text-xs uppercase tracking-wider text-neutral-500">
+          <div className="flex items-center gap-3 py-1 text-xs uppercase tracking-wider text-neutral-400">
             <span className="h-px flex-1 bg-white/20" />
             o
             <span className="h-px flex-1 bg-white/20" />
@@ -91,7 +91,7 @@ export function LoginPage() {
           </a>
         </form>
 
-        <div className="mt-4 px-4 text-xs text-neutral-400">
+        <div className="mt-4 px-4 text-xs text-neutral-300">
           <p>
             Tu contraseña se usa una sola vez para autenticarte contra el sitio oficial de CABA y
             nunca se guarda. Solo se conserva la sesión, igual que en el sitio real.

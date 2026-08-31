@@ -19,3 +19,15 @@ export function fechaLarga(d: Date): string {
   });
   return esHoy(d) ? `hoy, ${base}` : base;
 }
+
+// Devuelve la cantidad de días enteros que faltan hasta `fechaFin` (puede ser
+// negativo si ya pasó). Compara por día calendario en zona horaria local.
+// `fechaFin` puede ser "YYYY-MM-DD" o un ISO completo.
+export function diasHastaVencimiento(fechaFin: string): number {
+  const fin = new Date(fechaFin + (fechaFin.length === 10 ? "T23:59:59-03:00" : "Z"));
+  const hoy = new Date();
+  const hoyMedianoche = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+  const finMedianoche = new Date(fin.getFullYear(), fin.getMonth(), fin.getDate());
+  const msPorDia = 1000 * 60 * 60 * 24;
+  return Math.round((finMedianoche.getTime() - hoyMedianoche.getTime()) / msPorDia);
+}

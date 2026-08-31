@@ -109,7 +109,7 @@ export function TurnosPage() {
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h2 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Turnos disponibles</h2>
-            <p className="mt-1 text-sm text-neutral-400">Clickeá sobre un evento para reservarlo.</p>
+            <p className="mt-1 text-sm text-neutral-300">Clickeá sobre un evento para reservarlo.</p>
           </div>
           <div className="grid grid-cols-2 gap-2 sm:flex sm:w-auto">
             <button
@@ -117,7 +117,7 @@ export function TurnosPage() {
               className={`h-10 border px-3 text-sm transition-colors ${
                 soloFavoritos
                   ? "border-white bg-white text-black"
-                  : "border-white/20 text-neutral-400 hover:border-white hover:text-white"
+                  : "border-white/20 text-neutral-300 hover:border-white hover:text-white"
               }`}
             >
               {soloFavoritos ? "★ Favoritos" : "☆ Favoritos"}
@@ -160,14 +160,14 @@ export function TurnosPage() {
 
           {/* Lista de turnos del día */}
           <div className="border border-white/20 bg-black/40 p-4 backdrop-blur-md">
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-400">
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-300">
               {diaSeleccionado
                 ? diaSeleccionado.toLocaleDateString("es-AR", { weekday: "long", day: "numeric", month: "long" })
                 : "Seleccioná un día"}
             </h3>
-            {isLoading && <p className="text-sm text-neutral-400">Cargando…</p>}
+            {isLoading && <p className="text-sm text-neutral-300">Cargando…</p>}
             {!isLoading && turnosDelDia.length === 0 && (
-              <p className="text-sm text-neutral-400">No hay turnos para este día.</p>
+              <p className="text-sm text-neutral-300">No hay turnos para este día.</p>
             )}
             {turnosDelDia.length > 0 && (
               <div className="border-y border-white/25">
@@ -201,7 +201,7 @@ export function TurnosPage() {
               <>
                 <h3 className="mb-2 text-lg font-bold tracking-tight">¿Reservar?</h3>
                 <p className="mb-1 text-sm text-neutral-300">{turnoAReservar.nombre}</p>
-                <p className="mb-4 text-xs text-neutral-400">
+                <p className="mb-4 text-xs text-neutral-300">
                   {turnoAReservar.inicio.slice(11, 16)}–{turnoAReservar.fin.slice(11, 16)} hs · {turnoAReservar.cuposLibres} cupos libres
                 </p>
                 {reservaError && <p className="mb-3 text-sm text-red-400">{reservaError}</p>}
@@ -295,7 +295,7 @@ function TurnoRow({
       onClick={disabled ? undefined : onReservar}
       className={`group grid grid-cols-[auto_1fr_auto] items-center gap-x-3 border-t border-white/15 px-3 py-4 transition-colors first:border-t-0 sm:gap-x-4 ${stateClasses}`}
     >
-      <span className="min-w-[3.5ch] self-start text-xs font-bold tracking-wide text-neutral-500 transition-colors group-hover:text-neutral-300">
+      <span className="min-w-[3.5ch] self-start text-xs font-bold tracking-wide text-neutral-400 transition-colors group-hover:text-neutral-300">
         {indexLabel}
         <span className="opacity-60">/{totalLabel}</span>
       </span>
@@ -304,7 +304,7 @@ function TurnoRow({
         <p className="break-words text-lg font-bold leading-tight tracking-tight text-white sm:text-xl">
           {turno.nombre}
         </p>
-        <p className="mt-1 text-xs text-neutral-400">
+        <p className="mt-1 text-xs text-neutral-300">
           {turno.inicio.slice(11, 16)}–{turno.fin.slice(11, 16)} hs ·{" "}
           <span style={{ color: cupoColor(turno.cuposLibres, turno.cuposMax) }} className="font-semibold">
             {turno.cuposLibres}/{turno.cuposMax} libres
@@ -318,7 +318,7 @@ function TurnoRow({
         className="self-start p-1 leading-none transition-transform hover:scale-125"
         title={esFavorito ? "Quitar de favoritos" : "Marcar como favorito"}
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill={esFavorito ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" className={esFavorito ? "text-amber-400" : "text-neutral-500 hover:text-neutral-300"}>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill={esFavorito ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" className={esFavorito ? "text-amber-400" : "text-neutral-400 hover:text-neutral-300"}>
           <path d="M12 21s-7-4.5-9.5-9C1 9 2.5 5 6.5 5c2 0 3.5 1 5.5 3 2-2 3.5-3 5.5-3 4 0 5.5 4 4 7-2.5 4.5-9.5 9-9.5 9z" />
         </svg>
       </button>

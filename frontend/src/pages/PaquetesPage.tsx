@@ -4,6 +4,7 @@ import { apiClient } from "../api";
 import { Header } from "./HomePage";
 import { useAuth } from "../auth";
 import type { Paquete } from "../types";
+import { diasHastaVencimiento } from "../utils/fecha";
 
 function fechaCorta(iso: string): string {
   if (!iso) return "—";
@@ -24,11 +25,11 @@ export function PaquetesPage() {
       <main className="mx-auto max-w-3xl space-y-6 px-4 py-8">
         <h2 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Mis paquetes</h2>
 
-        {isLoading && <p className="text-neutral-400">Cargando…</p>}
+        {isLoading && <p className="text-neutral-300">Cargando…</p>}
 
         {!isLoading && activos.length === 0 && historial.length === 0 && (
           <div>
-            <p className="text-sm text-neutral-400">No tenés paquetes de acceso.</p>
+            <p className="text-sm text-neutral-300">No tenés paquetes de acceso.</p>
             <Link to="/turnos" className="mt-3 inline-block text-sm font-semibold text-emerald-400 hover:text-emerald-300">
               Reservar un turno →
             </Link>
@@ -53,7 +54,7 @@ export function PaquetesPage() {
         {/* Historial */}
         {!isLoading && historial.length > 0 && (
           <section>
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-400">Historial</h3>
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-300">Historial</h3>
             <div className="border-y border-white/25">
               {historial.map((p, i) => (
                 <PaqueteRow key={p.id} p={p} index={i} total={historial.length} />
@@ -68,9 +69,9 @@ export function PaquetesPage() {
 
 const estadoColor: Record<string, string> = {
   active: "text-emerald-400",
-  completed: "text-neutral-400",
+  completed: "text-neutral-300",
   cancelled: "text-red-400",
-  draft: "text-neutral-400",
+  draft: "text-neutral-300",
   expired: "text-amber-400",
 };
 
@@ -88,9 +89,13 @@ function PaqueteRow({ p, index, total, activo }: { p: Paquete; index: number; to
   const usados = p.creditosTotales - p.creditosDisponibles;
   const pct = p.creditosTotales > 0 ? (p.creditosDisponibles / p.creditosTotales) * 100 : 0;
 
+  // Vencimiento cercano: paquete activo, quedan créditos y vence en 7 días o menos
+  const diasVenc = activo && p.creditosDisponibles > 0 ? diasHastaVencimiento(p.fechaFin) : null;
+  const vencCercano = diasVenc !== null && diasVenc >= 0 && diasVenc <= 7;
+
   return (
     <div className={`group grid grid-cols-[auto_1fr_auto] items-center gap-x-3 border-t px-3 py-4 transition-colors first:border-t-0 sm:gap-x-4 ${activo ? "border-emerald-400/20" : "border-white/15"}`}>
-      <span className="min-w-[3.5ch] self-start text-xs font-bold tracking-wide text-neutral-500">
+      <span className="min-w-[3.5ch] self-start text-xs font-bold tracking-wide text-neutral-400">
         {indexLabel}
         <span className="opacity-60">/{totalLabel}</span>
       </span>
@@ -99,7 +104,7 @@ function PaqueteRow({ p, index, total, activo }: { p: Paquete; index: number; to
         <p className="break-words text-lg font-bold leading-tight tracking-tight text-white sm:text-xl">
           {p.descripcion}
         </p>
-        <p className="mt-1 text-xs text-neutral-400">
+        <p className="mt-1 text-xs text-neutral-300">
           {fechaCorta(p.fechaInicio)} → {fechaCorta(p.fechaFin)} · {p.reservas} {p.reservas === 1 ? "reserva" : "reservas"}
         </p>
         {activo && (
@@ -108,22 +113,27 @@ function PaqueteRow({ p, index, total, activo }: { p: Paquete; index: number; to
               <span className="font-semibold text-neutral-300">
                 {p.creditosDisponibles}/{p.creditosTotales} disponibles
               </span>
-              {usados > 0 && <span className="text-neutral-500">{usados} usado{usados !== 1 ? "s" : ""}</span>}
+              {usados > 0 && <span className="text-neutral-400">{usados} usado{usados !== 1 ? "s" : ""}</span>}
             </div>
             <div className="mt-1 h-1.5 w-full bg-white/10">
               <div className="h-full bg-emerald-400 transition-all" style={{ width: `${pct}%` }} />
             </div>
           </div>
         )}
+        {vencCercano && (
+          <p className="mt-2 text-xs font-semibold text-amber-400">
+            Se te está por vencer{diasVenc === 0 ? " hoy" : `, te quedan ${diasVenc} día${diasVenc === 1 ? "" : "s"}`} para usar este paquete
+          </p>
+        )}
         {!activo && (
-          <p className="mt-0.5 text-xs text-neutral-500">
+          <p className="mt-0.5 text-xs text-neutral-400">
             {p.creditosDisponibles}/{p.creditosTotales} créditos sin usar
           </p>
         )}
       </div>
 
       <div className="flex items-center gap-2 self-start">
-        <span className={`flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider ${estadoColor[p.estado] ?? "text-neutral-400"}`}>
+        <span className={`flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider ${estadoColor[p.estado] ?? "text-neutral-300"}`}>
           <span className={`inline-block h-1.5 w-1.5 rounded-full ${estadoDot[p.estado] ?? "bg-neutral-400"}`} />
           {p.estadoLabel}
         </span>
