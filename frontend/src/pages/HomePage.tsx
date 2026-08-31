@@ -147,14 +147,14 @@ function NavRow({ to, index, title, desc }: { to: string; index: number; title: 
       to={to}
       className="group flex items-baseline gap-4 border-b border-white/20 py-5 transition-colors hover:bg-white/[0.03] sm:gap-5 sm:py-6"
     >
-      <span className="text-sm font-semibold tracking-wide text-neutral-500 transition-colors group-hover:text-neutral-300">
+      <span className="text-sm font-semibold tracking-wide text-neutral-600 transition-colors group-hover:text-neutral-300">
         {indexLabel}
       </span>
       <div className="min-w-0 flex-1">
         <p className="text-2xl font-bold leading-tight tracking-tight text-white transition-colors group-hover:text-neutral-300 sm:text-3xl">
           {title}
         </p>
-        <p className="mt-0.5 text-xs text-neutral-500 transition-colors group-hover:text-neutral-400">
+        <p className="mt-0.5 text-xs text-neutral-300 transition-colors group-hover:text-neutral-200">
           {desc}
         </p>
       </div>

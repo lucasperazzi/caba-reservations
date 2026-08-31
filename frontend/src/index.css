@@ -24,19 +24,10 @@ body::before {
   width: 100vw;
   height: 100vh;
   z-index: -1;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.78)), url("/paredescalada.jpg");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/paredescalada.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-}
-
-/* iOS Safari: aclarar el overlay porque el negro se ve más oscuro
-   en pantallas OLED del iPhone (negro puro = píxeles apagados).
-   -webkit-touch-callout solo existe en iOS Safari. */
-@supports (-webkit-touch-callout: none) {
-  body::before {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("/paredescalada.jpg");
-  }
 }
 
 /* ── Animaciones del menú fullscreen (estilo brutalista) ── */
