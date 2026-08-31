@@ -144,9 +144,8 @@ function NavRow({ to, title, desc, hold }: { to: string; title: string; desc: st
   return (
     <Link
       to={to}
-      className="group flex items-center gap-4 border-b border-white py-5 transition-colors hover:bg-white/[0.03] sm:gap-5 sm:py-6"
+      className="group flex items-center gap-6 border-b border-white px-6 py-5 transition-colors hover:bg-white/[0.03] sm:gap-8 sm:py-6"
     >
-      <img src={hold} alt="" className="h-8 w-8 flex-shrink-0 object-contain transition-transform group-hover:scale-110" />
       <div className="min-w-0 flex-1">
         <p className="text-2xl font-bold leading-tight tracking-tight text-white transition-colors group-hover:text-neutral-300 sm:text-3xl">
           {title}
@@ -155,17 +154,7 @@ function NavRow({ to, title, desc, hold }: { to: string; title: string; desc: st
           {desc}
         </p>
       </div>
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        className="flex-shrink-0 text-neutral-500 transition-all group-hover:translate-x-1 group-hover:text-neutral-300"
-      >
-        <path d="M9 18l6-6-6-6" />
-      </svg>
+      <img src={hold} alt="" className="h-8 w-8 flex-shrink-0 object-contain transition-transform group-hover:scale-110" />
     </Link>
   );
 }
