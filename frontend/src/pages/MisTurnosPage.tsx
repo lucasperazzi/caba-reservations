@@ -114,10 +114,10 @@ const estadoColor: Record<string, string> = {
   cancel: "text-red-400",
 };
 
-const estadoDot: Record<string, string> = {
-  open: "bg-emerald-400",
-  done: "bg-neutral-400",
-  cancel: "bg-red-400",
+const estadoHold: Record<string, string> = {
+  open: "/holds-png/green-round.png",
+  done: "/holds-png/hold-14.png",
+  cancel: "/holds-png/red-round.png",
 };
 
 const estadoLabel: Record<string, string> = {
@@ -153,7 +153,7 @@ function MiTurnoRow({ t, index, total, onRepetir }: { t: MiTurno & { fecha: Date
       </div>
 
       <span className={`flex items-center gap-1.5 self-start text-xs font-semibold uppercase tracking-wider ${estadoColor[t.estado] ?? "text-neutral-300"}`}>
-        <span className={`inline-block h-1.5 w-1.5 rounded-full ${estadoDot[t.estado] ?? "bg-neutral-400"}`} />
+        <img src={estadoHold[t.estado] ?? "/holds-png/hold-14.png"} alt="" className="h-3.5 w-3.5 object-contain" />
         {estadoLabel[t.estado] ?? t.estado}
       </span>
     </div>

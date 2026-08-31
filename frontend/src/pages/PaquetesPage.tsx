@@ -72,12 +72,12 @@ const estadoColor: Record<string, string> = {
   expired: "text-amber-400",
 };
 
-const estadoDot: Record<string, string> = {
-  active: "bg-emerald-400",
-  completed: "bg-neutral-400",
-  cancelled: "bg-red-400",
-  draft: "bg-neutral-400",
-  expired: "bg-amber-400",
+const estadoHold: Record<string, string> = {
+  active: "/holds-png/green-round.png",
+  completed: "/holds-png/hold-14.png",
+  cancelled: "/holds-png/red-round.png",
+  draft: "/holds-png/hold-14.png",
+  expired: "/holds-png/hold-03.png",
 };
 
 function PaqueteRow({ p, index, total, activo }: { p: Paquete; index: number; total: number; activo?: boolean }) {
@@ -131,7 +131,7 @@ function PaqueteRow({ p, index, total, activo }: { p: Paquete; index: number; to
 
       <div className="flex items-center gap-2 self-start">
         <span className={`flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider ${estadoColor[p.estado] ?? "text-neutral-300"}`}>
-          <span className={`inline-block h-1.5 w-1.5 rounded-full ${estadoDot[p.estado] ?? "bg-neutral-400"}`} />
+          <img src={estadoHold[p.estado] ?? "/holds-png/hold-14.png"} alt="" className="h-3.5 w-3.5 object-contain" />
           {p.estadoLabel}
         </span>
       </div>
