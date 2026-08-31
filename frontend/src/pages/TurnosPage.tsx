@@ -16,6 +16,7 @@ export function TurnosPage() {
   const qc = useQueryClient();
   const location = useLocation();
   const [sede, setSede] = useState<"todas" | Sede>("todas");
+  const [tipoFiltro, setTipoFiltro] = useState<"todos" | "libre" | "clases">("todos");
   const [diaSeleccionado, setDiaSeleccionado] = useState<Date | undefined>(new Date());
   const [turnoAReservar, setTurnoAReservar] = useState<Turno | null>(null);
   const [reservando, setReservando] = useState(false);
@@ -45,9 +46,11 @@ export function TurnosPage() {
   const turnos = useMemo(() => {
     let all = data?.data ?? [];
     if (sede !== "todas") all = all.filter((t) => t.nombre.toLowerCase().includes(sede));
+    if (tipoFiltro === "libre") all = all.filter((t) => t.nombre.toLowerCase().includes("boulder libre"));
+    if (tipoFiltro === "clases") all = all.filter((t) => !t.nombre.toLowerCase().includes("boulder libre"));
     if (soloFavoritos) all = all.filter((t) => favs.has(claveFavorito(t.nombre)));
     return all;
-  }, [data, sede, soloFavoritos, favs]);
+  }, [data, sede, tipoFiltro, soloFavoritos, favs]);
 
   // Agrupar por día
   const turnosPorDia = useMemo(() => {
@@ -111,7 +114,7 @@ export function TurnosPage() {
             <h2 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Turnos disponibles</h2>
             <p className="mt-1 text-sm text-neutral-300">Clickeá sobre un evento para reservarlo.</p>
           </div>
-          <div className="grid grid-cols-2 gap-2 sm:flex sm:w-auto">
+          <div className="grid grid-cols-3 gap-2 sm:flex sm:w-auto">
             <button
               onClick={() => setSoloFavoritos((v) => !v)}
               className={`h-10 border px-3 text-sm transition-colors ${
@@ -125,11 +128,20 @@ export function TurnosPage() {
             <select
               value={sede}
               onChange={(e) => setSede(e.target.value as "todas" | Sede)}
-              className="h-10 border border-white/20 bg-black/60 px-3 text-base text-white backdrop-blur-sm sm:text-sm"
+              className="h-10 border border-white/20 bg-black/60 px-2 text-xs text-white backdrop-blur-sm sm:text-xs"
             >
               <option value="todas">Todas las sedes</option>
               <option value="bucarelli">Bucarelli</option>
               <option value="centro">Centro</option>
+            </select>
+            <select
+              value={tipoFiltro}
+              onChange={(e) => setTipoFiltro(e.target.value as "todos" | "libre" | "clases")}
+              className="h-10 border border-white/20 bg-black/60 px-2 text-xs text-white backdrop-blur-sm sm:text-xs"
+            >
+              <option value="todos">Todos los tipos</option>
+              <option value="libre">Boulder libre</option>
+              <option value="clases">Clases</option>
             </select>
           </div>
         </div>

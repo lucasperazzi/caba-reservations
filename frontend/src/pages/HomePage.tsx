@@ -9,12 +9,12 @@ import { fechaLarga, diasHastaVencimiento } from "../utils/fecha";
 export function HomePage() {
   const { user, logout } = useAuth();
 
-  const { data: misTurnos } = useQuery<{ data: MiTurno[] }>({
+  const { data: misTurnos, isLoading: turnosLoading } = useQuery<{ data: MiTurno[] }>({
     queryKey: ["mis-turnos"],
     queryFn: apiClient.misTurnos,
   });
 
-  const { data: paquetesData } = useQuery({
+  const { data: paquetesData, isLoading: paquetesLoading } = useQuery({
     queryKey: ["paquetes"],
     queryFn: apiClient.paquetes,
   });
@@ -47,7 +47,12 @@ export function HomePage() {
             {proximo && <img src="/holds-png/green-round.png" alt="" className="inline-block h-4 w-4 object-contain" />}
             Tu próximo turno
           </h3>
-          {proximo ? (
+          {turnosLoading ? (
+            <div className="mt-3 flex items-center gap-2">
+              <img src="/holds-png/hold-14.png" alt="" className="hold-sway h-5 w-5 object-contain" />
+              <span className="text-sm text-neutral-400">Cargando…</span>
+            </div>
+          ) : proximo ? (
             <div className="mt-3">
               <p className="text-lg font-bold leading-tight tracking-tight text-white sm:text-xl">
                 {proximo.evento.nombre.split(" (")[0]}
@@ -67,7 +72,12 @@ export function HomePage() {
             {paquetesActivos.length > 0 && <img src="/holds-png/green-round.png" alt="" className="inline-block h-4 w-4 object-contain" />}
             Paquetes activos
           </h3>
-          {paquetesActivos.length > 0 ? (
+          {paquetesLoading ? (
+            <div className="mt-3 flex items-center gap-2">
+              <img src="/holds-png/hold-14.png" alt="" className="hold-sway h-5 w-5 object-contain" />
+              <span className="text-sm text-neutral-400">Cargando…</span>
+            </div>
+          ) : paquetesActivos.length > 0 ? (
             <div className="mt-4">
               {paquetesActivos.map((p) => (
                 <PaqueteCompacto key={p.id} p={p} />
