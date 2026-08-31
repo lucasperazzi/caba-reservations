@@ -116,14 +116,13 @@ body[data-bg="paquetes"]::after {
   font-weight: 700;
 }
 
-/* ── Hold balanceando (loader temático) ── */
-@keyframes hold-sway {
-  0%, 100% { transform: rotate(-12deg); }
-  50% { transform: rotate(12deg); }
+/* ── Hold girando (loader temático) ── */
+@keyframes hold-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
-.hold-sway {
-  transform-origin: top center;
-  animation: hold-sway 1.2s ease-in-out infinite;
+.hold-spin {
+  animation: hold-spin 1.2s linear infinite;
 }
 

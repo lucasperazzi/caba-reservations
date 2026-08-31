@@ -43,16 +43,15 @@ export function HomePage() {
           Hola, {primerNombre(user?.name)}
         </h2>
 
-        {/* Próximo turno — llamativo, con acento emerald */}
-        <section className={`mt-16 border-l-2 pl-5 sm:mt-20 sm:pl-6 ${proximo ? "border-emerald-400" : "border-neutral-700"}`}>
-          <h3 className={`flex items-center gap-2 text-sm font-semibold uppercase tracking-wider ${proximo ? "text-emerald-400" : "text-neutral-200"}`}>
-            {proximo && <img src="/holds-png/green-round.png" alt="" className="inline-block h-4 w-4 object-contain" />}
+        {/* Próximo turno — llamativo, con acento azul */}
+        <section className={`mt-16 border-l-4 pl-5 sm:mt-20 sm:pl-6 ${proximo ? "border-blue-600" : "border-neutral-700"}`}>
+          <h3 className={`flex items-center gap-2 text-sm font-semibold uppercase tracking-wider ${proximo ? "text-blue-500" : "text-neutral-200"}`}>
+            {proximo && <img src="/holds-png/hold-21.png" alt="" className="inline-block h-4 w-4 object-contain" />}
             Tu próximo turno
           </h3>
           {turnosLoading ? (
-            <div className="mt-3 flex items-center gap-2">
-              <img src="/holds-png/hold-14.png" alt="" className="hold-sway h-5 w-5 object-contain" />
-              <span className="text-sm text-neutral-400">Cargando…</span>
+            <div className="mt-3">
+              <img src="/holds-png/hold-21.png" alt="" className="hold-spin h-6 w-6 object-contain" />
             </div>
           ) : proximo ? (
             <div className="mt-3">
@@ -69,15 +68,14 @@ export function HomePage() {
         </section>
 
         {/* Paquetes activos — resumido */}
-        <section className={`mt-12 border-l-2 pl-5 sm:pl-6 ${paquetesActivos.length > 0 ? "border-emerald-400" : "border-neutral-700"}`}>
+        <section className={`mt-12 border-l-4 pl-5 sm:pl-6 ${paquetesActivos.length > 0 ? "border-emerald-400" : "border-neutral-700"}`}>
           <h3 className={`flex items-center gap-2 text-sm font-semibold uppercase tracking-wider ${paquetesActivos.length > 0 ? "text-emerald-400" : "text-neutral-200"}`}>
-            {paquetesActivos.length > 0 && <img src="/holds-png/green-round.png" alt="" className="inline-block h-4 w-4 object-contain" />}
+            {paquetesActivos.length > 0 && <img src="/holds-png/hold-05.png" alt="" className="inline-block h-4 w-4 object-contain" />}
             Paquetes activos
           </h3>
           {paquetesLoading ? (
-            <div className="mt-3 flex items-center gap-2">
-              <img src="/holds-png/hold-14.png" alt="" className="hold-sway h-5 w-5 object-contain" />
-              <span className="text-sm text-neutral-400">Cargando…</span>
+            <div className="mt-3">
+              <img src="/holds-png/hold-05.png" alt="" className="hold-spin h-6 w-6 object-contain" />
             </div>
           ) : paquetesActivos.length > 0 ? (
             <div className="mt-4">
@@ -91,7 +89,7 @@ export function HomePage() {
         </section>
 
         {/* Navegación — estilo role-selector del portfolio */}
-        <nav className="mt-20 border-t border-white sm:mt-16">
+        <nav className="mt-20 border-t border-white/40 sm:mt-16">
           {NAV_CARDS.map((item) => (
             <NavRow key={item.to} to={item.to} title={item.title} desc={item.desc} hold={item.hold} />
           ))}
@@ -156,7 +154,7 @@ function NavRow({ to, title, desc, hold }: { to: string; title: string; desc: st
   return (
     <Link
       to={to}
-      className="group flex items-center gap-6 border-b border-white px-6 py-5 transition-colors hover:bg-white/[0.03] sm:gap-8 sm:py-6"
+      className="group flex items-center gap-6 border-b border-white/20 px-6 py-5 transition-colors hover:bg-white/[0.03] sm:gap-8 sm:py-6"
     >
       <div className="min-w-0 flex-1">
         <p className="text-2xl font-bold leading-tight tracking-tight text-white transition-colors group-hover:text-neutral-300 sm:text-3xl">
