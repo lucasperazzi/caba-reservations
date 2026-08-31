@@ -37,7 +37,7 @@ export function MiCuentaPage() {
               <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-neutral-300">
                 Datos personales
               </h3>
-              <dl className="divide-y divide-white/10 border-y border-white/10">
+              <dl className="divide-y divide-white/20 border-y border-white/20">
                 <Row label="Nombre" value={cuenta.name} />
                 <Row label="Email" value={cuenta.email} />
                 <Row label="Usuario" value={cuenta.username} />
@@ -50,7 +50,7 @@ export function MiCuentaPage() {
               <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-neutral-300">
                 Contacto
               </h3>
-              <dl className="divide-y divide-white/10 border-y border-white/10">
+              <dl className="divide-y divide-white/20 border-y border-white/20">
                 <Row label="Teléfono" value={cuenta.phone} />
                 <Row label="Móvil" value={cuenta.mobile} />
               </dl>
@@ -61,7 +61,7 @@ export function MiCuentaPage() {
               <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-neutral-300">
                 Dirección
               </h3>
-              <dl className="divide-y divide-white/10 border-y border-white/10">
+              <dl className="divide-y divide-white/20 border-y border-white/20">
                 <Row label="Calle" value={cuenta.street} />
                 <Row label="Ciudad" value={cuenta.city} />
                 <Row label="Código postal" value={cuenta.zip} />
@@ -105,7 +105,7 @@ function Avatar({ name, image }: { name: string; image?: string }) {
   }
 
   return (
-    <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full border-2 border-white/20 bg-black/40 text-xl font-bold text-white backdrop-blur-sm sm:h-20 sm:w-20 sm:text-2xl">
+    <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full border border-white/20 bg-black/40 text-xl font-bold text-white backdrop-blur-sm sm:h-20 sm:w-20 sm:text-2xl">
       {initials || "?"}
     </div>
   );

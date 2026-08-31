@@ -39,11 +39,8 @@ export function PaquetesPage() {
         {/* Paquetes activos */}
         {!isLoading && activos.length > 0 && (
           <section>
-            <h3 className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-emerald-400">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400" />
-              Activos
-            </h3>
-            <div className="border-y border-white/25">
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">Activos</h3>
+            <div className="border-y border-white">
               {activos.map((p, i) => (
                 <PaqueteRow key={p.id} p={p} index={i} total={activos.length} activo />
               ))}
@@ -54,8 +51,8 @@ export function PaquetesPage() {
         {/* Historial */}
         {!isLoading && historial.length > 0 && (
           <section>
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-300">Historial</h3>
-            <div className="border-y border-white/25">
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">Historial</h3>
+            <div className="border-y border-white">
               {historial.map((p, i) => (
                 <PaqueteRow key={p.id} p={p} index={i} total={historial.length} />
               ))}
@@ -94,7 +91,7 @@ function PaqueteRow({ p, index, total, activo }: { p: Paquete; index: number; to
   const vencCercano = diasVenc !== null && diasVenc >= 0 && diasVenc <= 7;
 
   return (
-    <div className={`group grid grid-cols-[auto_1fr_auto] items-center gap-x-3 border-t px-3 py-4 transition-colors first:border-t-0 sm:gap-x-4 ${activo ? "border-emerald-400/20" : "border-white/15"}`}>
+    <div className={`group grid grid-cols-[auto_1fr_auto] items-center gap-x-3 border-t px-3 py-4 transition-colors first:border-t-0 sm:gap-x-4 ${activo ? "border-white" : "border-white"}`}>
       <span className="min-w-[3.5ch] self-start text-xs font-bold tracking-wide text-neutral-400">
         {indexLabel}
         <span className="opacity-60">/{totalLabel}</span>

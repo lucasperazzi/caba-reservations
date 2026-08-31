@@ -136,7 +136,7 @@ export function TurnosPage() {
 
         <div className="grid gap-6 md:grid-cols-2">
           {/* Calendario */}
-          <div className="flex justify-center overflow-x-auto border border-white/20 bg-black/40 p-4 text-white backdrop-blur-md">
+          <div className="flex justify-center overflow-x-auto bg-black/40 p-4 text-white backdrop-blur-md">
             <DayPicker
               mode="single"
               selected={diaSeleccionado}
@@ -159,8 +159,8 @@ export function TurnosPage() {
           </div>
 
           {/* Lista de turnos del día */}
-          <div className="border border-white/20 bg-black/40 p-4 backdrop-blur-md">
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-300">
+          <div className="bg-black/40 p-4 backdrop-blur-md">
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">
               {diaSeleccionado
                 ? diaSeleccionado.toLocaleDateString("es-AR", { weekday: "long", day: "numeric", month: "long" })
                 : "Seleccioná un día"}
@@ -170,7 +170,7 @@ export function TurnosPage() {
               <p className="text-sm text-neutral-300">No hay turnos para este día.</p>
             )}
             {turnosDelDia.length > 0 && (
-              <div className="border-y border-white/25">
+              <div className="border-y border-white">
                 {turnosDelDia.map((t, i) => (
                   <TurnoRow
                     key={t.id}
@@ -194,7 +194,7 @@ export function TurnosPage() {
           <div className="w-full max-w-sm border border-white/20 bg-black/80 p-6 text-white backdrop-blur-xl">
             {reservaOk ? (
               <div className="text-center">
-                <span className="inline-block h-2 w-2 rounded-full bg-emerald-400" />
+                <img src="/holds-png/green-round.png" alt="" className="mx-auto h-12 w-12 object-contain" />
                 <p className="mt-3 text-lg font-bold text-white">¡Reserva confirmada!</p>
               </div>
             ) : (
@@ -293,7 +293,7 @@ function TurnoRow({
   return (
     <div
       onClick={disabled ? undefined : onReservar}
-      className={`group grid grid-cols-[auto_1fr_auto] items-center gap-x-3 border-t border-white/15 px-3 py-4 transition-colors first:border-t-0 sm:gap-x-4 ${stateClasses}`}
+      className={`group grid grid-cols-[auto_1fr_auto] items-center gap-x-3 border-t border-white px-3 py-4 transition-colors first:border-t-0 sm:gap-x-4 ${stateClasses}`}
     >
       <span className="min-w-[3.5ch] self-start text-xs font-bold tracking-wide text-neutral-400 transition-colors group-hover:text-neutral-300">
         {indexLabel}

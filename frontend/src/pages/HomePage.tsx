@@ -43,8 +43,8 @@ export function HomePage() {
 
         {/* Próximo turno — llamativo, con acento emerald */}
         <section className={`mt-16 border-l-2 pl-5 sm:mt-20 sm:pl-6 ${proximo ? "border-emerald-400" : "border-neutral-700"}`}>
-          <h3 className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider ${proximo ? "text-emerald-400" : "text-neutral-400"}`}>
-            {proximo && <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400" />}
+          <h3 className={`flex items-center gap-2 text-sm font-semibold uppercase tracking-wider ${proximo ? "text-emerald-400" : "text-neutral-200"}`}>
+            {proximo && <img src="/holds-png/green-round.png" alt="" className="inline-block h-4 w-4 object-contain" />}
             Tu próximo turno
           </h3>
           {proximo ? (
@@ -63,8 +63,8 @@ export function HomePage() {
 
         {/* Paquetes activos — resumido */}
         <section className={`mt-12 border-l-2 pl-5 sm:pl-6 ${paquetesActivos.length > 0 ? "border-emerald-400" : "border-neutral-700"}`}>
-          <h3 className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider ${paquetesActivos.length > 0 ? "text-emerald-400" : "text-neutral-400"}`}>
-            {paquetesActivos.length > 0 && <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400" />}
+          <h3 className={`flex items-center gap-2 text-sm font-semibold uppercase tracking-wider ${paquetesActivos.length > 0 ? "text-emerald-400" : "text-neutral-200"}`}>
+            {paquetesActivos.length > 0 && <img src="/holds-png/green-round.png" alt="" className="inline-block h-4 w-4 object-contain" />}
             Paquetes activos
           </h3>
           {paquetesActivos.length > 0 ? (
@@ -79,9 +79,9 @@ export function HomePage() {
         </section>
 
         {/* Navegación — estilo role-selector del portfolio */}
-        <nav className="mt-20 border-t border-white/20 sm:mt-16">
-          {NAV_CARDS.map((item, i) => (
-            <NavRow key={item.to} to={item.to} index={i + 1} title={item.title} desc={item.desc} />
+        <nav className="mt-20 border-t border-white sm:mt-16">
+          {NAV_CARDS.map((item) => (
+            <NavRow key={item.to} to={item.to} title={item.title} desc={item.desc} hold={item.hold} />
           ))}
         </nav>
       </main>
@@ -135,21 +135,18 @@ function PaqueteCompacto({ p }: { p: Paquete }) {
 }
 
 const NAV_CARDS = [
-  { to: "/turnos", title: "Turnos CABA", desc: "Ver y reservar" },
-  { to: "/mis-turnos", title: "Mis turnos", desc: "Turnos reservados" },
-  { to: "/paquetes", title: "Mis paquetes", desc: "Paquetes e historial" },
+  { to: "/turnos", title: "Turnos CABA", desc: "Ver y reservar", hold: "/holds-png/hold-15.png" },
+  { to: "/mis-turnos", title: "Mis turnos", desc: "Turnos reservados", hold: "/holds-png/hold-16.png" },
+  { to: "/paquetes", title: "Mis paquetes", desc: "Paquetes e historial", hold: "/holds-png/hold-02.png" },
 ];
 
-function NavRow({ to, index, title, desc }: { to: string; index: number; title: string; desc: string }) {
-  const indexLabel = String(index).padStart(2, "0");
+function NavRow({ to, title, desc, hold }: { to: string; title: string; desc: string; hold: string }) {
   return (
     <Link
       to={to}
-      className="group flex items-baseline gap-4 border-b border-white/20 py-5 transition-colors hover:bg-white/[0.03] sm:gap-5 sm:py-6"
+      className="group flex items-center gap-4 border-b border-white py-5 transition-colors hover:bg-white/[0.03] sm:gap-5 sm:py-6"
     >
-      <span className="text-sm font-semibold tracking-wide text-neutral-600 transition-colors group-hover:text-neutral-300">
-        {indexLabel}
-      </span>
+      <img src={hold} alt="" className="h-8 w-8 flex-shrink-0 object-contain transition-transform group-hover:scale-110" />
       <div className="min-w-0 flex-1">
         <p className="text-2xl font-bold leading-tight tracking-tight text-white transition-colors group-hover:text-neutral-300 sm:text-3xl">
           {title}
@@ -226,7 +223,7 @@ export function Header({ user, userEmail, onLogout }: { user: string; userEmail?
 
   return (
     <>
-      <header className="border-b border-white/20 bg-black">
+      <header className="border-b border-black bg-black">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
           <Link to="/" className="text-lg font-bold tracking-tight text-white">
             CABA

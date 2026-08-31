@@ -60,8 +60,8 @@ export function MisTurnosPage() {
         {/* Próximo turno: caja destacada, distinta a los items de lista */}
         {!isLoading && (
           <section className={`border-2 bg-neutral-950 p-6 ${proximo ? "border-emerald-400" : "border-white"}`}>
-            <h3 className={`mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider ${proximo ? "text-emerald-400" : "text-neutral-300"}`}>
-              {proximo && <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400" />}
+            <h3 className={`mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider ${proximo ? "text-emerald-400" : "text-neutral-200"}`}>
+              {proximo && <img src="/holds-png/green-round.png" alt="" className="inline-block h-4 w-4 object-contain" />}
               Turno reservado más cercano:
             </h3>
             {proximo ? (
@@ -83,8 +83,8 @@ export function MisTurnosPage() {
         {/* Siguientes turnos */}
         {!isLoading && siguientes.length > 0 && (
           <section>
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-300">Próximos turnos reservados</h3>
-            <div className="border-y border-white/25">
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">Próximos turnos reservados</h3>
+            <div className="border-y border-white">
               {siguientes.map((t, i) => (
                 <MiTurnoRow key={t.registrationId} t={t} index={i} total={siguientes.length} onRepetir={() => repetirProximaSemana(t)} />
               ))}
@@ -95,8 +95,8 @@ export function MisTurnosPage() {
         {/* Historial */}
         {!isLoading && historial.length > 0 && (
           <section>
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-300">Historial</h3>
-            <div className="border-y border-white/25">
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">Historial</h3>
+            <div className="border-y border-white">
               {historial.map((t, i) => (
                 <MiTurnoRow key={t.registrationId} t={t} index={i} total={historial.length} />
               ))}
@@ -131,7 +131,7 @@ function MiTurnoRow({ t, index, total, onRepetir }: { t: MiTurno & { fecha: Date
   const totalLabel = String(total).padStart(2, "0");
 
   return (
-    <div className="group grid grid-cols-[auto_1fr_auto] items-center gap-x-3 border-t border-white/15 px-3 py-4 transition-colors first:border-t-0 sm:gap-x-4">
+    <div className="group grid grid-cols-[auto_1fr_auto] items-center gap-x-3 border-t border-white px-3 py-4 transition-colors first:border-t-0 sm:gap-x-4">
       <span className="min-w-[3.5ch] self-start text-xs font-bold tracking-wide text-neutral-400">
         {indexLabel}
         <span className="opacity-60">/{totalLabel}</span>
