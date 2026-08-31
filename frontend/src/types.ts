@@ -25,6 +25,7 @@ export interface UserInfo {
   name: string;
   email: string;
   username?: string;
+  puedeReservar?: boolean;
   phone?: string;
   mobile?: string;
   street?: string;

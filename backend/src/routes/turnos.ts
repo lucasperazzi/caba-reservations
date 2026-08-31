@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { requireAuth } from "../middleware.js";
+import { canReserve } from "../config.js";
 import { OdooEvent, OdooRegistration, toArgentinaISO, sedeFromOrganizer, occupancyLevel } from "../odooClient.js";
 
 export const turnos = new Hono();
@@ -31,6 +32,13 @@ turnos.get("/mios", async (c) => {
 // POST /api/turnos/:id/reservar
 turnos.post("/:id/reservar", async (c) => {
   const odoo = c.get("odoo");
+  const user = c.get("user");
+
+  // Allowlist: solo los emails habilitados pueden reservar (ver RESERVAS_ALLOWLIST).
+  if (!canReserve(user.email)) {
+    return c.json({ error: "La reserva online no está habilitada para tu cuenta" }, 403);
+  }
+
   const eventId = Number(c.req.param("id"));
   if (!eventId) return c.json({ error: "ID inválido" }, 400);
 

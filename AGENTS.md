@@ -52,3 +52,13 @@ En **prod (Vercel)** estas vars se cargan en Settings → Environment Variables 
 - **Solo miembros existentes**: `OdooClient.loginWithOauthToken` pasa `no_user_creation: true` en el `state`, así Odoo **NO auto-crea** cuentas nuevas. Solo puede entrar quien ya sea miembro de CABA con su cuenta de Google linkeada en el sitio real. El sitio real SÍ permite alta automática; nosotros lo restringimos a propósito. Para permitir alta automática, quitar ese flag.
 - **App en modo "Testing"**: hoy solo pueden entrar los mails cargados en "Público" → Usuarios de prueba (hasta 100).
 - **Para abrirlo a cualquiera**: en Google Console → "Público" → **Publicar app**. Como los scopes son no sensibles, la publicación es instantánea (sin verificación de Google). Igual, la barrera real de acceso la sigue poniendo Odoo (solo miembros).
+
+## Reservas (allowlist)
+
+La reserva online de turnos está habilitada **solo para los emails de una allowlist**, no para todos.
+
+- Var de entorno: `RESERVAS_ALLOWLIST` (emails coma-separados; vacío = nadie puede reservar).
+  Ej: `RESERVAS_ALLOWLIST=lucasperazzi98@gmail.com,otro@mail.com`
+- **Barrera real en el backend**: `POST /api/turnos/:id/reservar` rechaza con 403 si el email no está en la lista (`canReserve()` en `config.ts`).
+- **Frontend**: el backend expone `puedeReservar` en `/api/me` y en el login; `TurnosPage` usa ese flag para habilitar/deshabilitar el botón de confirmar.
+- Para habilitar a más gente, agregá su email a `RESERVAS_ALLOWLIST` (en `backend/.env` para dev y en Vercel para prod) y reiniciá/redeployá. No hace falta tocar código.

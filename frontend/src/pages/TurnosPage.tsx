@@ -8,12 +8,11 @@ import { Header } from "./HomePage";
 import { useAuth } from "../auth";
 import type { Turno, Sede } from "../types";
 
-// Flag para habilitar/deshabilitar la reserva. Cambiar a `true` cuando
-// la acción esté disponible nuevamente.
-const RESERVA_HABILITADA = false;
-
 export function TurnosPage() {
   const { user, logout } = useAuth();
+  // La reserva se habilita por usuario (allowlist en el backend, ver
+  // RESERVAS_ALLOWLIST). El backend expone `puedeReservar` en /api/me.
+  const reservaHabilitada = user?.puedeReservar ?? false;
   const qc = useQueryClient();
   const location = useLocation();
   const [sede, setSede] = useState<"todas" | Sede>("todas");
@@ -206,7 +205,7 @@ export function TurnosPage() {
                   {turnoAReservar.inicio.slice(11, 16)}–{turnoAReservar.fin.slice(11, 16)} hs · {turnoAReservar.cuposLibres} cupos libres
                 </p>
                 {reservaError && <p className="mb-3 text-sm text-red-400">{reservaError}</p>}
-                {!RESERVA_HABILITADA && (
+                {!reservaHabilitada && (
                   <p className="mb-3 text-xs text-amber-400">La reserva online estará habilitada pronto.</p>
                 )}
                 <div className="flex gap-3">
@@ -216,7 +215,7 @@ export function TurnosPage() {
                   >Cancelar</button>
                   <button
                     onClick={confirmarReserva}
-                    disabled={reservando || !RESERVA_HABILITADA}
+                    disabled={reservando || !reservaHabilitada}
                     className="flex-1 bg-white px-4 py-2 text-sm font-bold uppercase tracking-wider text-black transition-colors hover:bg-neutral-300 disabled:opacity-50"
                   >{reservando ? "Reservando…" : "Confirmar"}</button>
                 </div>

@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { requireAuth } from "../middleware.js";
+import { canReserve } from "../config.js";
 
 export const me = new Hono();
 
@@ -58,6 +59,7 @@ me.get("/", async (c) => {
     name: user.name,
     email: user.email,
     username: user.username,
+    puedeReservar: canReserve(user.email),
     ...partnerInfo,
   });
 });

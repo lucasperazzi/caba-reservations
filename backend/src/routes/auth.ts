@@ -3,7 +3,7 @@ import { z } from "zod";
 import { OdooClient } from "../odooClient.js";
 import { clearSessionCookie, setSessionCookie } from "../middleware.js";
 import { sealSessionId, signOauthState, verifyOauthState } from "../session.js";
-import { config, isGoogleEnabled } from "../config.js";
+import { canReserve, config, isGoogleEnabled } from "../config.js";
 
 export const auth = new Hono();
 
@@ -38,6 +38,7 @@ auth.post("/login", async (c) => {
       uid: info.uid,
       name: info.name,
       email: info.email,
+      puedeReservar: canReserve(info.email),
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Error de autenticación";

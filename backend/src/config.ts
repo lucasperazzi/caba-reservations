@@ -30,6 +30,18 @@ export const config = {
     providerId: Number(process.env.GOOGLE_ODOO_PROVIDER_ID ?? 3),
   },
 
+  /**
+   * Reservas: emails habilitados a reservar turnos online.
+   * Coma-separado en RESERVAS_ALLOWLIST. Vacío = nadie puede reservar.
+   * Ej: RESERVAS_ALLOWLIST=lucasperazzi98@gmail.com,otro@mail.com
+   */
+  reservas: {
+    allowlist: (process.env.RESERVAS_ALLOWLIST ?? "")
+      .split(",")
+      .map((s) => s.trim().toLowerCase())
+      .filter(Boolean),
+  },
+
   /** Secreto para firmar la cookie de sesión. Obligatorio en producción. */
   sessionSecret: process.env.SESSION_SECRET ?? "dev-secret-change-me",
 
@@ -43,6 +55,12 @@ export const config = {
 /** ¿Está configurado el login con Google? */
 export function isGoogleEnabled(): boolean {
   return Boolean(config.google.clientId && config.google.clientSecret);
+}
+
+/** ¿El email está habilitado a reservar turnos online? */
+export function canReserve(email?: string): boolean {
+  if (!email) return false;
+  return config.reservas.allowlist.includes(email.toLowerCase());
 }
 
 function loadDotEnv() {
