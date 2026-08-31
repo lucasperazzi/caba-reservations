@@ -5,6 +5,7 @@ import { Header } from "./HomePage";
 import { useAuth } from "../auth";
 import type { Paquete } from "../types";
 import { diasHastaVencimiento } from "../utils/fecha";
+import { usePageBg } from "../hooks/usePageBg";
 
 function fechaCorta(iso: string): string {
   if (!iso) return "—";
@@ -13,6 +14,7 @@ function fechaCorta(iso: string): string {
 }
 
 export function PaquetesPage() {
+  usePageBg("paquetes");
   const { user, logout } = useAuth();
   const { data, isLoading } = useQuery({ queryKey: ["paquetes"], queryFn: apiClient.paquetes });
 
@@ -40,7 +42,7 @@ export function PaquetesPage() {
         {!isLoading && activos.length > 0 && (
           <section>
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">Activos</h3>
-            <div className="border-y border-white">
+            <div className="bg-black/40 p-4 backdrop-blur-md">
               {activos.map((p, i) => (
                 <PaqueteRow key={p.id} p={p} index={i} total={activos.length} activo />
               ))}
@@ -52,7 +54,7 @@ export function PaquetesPage() {
         {!isLoading && historial.length > 0 && (
           <section>
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">Historial</h3>
-            <div className="border-y border-white">
+            <div className="bg-black/40 p-4 backdrop-blur-md">
               {historial.map((p, i) => (
                 <PaqueteRow key={p.id} p={p} index={i} total={historial.length} />
               ))}

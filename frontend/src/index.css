@@ -13,10 +13,12 @@ body {
   position: relative;
 }
 
-/* Fondo fijo: pseudo-elemento ::before con position:fixed.
-   Es la forma más confiable en iOS Safari, que no respeta
-   background-attachment:fixed ni position:fixed en divs anidados. */
-body::before {
+/* Fondo fijo: dos capas que crossfadean.
+   ::before = capa base (fondo default, siempre visible)
+   ::after  = capa overlay (fondo de la página actual, fadea in/out)
+   background-image no es animable en CSS, así que usamos opacity en ::after. */
+body::before,
+body::after {
   content: "";
   position: fixed;
   top: 0;
@@ -24,10 +26,42 @@ body::before {
   width: 100vw;
   height: 100vh;
   z-index: -1;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.72)), url("/paredescalada.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+/* Capa base: siempre el fondo default */
+body::before {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.72)), url("/paredescalada.jpg");
+}
+
+/* Capa overlay: fadea in cuando hay un data-bg distinto de home */
+body::after {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+/* Reset: opacity 0 sin transición, para forzar el crossfade cada vez */
+body.bg-reset::after {
+  opacity: 0 !important;
+  transition: none !important;
+}
+
+body[data-bg="home"]::after {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.72)), url("/paredescalada.jpg");
+  opacity: 1;
+}
+
+body[data-bg="turnos"]::after {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.72)), url("/fondo-turnos.jpg");
+  opacity: 1;
+}
+
+body[data-bg="paquetes"]::after {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.82)), url("/fondo-paquetes.jpg");
+  opacity: 1;
 }
 
 /* ── Animaciones del menú fullscreen (estilo brutalista) ── */

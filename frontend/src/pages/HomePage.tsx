@@ -5,8 +5,10 @@ import { useAuth } from "../auth";
 import { apiClient } from "../api";
 import type { MiTurno, Paquete } from "../types";
 import { fechaLarga, diasHastaVencimiento } from "../utils/fecha";
+import { usePageBg } from "../hooks/usePageBg";
 
 export function HomePage() {
+  usePageBg("home");
   const { user, logout } = useAuth();
 
   const { data: misTurnos, isLoading: turnosLoading } = useQuery<{ data: MiTurno[] }>({

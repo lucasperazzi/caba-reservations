@@ -7,8 +7,10 @@ import { apiClient } from "../api";
 import { Header } from "./HomePage";
 import { useAuth } from "../auth";
 import type { Turno, Sede } from "../types";
+import { usePageBg } from "../hooks/usePageBg";
 
 export function TurnosPage() {
+  usePageBg("turnos");
   const { user, logout } = useAuth();
   // La reserva se habilita por usuario (allowlist en el backend, ver
   // RESERVAS_ALLOWLIST). El backend expone `puedeReservar` en /api/me.

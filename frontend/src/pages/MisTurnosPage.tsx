@@ -5,6 +5,7 @@ import { Header } from "./HomePage";
 import { useAuth } from "../auth";
 import type { MiTurno } from "../types";
 import { fechaLarga } from "../utils/fecha";
+import { usePageBg } from "../hooks/usePageBg";
 
 function fechaEvento(nombre: string): Date | null {
   const m = nombre.match(/\((\d{4}-\d{2}-\d{2})/);
@@ -16,6 +17,7 @@ function nombreLargo(nombre: string): string {
 }
 
 export function MisTurnosPage() {
+  usePageBg("turnos");
   const { user, logout } = useAuth();
   const nav = useNavigate();
   const { data, isLoading } = useQuery({ queryKey: ["mis-turnos"], queryFn: apiClient.misTurnos });
@@ -84,7 +86,7 @@ export function MisTurnosPage() {
         {!isLoading && siguientes.length > 0 && (
           <section>
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">Próximos turnos reservados</h3>
-            <div className="border-y border-white">
+            <div className="bg-black/40 p-4 backdrop-blur-md">
               {siguientes.map((t, i) => (
                 <MiTurnoRow key={t.registrationId} t={t} index={i} total={siguientes.length} onRepetir={() => repetirProximaSemana(t)} />
               ))}
@@ -96,7 +98,7 @@ export function MisTurnosPage() {
         {!isLoading && historial.length > 0 && (
           <section>
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">Historial</h3>
-            <div className="border-y border-white">
+            <div className="bg-black/40 p-4 backdrop-blur-md">
               {historial.map((t, i) => (
                 <MiTurnoRow key={t.registrationId} t={t} index={i} total={historial.length} />
               ))}
