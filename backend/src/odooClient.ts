@@ -127,6 +127,50 @@ export class OdooClient {
     return info;
   }
 
+  /**
+   * Loguea contra Odoo usando un access_token de OAuth (Google), replicando el
+   * flujo del módulo `auth_oauth` de Odoo 12: GET /auth_oauth/signin con el token
+   * en la query. Odoo valida el token contra Google, resuelve el usuario por su
+   * `oauth_uid` y establece la cookie de sesión.
+   *
+   * IMPORTANTE — solo miembros existentes:
+   * Pasamos `c: { no_user_creation: true }` en el `state`. Con esto Odoo NO
+   * auto-crea una cuenta nueva si el email de Google no corresponde a un miembro
+   * ya registrado (levanta AccessDenied → redirect a ?oauth_error=3).
+   * El sitio real (shop.caba.org.ar) SÍ permite el alta automática; nosotros lo
+   * restringimos a propósito. Si en el futuro se quiere replicar el alta
+   * automática, quitar el flag `no_user_creation`.
+   *
+   * Nota: Odoo 12 NO valida el `audience` del token (el chequeo está comentado en
+   * su código fuente), por eso un token emitido por *nuestro* client_id de Google
+   * es aceptado.
+   */
+  async loginWithOauthToken(accessToken: string, providerId: number): Promise<OdooSessionInfo> {
+    const state = JSON.stringify({
+      p: providerId,
+      d: this.db,
+      r: "",
+      c: { no_user_creation: true },
+    });
+    const params = new URLSearchParams({ state, access_token: accessToken });
+
+    const res = await this.rawFetch(`/auth_oauth/signin?${params.toString()}`, {
+      method: "GET",
+    });
+
+    // En éxito Odoo responde 303 → "/" o "/web". En fallo → "/web/login?oauth_error=N".
+    const location = res.headers.get("location") ?? "";
+    if (location.includes("oauth_error")) {
+      throw new OdooError("Tu cuenta de Google no está registrada en CABA", "oauth");
+    }
+
+    const info = await this.getSessionInfo();
+    if (!info) {
+      throw new OdooError("No se pudo iniciar sesión con Google", "oauth");
+    }
+    return info;
+  }
+
   /** Obtiene la info de sesión actual (uid, name, etc.). */
   async getSessionInfo(): Promise<OdooSessionInfo | null> {
     const res = await this.rawFetch("/web/session/get_session_info", {

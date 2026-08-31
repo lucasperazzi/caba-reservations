@@ -58,19 +58,21 @@ export function HomePage() {
         </section>
 
         {/* Paquetes activos — resumido */}
-        {paquetesActivos.length > 0 && (
-          <section className="mt-12 border-l-2 border-emerald-400 pl-5 sm:pl-6">
-            <h3 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-emerald-400">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400" />
-              Paquetes activos
-            </h3>
+        <section className={`mt-12 border-l-2 pl-5 sm:pl-6 ${paquetesActivos.length > 0 ? "border-emerald-400" : "border-neutral-700"}`}>
+          <h3 className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider ${paquetesActivos.length > 0 ? "text-emerald-400" : "text-neutral-500"}`}>
+            {paquetesActivos.length > 0 && <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400" />}
+            Paquetes activos
+          </h3>
+          {paquetesActivos.length > 0 ? (
             <div className="mt-4">
               {paquetesActivos.map((p) => (
                 <PaqueteCompacto key={p.id} p={p} />
               ))}
             </div>
-          </section>
-        )}
+          ) : (
+            <p className="mt-3 text-lg text-neutral-500">No tenés paquetes de acceso activos.</p>
+          )}
+        </section>
 
         {/* Navegación — estilo role-selector del portfolio */}
         <nav className="mt-20 border-t border-white/20 sm:mt-16">
