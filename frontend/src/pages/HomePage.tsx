@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "../auth";
 import { apiClient } from "../api";
 import type { MiTurno, Paquete } from "../types";
+import { fechaLarga } from "../utils/fecha";
 
 export function HomePage() {
   const { user, logout } = useAuth();
@@ -18,11 +19,14 @@ export function HomePage() {
     queryFn: apiClient.paquetes,
   });
 
-  const ahora = new Date();
+  // "Hoy" a medianoche (zona horaria local del navegador), para comparar por
+  // día calendario y no descartar turnos de hoy cuya fecha se parsea a 00:00.
+  const hoy = new Date();
+  const hoyMedianoche = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
   const proximos = (misTurnos?.data ?? [])
     .filter((t) => t.estado === "open")
     .map((t) => ({ ...t, fecha: extraerFecha(t.evento.nombre) }))
-    .filter((t) => t.fecha && t.fecha >= ahora)
+    .filter((t) => t.fecha && t.fecha >= hoyMedianoche)
     .sort((a, b) => (a.fecha?.getTime() ?? 0) - (b.fecha?.getTime() ?? 0));
 
   const proximo = proximos[0];
@@ -49,7 +53,7 @@ export function HomePage() {
                 {proximo.evento.nombre.split(" (")[0]}
               </p>
               <p className="mt-1.5 text-sm capitalize text-neutral-400">
-                {proximo.fecha?.toLocaleDateString("es-AR", { weekday: "long", day: "numeric", month: "long" })}
+                {proximo.fecha ? fechaLarga(proximo.fecha) : ""}
               </p>
             </div>
           ) : (

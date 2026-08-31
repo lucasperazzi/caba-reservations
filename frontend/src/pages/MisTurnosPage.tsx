@@ -4,6 +4,7 @@ import { apiClient } from "../api";
 import { Header } from "./HomePage";
 import { useAuth } from "../auth";
 import type { MiTurno } from "../types";
+import { fechaLarga } from "../utils/fecha";
 
 function fechaEvento(nombre: string): Date | null {
   const m = nombre.match(/\((\d{4}-\d{2}-\d{2})/);
@@ -14,23 +15,22 @@ function nombreLargo(nombre: string): string {
   return nombre.split(" (")[0];
 }
 
-function fechaStr(d: Date): string {
-  return d.toLocaleDateString("es-AR", { weekday: "long", day: "numeric", month: "long" });
-}
-
 export function MisTurnosPage() {
   const { user, logout } = useAuth();
   const nav = useNavigate();
   const { data, isLoading } = useQuery({ queryKey: ["mis-turnos"], queryFn: apiClient.misTurnos });
 
-  const ahora = new Date();
+  // "Hoy" a medianoche (zona horaria local del navegador), para comparar por
+  // día calendario y no descartar turnos de hoy cuya fecha se parsea a 00:00.
+  const hoy = new Date();
+  const hoyMedianoche = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
 
   const conFecha = (data?.data ?? [])
     .map((t) => ({ ...t, fecha: fechaEvento(t.evento.nombre) }))
     .filter((t): t is MiTurno & { fecha: Date } => t.fecha !== null);
 
   const futuros = conFecha
-    .filter((t) => t.estado === "open" && t.fecha! >= ahora)
+    .filter((t) => t.estado === "open" && t.fecha! >= hoyMedianoche)
     .sort((a, b) => a.fecha!.getTime() - b.fecha!.getTime());
 
   const proximo = futuros[0];
@@ -46,7 +46,7 @@ export function MisTurnosPage() {
   };
 
   const historial = conFecha
-    .filter((t) => t.estado !== "open" || t.fecha! < ahora)
+    .filter((t) => t.estado !== "open" || t.fecha! < hoyMedianoche)
     .sort((a, b) => b.fecha!.getTime() - a.fecha!.getTime());
 
   return (
@@ -67,7 +67,7 @@ export function MisTurnosPage() {
             {proximo ? (
               <div>
                 <p className="text-2xl font-bold leading-tight tracking-tight text-white">{nombreLargo(proximo.evento.nombre)}</p>
-                <p className="mt-1 text-sm capitalize text-neutral-400">{fechaStr(proximo.fecha!)}</p>
+                <p className="mt-1 text-sm capitalize text-neutral-400">{fechaLarga(proximo.fecha!)}</p>
               </div>
             ) : (
               <div>
@@ -141,7 +141,7 @@ function MiTurnoRow({ t, index, total, onRepetir }: { t: MiTurno & { fecha: Date
         <p className="break-words text-lg font-bold leading-tight tracking-tight text-white sm:text-xl">
           {nombreLargo(t.evento.nombre)}
         </p>
-        <p className="mt-1 text-xs capitalize text-neutral-400">{fechaStr(t.fecha)}</p>
+        <p className="mt-1 text-xs capitalize text-neutral-400">{fechaLarga(t.fecha)}</p>
         {onRepetir && (
           <button
             onClick={onRepetir}
