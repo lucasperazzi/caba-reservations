@@ -70,6 +70,12 @@ export function MisTurnosPage() {
               <div>
                 <p className="text-2xl font-bold leading-tight tracking-tight text-white">{nombreLargo(proximo.evento.nombre)}</p>
                 <p className="mt-1 text-sm capitalize text-neutral-300">{fechaLarga(proximo.fecha!)}</p>
+                <button
+                  onClick={() => repetirProximaSemana(proximo)}
+                  className="mt-2 text-xs font-semibold text-emerald-400 transition-colors hover:text-emerald-300"
+                >
+                  Repetir próxima semana →
+                </button>
               </div>
             ) : (
               <div>

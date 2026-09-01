@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
 import { DayPicker } from "react-day-picker";
@@ -8,6 +8,7 @@ import { Header } from "./HomePage";
 import { useAuth } from "../auth";
 import type { Turno, Sede } from "../types";
 import { usePageBg } from "../hooks/usePageBg";
+import { fechaLarga } from "../utils/fecha";
 
 export function TurnosPage() {
   usePageBg("turnos");
@@ -20,6 +21,9 @@ export function TurnosPage() {
   const [sede, setSede] = useState<"todas" | Sede>("todas");
   const [tipoFiltro, setTipoFiltro] = useState<"todos" | "libre" | "clases">("todos");
   const [diaSeleccionado, setDiaSeleccionado] = useState<Date | undefined>(new Date());
+  const [mesCalendario, setMesCalendario] = useState<Date>(new Date());
+  const [fechaRepeat, setFechaRepeat] = useState<string | null>(null);
+  const [highlightName, setHighlightName] = useState<string | null>(null);
   const [turnoAReservar, setTurnoAReservar] = useState<Turno | null>(null);
   const [reservando, setReservando] = useState(false);
   const [reservaError, setReservaError] = useState("");
@@ -29,8 +33,7 @@ export function TurnosPage() {
 
   // Si venimos de "Repetir próxima semana", leer el state
   const repeatState = location.state as { searchName?: string; targetDate?: string } | null;
-  // targetDate viene como "YYYY-MM-DD" (sin zona horaria)
-  const targetDateStr = repeatState?.targetDate ?? null;
+  const targetDateStr = repeatState?.targetDate ?? fechaRepeat;
   const targetDate = targetDateStr ? new Date(targetDateStr + "T00:00:00") : null;
 
   const hoy = new Date();
@@ -70,24 +73,19 @@ export function TurnosPage() {
     : "";
   const turnosDelDia = turnosPorDia.get(diaKey) ?? [];
 
-  // Auto-seleccionar fecha y abrir modal si venimos de "Repetir próxima semana"
+  // Si venimos de "Repetir próxima semana", seleccionar el día en el calendario
+  // y highlightear el evento matching para que el usuario lo vea y clickee.
   useEffect(() => {
-    if (!targetDateStr || !repeatState?.searchName || isLoading) return;
+    if (!targetDateStr || isLoading) return;
     const target = new Date(targetDateStr + "T00:00:00");
     setDiaSeleccionado(target);
-
-    // targetDateStr ya es "YYYY-MM-DD", mismo formato que las keys de turnosPorDia
-    const turnosTarget = turnosPorDia.get(targetDateStr) ?? [];
-    const match = turnosTarget.find((t) => t.nombre.startsWith(repeatState.searchName!));
-    if (match) {
-      setReservaOk(false);
-      setReservaError("");
-      setTurnoAReservar(match);
-    }
-    // Limpiar el state para que no se re-ejecute
+    setMesCalendario(target);
+    setFechaRepeat(targetDateStr);
+    setHighlightName(repeatState?.searchName ?? null);
+    // Limpiar el location state para que no se re-ejecute
     window.history.replaceState({}, document.title);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [targetDateStr, repeatState, isLoading, turnosPorDia]);
+  }, [targetDateStr, isLoading]);
 
   const confirmarReserva = async () => {
     if (!turnoAReservar) return;
@@ -155,6 +153,8 @@ export function TurnosPage() {
               mode="single"
               selected={diaSeleccionado}
               onSelect={setDiaSeleccionado}
+              month={mesCalendario}
+              onMonthChange={setMesCalendario}
               locale={es}
               disabled={[{ before: hoy }, { after: hasta }]}
               weekStartsOn={1}
@@ -194,6 +194,7 @@ export function TurnosPage() {
                     esFavorito={favs.has(claveFavorito(t.nombre))}
                     onToggleFavorito={() => toggleFavorito(t.nombre)}
                     onReservar={() => { setReservaOk(false); setReservaError(""); setTurnoAReservar(t); }}
+                    highlight={highlightName ? t.nombre.startsWith(highlightName) : false}
                   />
                 ))}
               </div>
@@ -205,7 +206,7 @@ export function TurnosPage() {
       {/* Modal de confirmación */}
       {turnoAReservar && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm">
-          <div className="w-full max-w-sm border border-white/20 bg-black/80 p-6 text-white backdrop-blur-xl">
+          <div className="w-full max-w-md border border-white/20 bg-black/80 p-8 text-white backdrop-blur-xl">
             {reservaOk ? (
               <div className="text-center">
                 <img src="/holds-png/green-round.png" alt="" className="mx-auto h-12 w-12 object-contain" />
@@ -213,9 +214,12 @@ export function TurnosPage() {
               </div>
             ) : (
               <>
-                <h3 className="mb-2 text-lg font-bold tracking-tight">¿Reservar?</h3>
-                <p className="mb-1 text-sm text-neutral-300">{turnoAReservar.nombre}</p>
-                <p className="mb-4 text-xs text-neutral-300">
+                <h3 className="mb-6 text-2xl font-bold tracking-tight">¿Reservar?</h3>
+                <p className="mb-2 text-sm font-semibold capitalize text-emerald-400">
+                  {fechaLarga(new Date(turnoAReservar.inicio))}
+                </p>
+                <p className="mb-2 text-lg font-bold tracking-tight text-white">{turnoAReservar.nombre}</p>
+                <p className="mb-6 text-sm text-neutral-300">
                   {turnoAReservar.inicio.slice(11, 16)}–{turnoAReservar.fin.slice(11, 16)} hs · {turnoAReservar.cuposLibres} cupos libres
                 </p>
                 {reservaError && <p className="mb-3 text-sm text-red-400">{reservaError}</p>}
@@ -286,6 +290,7 @@ function TurnoRow({
   onReservar,
   esFavorito,
   onToggleFavorito,
+  highlight,
 }: {
   turno: Turno;
   index: number;
@@ -293,19 +298,31 @@ function TurnoRow({
   onReservar: () => void;
   esFavorito: boolean;
   onToggleFavorito: () => void;
+  highlight?: boolean;
 }) {
   const disabled = turno.cuposLibres <= 0;
   const indexLabel = String(index + 1).padStart(2, "0");
   const totalLabel = String(total).padStart(2, "0");
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Scroll al elemento highlighteado cuando aparece
+  useEffect(() => {
+    if (highlight && ref.current) {
+      ref.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [highlight]);
 
   const stateClasses = disabled
     ? "cursor-not-allowed opacity-40"
-    : esFavorito
-      ? "cursor-pointer ring-1 ring-inset ring-amber-400/70 bg-amber-400/5 hover:bg-amber-400/10 hover:ring-amber-400"
-      : "cursor-pointer hover:bg-white/[0.06]";
+    : highlight
+      ? "cursor-pointer ring-2 ring-inset ring-emerald-400 bg-emerald-400/10 hover:bg-emerald-400/20"
+      : esFavorito
+        ? "cursor-pointer ring-1 ring-inset ring-amber-400/70 bg-amber-400/5 hover:bg-amber-400/10 hover:ring-amber-400"
+        : "cursor-pointer hover:bg-white/[0.06]";
 
   return (
     <div
+      ref={ref}
       onClick={disabled ? undefined : onReservar}
       className={`group grid grid-cols-[auto_1fr_auto] items-center gap-x-3 border-t border-white px-3 py-4 transition-colors first:border-t-0 sm:gap-x-4 ${stateClasses}`}
     >
