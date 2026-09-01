@@ -5,7 +5,7 @@ import { apiClient } from "../api";
 import { Header } from "./HomePage";
 import { useAuth } from "../auth";
 import { usePageBg } from "../hooks/usePageBg";
-import type { Profile, Country, State } from "../types";
+import type { Profile, State } from "../types";
 
 export function EditarPerfilPage() {
   usePageBg("home");
