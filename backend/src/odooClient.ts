@@ -128,18 +128,54 @@ export class OdooClient {
   }
 
   /**
+   * Registra un nuevo usuario en Odoo vía /web/signup (form POST).
+   * Odoo crea res.users + res.partner y loguea automáticamente.
+   * Devuelve la info de sesión si tuvo éxito.
+   */
+  async signup(name: string, lastname: string, login: string, password: string): Promise<OdooSessionInfo> {
+    // 1. GET /web/signup para obtener csrf_token y cookies iniciales
+    const signupPageRes = await this.rawFetch("/web/signup");
+    const signupHtml = await signupPageRes.text();
+    const csrfMatch = signupHtml.match(/name="csrf_token"\s+value="([^"]+)"/);
+    if (!csrfMatch) throw new Error("No se pudo obtener CSRF token de Odoo");
+    const csrfToken = csrfMatch[1];
+
+    // 2. POST /web/signup con los datos del formulario
+    const body = new URLSearchParams({
+      csrf_token: csrfToken,
+      name: name,
+      lastname: lastname,
+      login: login,
+      password: password,
+      confirm_password: password,
+      db: this.db,
+      redirect: "",
+    });
+
+    await this.rawFetch("/web/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: body.toString(),
+    });
+
+    // 3. Verificar sesión (Odoo loguea automáticamente tras el signup)
+    const info = await this.getSessionInfo();
+    if (!info) {
+      throw new Error("No se pudo completar el registro");
+    }
+    return info;
+  }
+
+  /**
    * Loguea contra Odoo usando un access_token de OAuth (Google), replicando el
    * flujo del módulo `auth_oauth` de Odoo 12: GET /auth_oauth/signin con el token
    * en la query. Odoo valida el token contra Google, resuelve el usuario por su
    * `oauth_uid` y establece la cookie de sesión.
    *
-   * IMPORTANTE — solo miembros existentes:
-   * Pasamos `c: { no_user_creation: true }` en el `state`. Con esto Odoo NO
-   * auto-crea una cuenta nueva si el email de Google no corresponde a un miembro
-   * ya registrado (levanta AccessDenied → redirect a ?oauth_error=3).
-   * El sitio real (shop.caba.org.ar) SÍ permite el alta automática; nosotros lo
-   * restringimos a propósito. Si en el futuro se quiere replicar el alta
-   * automática, quitar el flag `no_user_creation`.
+   * IMPORTANTE — creación de usuarios habilitada:
+   * Pasamos `c: { no_user_creation: false }` en el `state`. Con esto Odoo
+   * auto-crea una cuenta nueva si el email de Google no corresponde a un
+   * miembro ya registrado (crea res.users + res.partner y loguea).
    *
    * Nota: Odoo 12 NO valida el `audience` del token (el chequeo está comentado en
    * su código fuente), por eso un token emitido por *nuestro* client_id de Google
@@ -150,7 +186,7 @@ export class OdooClient {
       p: providerId,
       d: this.db,
       r: "",
-      c: { no_user_creation: true },
+      c: { no_user_creation: false },
     });
     const params = new URLSearchParams({ state, access_token: accessToken });
 

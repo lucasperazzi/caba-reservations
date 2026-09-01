@@ -1,6 +1,7 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../auth";
+import { apiClient } from "../api";
 
 const OAUTH_ERRORS: Record<string, string> = {
   google: "No se pudo iniciar sesión con Google. Verificá que tu cuenta esté registrada en CABA.",
@@ -17,6 +18,11 @@ export function LoginPage() {
     return code ? OAUTH_ERRORS[code] ?? "" : "";
   });
   const [loading, setLoading] = useState(false);
+  const [features, setFeatures] = useState<{ google: boolean; signup: boolean }>({ google: false, signup: false });
+
+  useEffect(() => {
+    apiClient.authFeatures().then(setFeatures).catch(() => {});
+  }, []);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,25 +77,38 @@ export function LoginPage() {
             {loading ? "Ingresando…" : "Ingresar"}
           </button>
 
-          <div className="flex items-center gap-3 py-1 text-xs uppercase tracking-wider text-neutral-400">
-            <span className="h-px flex-1 bg-white/20" />
-            o
-            <span className="h-px flex-1 bg-white/20" />
-          </div>
+          {features.google && (
+            <>
+              <div className="flex items-center gap-3 py-1 text-xs uppercase tracking-wider text-neutral-400">
+                <span className="h-px flex-1 bg-white/20" />
+                o
+                <span className="h-px flex-1 bg-white/20" />
+              </div>
 
-          <a
-            href="/api/auth/google"
-            className="flex w-full items-center justify-center gap-2 border border-white/20 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
-          >
-            <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
-              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.76h3.56c2.08-1.92 3.28-4.74 3.28-8.09Z" />
-              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.56-2.76c-.98.66-2.24 1.06-3.72 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23Z" />
-              <path fill="#FBBC05" d="M5.84 14.11a6.6 6.6 0 0 1 0-4.22V7.05H2.18a11 11 0 0 0 0 9.9l3.66-2.84Z" />
-              <path fill="#EA4335" d="M12 4.75c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 1.46 14.97.5 12 .5A11 11 0 0 0 2.18 7.05l3.66 2.84C6.71 6.68 9.14 4.75 12 4.75Z" />
-            </svg>
-            Ingresar con Google
-          </a>
+              <a
+                href="/api/auth/google"
+                className="flex w-full items-center justify-center gap-2 border border-white/20 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+              >
+                <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.76h3.56c2.08-1.92 3.28-4.74 3.28-8.09Z" />
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.56-2.76c-.98.66-2.24 1.06-3.72 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23Z" />
+                  <path fill="#FBBC05" d="M5.84 14.11a6.6 6.6 0 0 1 0-4.22V7.05H2.18a11 11 0 0 0 0 9.9l3.66-2.84Z" />
+                  <path fill="#EA4335" d="M12 4.75c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 1.46 14.97.5 12 .5A11 11 0 0 0 2.18 7.05l3.66 2.84C6.71 6.68 9.14 4.75 12 4.75Z" />
+                </svg>
+                Ingresar con Google
+              </a>
+            </>
+          )}
         </form>
+
+        {features.signup && (
+          <p className="mt-4 text-sm text-neutral-300">
+            ¿No tenés cuenta?{" "}
+            <Link to="/signup" className="font-semibold text-white underline hover:text-neutral-300">
+              Registrarse
+            </Link>
+          </p>
+        )}
 
         <div className="mt-4 px-4 text-xs text-neutral-300">
           <p>

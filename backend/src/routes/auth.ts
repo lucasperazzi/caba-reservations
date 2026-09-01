@@ -3,13 +3,68 @@ import { z } from "zod";
 import { OdooClient } from "../odooClient.js";
 import { clearSessionCookie, setSessionCookie } from "../middleware.js";
 import { sealSessionId, signOauthState, verifyOauthState } from "../session.js";
-import { canReserve, config, isGoogleEnabled } from "../config.js";
+import { canReserve, config, isGoogleEnabled, isSignupEnabled } from "../config.js";
 
 export const auth = new Hono();
 
 const loginSchema = z.object({
   user: z.string().min(1),
   password: z.string().min(1),
+});
+
+const signupSchema = z.object({
+  name: z.string().min(1),
+  lastname: z.string().min(1),
+  login: z.string().email(),
+  password: z.string().min(6),
+});
+
+// GET /api/auth/features — expone qué features de auth están habilitadas
+auth.get("/features", (c) => {
+  return c.json({
+    google: isGoogleEnabled(),
+    signup: isSignupEnabled(),
+  });
+});
+
+// POST /api/auth/signup
+auth.post("/signup", async (c) => {
+  if (!isSignupEnabled()) {
+    return c.json({ error: "El registro no está habilitado" }, 403);
+  }
+
+  const body = await c.req.json().catch(() => null);
+  const parsed = signupSchema.safeParse(body);
+  if (!parsed.success) {
+    const issue = parsed.error.issues[0];
+    return c.json({ error: issue?.message ?? "Datos inválidos" }, 400);
+  }
+
+  const { name, lastname, login, password } = parsed.data;
+  const client = new OdooClient();
+
+  try {
+    const info = await client.signup(name, lastname, login, password);
+    const sessionId = client.getSessionId();
+    console.log("Signup OK:", { uid: info.uid, email: info.email });
+    if (!sessionId) {
+      return c.json({ error: "No se pudo establecer la sesión" }, 500);
+    }
+
+    const token = sealSessionId(sessionId);
+    setSessionCookie(c, token);
+
+    return c.json({
+      uid: info.uid,
+      name: info.name,
+      email: info.email,
+      puedeReservar: canReserve(info.email),
+    });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Error al registrar";
+    console.error("Signup error:", msg, err instanceof Error ? err.stack : err);
+    return c.json({ error: msg }, 400);
+  }
 });
 
 // POST /api/auth/login

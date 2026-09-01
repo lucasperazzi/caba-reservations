@@ -19,6 +19,13 @@ export const apiClient = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ user, password }),
     }),
+  signup: (name: string, lastname: string, login: string, password: string) =>
+    api<UserInfo>("/api/auth/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, lastname, login, password }),
+    }),
+  authFeatures: () => api<{ google: boolean; signup: boolean }>("/api/auth/features"),
   logout: () => api<{ ok: boolean }>("/api/auth/logout", { method: "POST" }),
   me: () => api<UserInfo>("/api/me"),
   turnos: (from: string, to: string, sede?: string) =>

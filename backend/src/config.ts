@@ -50,11 +50,26 @@ export const config = {
 
   /** Duración de la cookie en días (Odoo mantiene la sesión ~90 días). */
   cookieMaxAgeDays: 90,
+
+  /**
+   * Features habilitadas. En producción se pueden deshabilitar con
+   * ENABLE_SIGNUP=false y ENABLE_GOOGLE=false (o simplemente no
+   * configurar GOOGLE_CLIENT_ID).
+   */
+  features: {
+    signup: process.env.ENABLE_SIGNUP !== "false",
+    google: process.env.ENABLE_GOOGLE !== "false",
+  },
 } as const;
 
 /** ¿Está configurado el login con Google? */
 export function isGoogleEnabled(): boolean {
-  return Boolean(config.google.clientId && config.google.clientSecret);
+  return config.features.google && Boolean(config.google.clientId && config.google.clientSecret);
+}
+
+/** ¿Está habilitado el registro de nuevos usuarios? */
+export function isSignupEnabled(): boolean {
+  return config.features.signup;
 }
 
 /** ¿El email está habilitado a reservar turnos online? */

@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useAuth } from "./auth";
 import { LoginPage } from "./pages/LoginPage";
+import { SignupPage } from "./pages/SignupPage";
 import { HomePage } from "./pages/HomePage";
 import { MisTurnosPage } from "./pages/MisTurnosPage";
 import { TurnosPage } from "./pages/TurnosPage";
@@ -30,6 +31,7 @@ function App() {
   return (
     <Routes>
       <Route path="/login" element={user ? <Navigate to="/" replace /> : <LoginPage />} />
+      <Route path="/signup" element={user ? <Navigate to="/" replace /> : <SignupPage />} />
       <Route path="/" element={<Protected><HomePage /></Protected>} />
       <Route path="/mis-turnos" element={<Protected><MisTurnosPage /></Protected>} />
       <Route path="/turnos" element={<Protected><TurnosPage /></Protected>} />
