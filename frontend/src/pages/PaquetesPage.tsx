@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
 import { apiClient } from "../api";
 import { Header } from "./HomePage";
 import { useAuth } from "../auth";
@@ -30,12 +29,7 @@ export function PaquetesPage() {
         {isLoading && <p className="text-neutral-300">Cargando…</p>}
 
         {!isLoading && activos.length === 0 && historial.length === 0 && (
-          <div>
-            <p className="text-sm text-neutral-300">No tenés paquetes de acceso.</p>
-            <Link to="/turnos" className="mt-3 inline-block text-sm font-semibold text-emerald-400 hover:text-emerald-300">
-              Reservar un turno →
-            </Link>
-          </div>
+          <p className="text-sm text-neutral-300">No tenés paquetes de acceso.</p>
         )}
 
         {/* Paquetes activos */}
