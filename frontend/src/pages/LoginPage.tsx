@@ -13,6 +13,7 @@ export function LoginPage() {
   const nav = useNavigate();
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState(() => {
     const code = new URLSearchParams(window.location.search).get("error");
     return code ? OAUTH_ERRORS[code] ?? "" : "";
@@ -26,6 +27,12 @@ export function LoginPage() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const errors: Record<string, string> = {};
+    if (!user.trim()) errors.user = "Ingresá tu usuario o email";
+    if (!password) errors.password = "Ingresá tu contraseña";
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) return;
+
     setError("");
     setLoading(true);
     try {
@@ -44,27 +51,27 @@ export function LoginPage() {
         <h1 className="mb-1 text-3xl font-bold tracking-tight text-white">CABA</h1>
         <p className="mb-6 text-sm text-neutral-300">Iniciá sesión con tu cuenta del Centro Andino</p>
 
-        <form onSubmit={submit} className="space-y-4 border border-white/20 p-6">
+        <form onSubmit={submit} className="space-y-4 border border-white/20 p-6" noValidate>
           <div>
             <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-neutral-300">Usuario / Email</label>
             <input
               type="text"
               value={user}
-              onChange={(e) => setUser(e.target.value)}
-              required
+              onChange={(e) => { setUser(e.target.value); setFieldErrors((f) => ({ ...f, user: "" })); }}
               autoFocus
               className="w-full border-b border-white/20 bg-transparent px-1 py-2 text-base text-white placeholder-neutral-600 focus:border-white focus:outline-none sm:text-sm"
             />
+            {fieldErrors.user && <p className="mt-1 text-left text-xs text-red-400">{fieldErrors.user}</p>}
           </div>
           <div>
             <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-neutral-300">Contraseña</label>
             <input
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
+              onChange={(e) => { setPassword(e.target.value); setFieldErrors((f) => ({ ...f, password: "" })); }}
               className="w-full border-b border-white/20 bg-transparent px-1 py-2 text-base text-white placeholder-neutral-600 focus:border-white focus:outline-none sm:text-sm"
             />
+            {fieldErrors.password && <p className="mt-1 text-left text-xs text-red-400">{fieldErrors.password}</p>}
           </div>
 
           {error && <p className="text-sm text-red-400">{error}</p>}

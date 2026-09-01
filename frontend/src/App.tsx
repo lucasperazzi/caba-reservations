@@ -7,6 +7,7 @@ import { MisTurnosPage } from "./pages/MisTurnosPage";
 import { TurnosPage } from "./pages/TurnosPage";
 import { PaquetesPage } from "./pages/PaquetesPage";
 import { MiCuentaPage } from "./pages/MiCuentaPage";
+import { EditarPerfilPage } from "./pages/EditarPerfilPage";
 
 function Loading() {
   return (
@@ -37,6 +38,7 @@ function App() {
       <Route path="/turnos" element={<Protected><TurnosPage /></Protected>} />
       <Route path="/paquetes" element={<Protected><PaquetesPage /></Protected>} />
       <Route path="/mi-cuenta" element={<Protected><MiCuentaPage /></Protected>} />
+      <Route path="/mi-cuenta/editar" element={<Protected><EditarPerfilPage /></Protected>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

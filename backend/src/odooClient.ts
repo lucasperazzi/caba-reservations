@@ -50,7 +50,7 @@ export class OdooClient {
 
   // ── HTTP helpers ──────────────────────────────────────────────
 
-  private async rawFetch(
+  async rawFetch(
     path: string,
     options: RequestInit = {},
   ): Promise<Response> {
@@ -131,6 +131,9 @@ export class OdooClient {
    * Registra un nuevo usuario en Odoo vía /web/signup (form POST).
    * Odoo crea res.users + res.partner y loguea automáticamente.
    * Devuelve la info de sesión si tuvo éxito.
+   *
+   * Nota: el form de CABA usa `firstname` y `lastname` (módulo partner_firstname),
+   * no un campo único `name`.
    */
   async signup(name: string, lastname: string, login: string, password: string): Promise<OdooSessionInfo> {
     // 1. GET /web/signup para obtener csrf_token y cookies iniciales
@@ -143,7 +146,7 @@ export class OdooClient {
     // 2. POST /web/signup con los datos del formulario
     const body = new URLSearchParams({
       csrf_token: csrfToken,
-      name: name,
+      firstname: name,
       lastname: lastname,
       login: login,
       password: password,

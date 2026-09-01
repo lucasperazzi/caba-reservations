@@ -32,8 +32,61 @@ export interface UserInfo {
   city?: string;
   zip?: string;
   country?: string;
+  countryId?: number;
+  state?: string;
+  stateId?: number;
   vat?: string;
+  idCategory?: string;
+  idCategoryId?: number;
+  idNumber?: string;
+  firstname?: string;
+  lastname?: string;
+  healthInsurance?: string;
+  healthInsuranceNumber?: string;
+  healthInsuranceEmergencyPhone?: string;
+  emergencyContactName?: string;
+  emergencyContactRelationship?: string;
+  emergencyContactPhone?: string;
+  birthdate?: string;
   image?: string;
+}
+
+export interface Profile {
+  partnerId: number;
+  firstname: string;
+  lastname: string;
+  email: string;
+  phone: string;
+  mobile: string;
+  street: string;
+  city: string;
+  zip: string;
+  countryId: number | null;
+  country: string;
+  stateId: number | null;
+  state: string;
+  vat: string;
+  idCategoryId: number | null;
+  idCategory: string;
+  idNumber: string;
+  healthInsurance: string;
+  healthInsuranceNumber: string;
+  healthInsuranceEmergencyPhone: string;
+  emergencyContactName: string;
+  emergencyContactRelationship: string;
+  emergencyContactPhone: string;
+  birthdate: string;
+}
+
+export interface Country {
+  id: number;
+  name: string;
+}
+
+export interface State {
+  id: number;
+  name: string;
+  code: string;
 }
 
 export interface Paquete {

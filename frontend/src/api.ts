@@ -1,4 +1,4 @@
-import type { UserInfo, Turno, MiTurno, PaquetesData } from "./types";
+import type { UserInfo, Turno, MiTurno, PaquetesData, Profile, Country, State } from "./types";
 
 async function api<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(path, { credentials: "include", ...options });
@@ -34,4 +34,13 @@ export const apiClient = {
   reservar: (eventId: number) =>
     api<{ ok: boolean }>(`/api/turnos/${eventId}/reservar`, { method: "POST" }),
   paquetes: () => api<{ data: PaquetesData }>("/api/paquetes"),
+  profile: () => api<Profile>("/api/me/profile"),
+  updateProfile: (data: Partial<Profile>) =>
+    api<{ ok: boolean }>("/api/me/profile", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    }),
+  countries: () => api<{ data: Country[] }>("/api/me/countries"),
+  states: (countryId: number) => api<{ data: State[] }>(`/api/me/states?country_id=${countryId}`),
 };
