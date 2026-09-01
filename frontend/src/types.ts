@@ -94,7 +94,7 @@ export interface Paquete {
   nombre: string; // "MAP-XXXXX"
   descripcion: string; // tipo de paquete
   producto: string | null;
-  estado: "active" | "completed" | "cancelled" | "draft" | "expired";
+  estado: "active" | "completed" | "cancelled" | "draft" | "expired" | "pending";
   estadoLabel: string;
   creditosTotales: number;
   creditosDisponibles: number;
@@ -107,5 +107,6 @@ export interface Paquete {
 
 export interface PaquetesData {
   activos: Paquete[];
+  pendientes: Paquete[];
   historial: Paquete[];
 }

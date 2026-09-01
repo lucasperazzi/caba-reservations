@@ -477,7 +477,7 @@ export interface OdooRegistration {
 export interface OdooAccessPackage {
   id: number;
   name: string; // "MAP-XXXXX"
-  state: "active" | "completed" | "cancelled" | "draft" | "expired";
+  state: "active" | "completed" | "cancelled" | "draft" | "expired" | "pending";
   access_credits: number; // créditos totales
   remaining_credits: number; // créditos disponibles
   date_start: string; // "YYYY-MM-DD"

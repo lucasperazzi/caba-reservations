@@ -14,11 +14,12 @@ paquetes.get("/", async (c) => {
     const normalized = packages.map(normalizePaquete);
 
     const activos = normalized.filter((p) => p.estado === "active");
+    const pendientes = normalized.filter((p) => p.estado === "pending");
     const historial = normalized
-      .filter((p) => p.estado !== "active")
+      .filter((p) => p.estado !== "active" && p.estado !== "pending")
       .slice(0, 10);
 
-    return c.json({ data: { activos, historial } });
+    return c.json({ data: { activos, pendientes, historial } });
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Error al obtener paquetes";
     return c.json({ error: msg }, 500);
@@ -33,6 +34,7 @@ const estadoLabel: Record<string, string> = {
   cancelled: "Cancelado",
   draft: "Borrador",
   expired: "Expirado",
+  pending: "Pendiente",
 };
 
 function normalizePaquete(p: OdooAccessPackage) {

@@ -18,6 +18,7 @@ export function PaquetesPage() {
   const { data, isLoading } = useQuery({ queryKey: ["paquetes"], queryFn: apiClient.paquetes });
 
   const activos = data?.data.activos ?? [];
+  const pendientes = data?.data.pendientes ?? [];
   const historial = data?.data.historial ?? [];
 
   return (
@@ -28,7 +29,7 @@ export function PaquetesPage() {
 
         {isLoading && <p className="text-neutral-300">Cargando…</p>}
 
-        {!isLoading && activos.length === 0 && historial.length === 0 && (
+        {!isLoading && activos.length === 0 && pendientes.length === 0 && historial.length === 0 && (
           <p className="text-sm text-neutral-300">No tenés paquetes de acceso.</p>
         )}
 
@@ -39,6 +40,20 @@ export function PaquetesPage() {
             <div className="bg-black/40 p-4 backdrop-blur-md">
               {activos.map((p, i) => (
                 <PaqueteRow key={p.id} p={p} index={i} total={activos.length} activo />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Pendientes de uso — solo si hay */}
+        {!isLoading && pendientes.length > 0 && (
+          <section>
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">
+              Pendientes de uso
+            </h3>
+            <div className="bg-black/40 p-4 backdrop-blur-md">
+              {pendientes.map((p, i) => (
+                <PaqueteRow key={p.id} p={p} index={i} total={pendientes.length} />
               ))}
             </div>
           </section>
@@ -66,6 +81,7 @@ const estadoColor: Record<string, string> = {
   cancelled: "text-red-400",
   draft: "text-neutral-300",
   expired: "text-amber-400",
+  pending: "text-sky-400",
 };
 
 const estadoHold: Record<string, string> = {
@@ -74,6 +90,7 @@ const estadoHold: Record<string, string> = {
   cancelled: "/holds-png/red-round.png",
   draft: "/holds-png/hold-14.png",
   expired: "/holds-png/hold-03.png",
+  pending: "/holds-png/hold-01.png",
 };
 
 function PaqueteRow({ p, index, total, activo }: { p: Paquete; index: number; total: number; activo?: boolean }) {
