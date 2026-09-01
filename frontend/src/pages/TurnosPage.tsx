@@ -48,6 +48,19 @@ export function TurnosPage() {
     queryFn: () => apiClient.turnos(desde, hastaStr),
   });
 
+  // Traer los turnos reservados del usuario para marcarlos en la lista
+  const { data: misTurnosData } = useQuery({
+    queryKey: ["mis-turnos"],
+    queryFn: apiClient.misTurnos,
+  });
+  const eventosReservados = useMemo(() => {
+    const ids = new Set<number>();
+    for (const mt of misTurnosData?.data ?? []) {
+      if (mt.estado === "open") ids.add(mt.evento.id);
+    }
+    return ids;
+  }, [misTurnosData]);
+
   const turnos = useMemo(() => {
     let all = data?.data ?? [];
     if (sede !== "todas") all = all.filter((t) => t.nombre.toLowerCase().includes(sede));
@@ -195,6 +208,7 @@ export function TurnosPage() {
                     onToggleFavorito={() => toggleFavorito(t.nombre)}
                     onReservar={() => { setReservaOk(false); setReservaError(""); setTurnoAReservar(t); }}
                     highlight={highlightName ? t.nombre.startsWith(highlightName) : false}
+                    yaReservado={eventosReservados.has(t.id)}
                   />
                 ))}
               </div>
@@ -291,6 +305,7 @@ function TurnoRow({
   esFavorito,
   onToggleFavorito,
   highlight,
+  yaReservado,
 }: {
   turno: Turno;
   index: number;
@@ -299,6 +314,7 @@ function TurnoRow({
   esFavorito: boolean;
   onToggleFavorito: () => void;
   highlight?: boolean;
+  yaReservado?: boolean;
 }) {
   const disabled = turno.cuposLibres <= 0;
   const indexLabel = String(index + 1).padStart(2, "0");
@@ -316,9 +332,11 @@ function TurnoRow({
     ? "cursor-not-allowed opacity-40"
     : highlight
       ? "cursor-pointer ring-2 ring-inset ring-emerald-400 bg-emerald-400/10 hover:bg-emerald-400/20"
-      : esFavorito
-        ? "cursor-pointer ring-1 ring-inset ring-amber-400/70 bg-amber-400/5 hover:bg-amber-400/10 hover:ring-amber-400"
-        : "cursor-pointer hover:bg-white/[0.06]";
+      : yaReservado
+        ? "cursor-pointer ring-1 ring-inset ring-amber-400 bg-amber-400/10 hover:bg-amber-400/20"
+        : esFavorito
+          ? "cursor-pointer ring-1 ring-inset ring-amber-400/70 bg-amber-400/5 hover:bg-amber-400/10 hover:ring-amber-400"
+          : "cursor-pointer hover:bg-white/[0.06]";
 
   return (
     <div
@@ -332,9 +350,16 @@ function TurnoRow({
       </span>
 
       <div className="min-w-0">
-        <p className="break-words text-lg font-bold leading-tight tracking-tight text-white sm:text-xl">
-          {turno.nombre}
-        </p>
+        <div className="flex items-center gap-2">
+          <p className="break-words text-lg font-bold leading-tight tracking-tight text-white sm:text-xl">
+            {turno.nombre}
+          </p>
+          {yaReservado && (
+            <span className="flex-shrink-0 rounded-sm bg-amber-400/20 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-400">
+              Reservado
+            </span>
+          )}
+        </div>
         <p className="mt-1 text-xs text-neutral-300">
           {turno.inicio.slice(11, 16)}–{turno.fin.slice(11, 16)} hs ·{" "}
           <span style={{ color: cupoColor(turno.cuposLibres, turno.cuposMax) }} className="font-semibold">
