@@ -42,6 +42,17 @@ export const config = {
       .filter(Boolean),
   },
 
+  /**
+   * Favoritos: emails habilitados a usar la feature de favoritos en turnos.
+   * Coma-separado en FAVORITOS_ALLOWLIST. Vacío = nadie (feature apagada).
+   */
+  favoritos: {
+    allowlist: (process.env.FAVORITOS_ALLOWLIST ?? "")
+      .split(",")
+      .map((s) => s.trim().toLowerCase())
+      .filter(Boolean),
+  },
+
   /** Secreto para firmar la cookie de sesión. Obligatorio en producción. */
   sessionSecret: process.env.SESSION_SECRET ?? "dev-secret-change-me",
 
@@ -78,6 +89,12 @@ export function canReserve(email?: string): boolean {
   if (!email) return false;
   if (config.reservas.allowlist.length === 0) return true;
   return config.reservas.allowlist.includes(email.toLowerCase());
+}
+
+/** ¿El email está habilitado a usar favoritos? Vacío = feature apagada. */
+export function canUseFavoritos(email?: string): boolean {
+  if (!email) return false;
+  return config.favoritos.allowlist.includes(email.toLowerCase());
 }
 
 function loadDotEnv() {

@@ -119,7 +119,7 @@ function PaqueteCompacto({ p }: { p: Paquete }) {
   return (
     <div className="py-3.5 first:pt-0 last:pb-0">
       <div className="flex items-baseline justify-between gap-3">
-        <p className="truncate text-lg font-bold tracking-tight text-white sm:text-xl">{p.descripcion}</p>
+        <p className="text-lg font-bold leading-tight tracking-tight text-white sm:text-xl">{p.descripcion}</p>
         <span className={`flex-shrink-0 text-sm font-semibold ${alerta ? "text-amber-400" : "text-neutral-300"}`}>
           {p.creditosDisponibles}/{p.creditosTotales}
         </span>
