@@ -55,10 +55,12 @@ En **prod (Vercel)** estas vars se cargan en Settings → Environment Variables 
 
 ## Reservas (allowlist)
 
-La reserva online de turnos está habilitada **solo para los emails de una allowlist**, no para todos.
+La reserva online de turnos está controlada por una allowlist de emails.
 
-- Var de entorno: `RESERVAS_ALLOWLIST` (emails coma-separados; vacío = nadie puede reservar).
-  Ej: `RESERVAS_ALLOWLIST=lucasperazzi98@gmail.com,otro@mail.com`
-- **Barrera real en el backend**: `POST /api/turnos/:id/reservar` rechaza con 403 si el email no está en la lista (`canReserve()` en `config.ts`).
+- Var de entorno: `RESERVAS_ALLOWLIST` (emails coma-separados).
+  - **Vacío = reservas abiertas a todos** los usuarios logueados.
+  - Con emails cargados, solo esos pueden reservar.
+  - Ej: `RESERVAS_ALLOWLIST=lucasperazzi98@gmail.com,otro@mail.com`
+- **Barrera real en el backend**: `POST /api/turnos/:id/reservar` rechaza con 403 si el email no está habilitado (`canReserve()` en `config.ts`).
 - **Frontend**: el backend expone `puedeReservar` en `/api/me` y en el login; `TurnosPage` usa ese flag para habilitar/deshabilitar el botón de confirmar.
-- Para habilitar a más gente, agregá su email a `RESERVAS_ALLOWLIST` (en `backend/.env` para dev y en Vercel para prod) y reiniciá/redeployá. No hace falta tocar código.
+- Para restringir el acceso, agregá emails a `RESERVAS_ALLOWLIST` (en `backend/.env` para dev y en Vercel para prod) y reiniciá/redeployá. Para abrir a todos, dejá la var vacía. No hace falta tocar código.

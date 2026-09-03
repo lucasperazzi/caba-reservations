@@ -32,7 +32,7 @@ export const config = {
 
   /**
    * Reservas: emails habilitados a reservar turnos online.
-   * Coma-separado en RESERVAS_ALLOWLIST. Vacío = nadie puede reservar.
+   * Coma-separado en RESERVAS_ALLOWLIST. Vacío = reservas abiertas a todos.
    * Ej: RESERVAS_ALLOWLIST=lucasperazzi98@gmail.com,otro@mail.com
    */
   reservas: {
@@ -72,9 +72,11 @@ export function isSignupEnabled(): boolean {
   return config.features.signup;
 }
 
-/** ¿El email está habilitado a reservar turnos online? */
+/** ¿El email está habilitado a reservar turnos online?
+ *  Allowlist vacía = reservas abiertas a todos. */
 export function canReserve(email?: string): boolean {
   if (!email) return false;
+  if (config.reservas.allowlist.length === 0) return true;
   return config.reservas.allowlist.includes(email.toLowerCase());
 }
 

@@ -55,8 +55,15 @@ turnos.post("/:id/reservar", async (c) => {
     await odoo.registerForEvent(eventId);
     return c.json({ ok: true });
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "Error al reservar";
-    return c.json({ error: msg }, 500);
+    // Logueamos el error real para diagnosticar en Vercel, pero al
+    // cliente le devolvemos un mensaje genérico para no filtrar detalles.
+    console.error("[reservar] Error inesperado:", {
+      eventId,
+      email: user.email,
+      error: err instanceof Error ? err.message : String(err),
+      stack: err instanceof Error ? err.stack : undefined,
+    });
+    return c.json({ error: "Error al reservar." }, 500);
   }
 });
 
