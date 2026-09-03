@@ -75,7 +75,7 @@ export function MisTurnosPage() {
                     onClick={() => repetirProximaSemana(proximo)}
                     className={BTN_CLASS}
                   >
-                    Repetir semana
+                    Repetir próxima semana
                   </button>
                   <button
                     onClick={() => generarICS(proximo)}
@@ -226,7 +226,7 @@ function MiTurnoRow({ t, onRepetir, onAgregarCalendario }: {
         <div className="mt-2 flex gap-2">
           {onRepetir && (
             <button onClick={onRepetir} className={BTN_CLASS}>
-              Repetir semana
+              Repetir próxima semana
             </button>
           )}
           {onAgregarCalendario && (
