@@ -59,15 +59,15 @@ export function MisTurnosPage() {
 
         {isLoading && <p className="text-neutral-300">Cargando…</p>}
 
-        {/* Próximo turno: caja destacada, distinta a los items de lista */}
+        {/* Próximo turno: barra lateral, igual que el resto de las cards */}
         {!isLoading && (
-          <section className={`border-2 bg-neutral-950 p-6 ${proximo ? "border-emerald-400" : "border-white"}`}>
-            <h3 className={`mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider sm:text-sm ${proximo ? "text-emerald-400" : "text-neutral-200"}`}>
-              {proximo && <img src="/holds-png/green-round.png" alt="" className="inline-block h-3.5 w-3.5 object-contain sm:h-4 sm:w-4" />}
+          <section className={`border-l-4 bg-black/40 p-4 backdrop-blur-md ${proximo ? "border-blue-600" : "border-neutral-700"}`}>
+            <h3 className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider sm:text-sm ${proximo ? "text-blue-500" : "text-neutral-200"}`}>
+              {proximo && <img src="/holds-png/hold-21.png" alt="" className="inline-block h-3.5 w-3.5 object-contain sm:h-4 sm:w-4" />}
               Turno reservado más cercano:
             </h3>
             {proximo ? (
-              <div>
+              <div className="mt-3">
                 <p className="text-xl font-bold leading-tight tracking-tight text-white sm:text-2xl">{nombreLargo(proximo.evento.nombre)}</p>
                 <p className="mt-1 text-sm capitalize text-neutral-300">{fechaLarga(proximo.fecha!)}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
@@ -86,9 +86,9 @@ export function MisTurnosPage() {
                 </div>
               </div>
             ) : (
-              <div>
+              <div className="mt-3">
                 <p className="text-sm text-neutral-300">No tenés turnos reservados.</p>
-                <Link to="/turnos" className="mt-3 inline-block text-sm font-semibold text-emerald-400 hover:text-emerald-300">
+                <Link to="/turnos" className="mt-3 inline-block text-sm font-semibold text-blue-500 hover:text-blue-400">
                   Reservar un turno →
                 </Link>
               </div>
@@ -127,7 +127,7 @@ export function MisTurnosPage() {
 // ── Estilos compartidos ────────────────────────────────────────
 
 const BTN_CLASS =
-  "whitespace-nowrap border border-emerald-400/40 px-2 py-1 text-[10px] font-semibold text-emerald-400 transition-colors hover:border-emerald-400 hover:bg-emerald-400/10 cursor-pointer";
+  "whitespace-nowrap border border-white/40 px-2 py-1 text-[10px] font-semibold text-white transition-colors hover:border-white hover:bg-white/10 cursor-pointer";
 
 // ── Generador de .ics ─────────────────────────────────────────
 

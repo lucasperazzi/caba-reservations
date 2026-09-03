@@ -44,7 +44,7 @@ export function HomePage() {
         </h2>
 
         {/* Próximo turno — llamativo, con acento azul */}
-        <section className={`mt-16 border-l-4 pl-5 sm:mt-20 sm:pl-6 ${proximo ? "border-blue-600" : "border-neutral-700"}`}>
+        <section className={`mt-16 border-l-4 bg-black/40 p-4 backdrop-blur-md sm:mt-20 ${proximo ? "border-blue-600" : "border-neutral-700"}`}>
           <h3 className={`flex items-center gap-2 text-sm font-semibold uppercase tracking-wider ${proximo ? "text-blue-500" : "text-neutral-200"}`}>
             {proximo && <img src="/holds-png/hold-21.png" alt="" className="inline-block h-4 w-4 object-contain" />}
             Tu próximo turno
@@ -68,7 +68,7 @@ export function HomePage() {
         </section>
 
         {/* Paquetes activos — resumido */}
-        <section className={`mt-12 border-l-4 pl-5 sm:pl-6 ${paquetesActivos.length > 0 ? "border-emerald-400" : "border-neutral-700"}`}>
+        <section className={`mt-12 border-l-4 bg-black/40 p-4 backdrop-blur-md ${paquetesActivos.length > 0 ? "border-emerald-400" : "border-neutral-700"}`}>
           <h3 className={`flex items-center gap-2 text-sm font-semibold uppercase tracking-wider ${paquetesActivos.length > 0 ? "text-emerald-400" : "text-neutral-200"}`}>
             {paquetesActivos.length > 0 && <img src="/holds-png/hold-05.png" alt="" className="inline-block h-4 w-4 object-contain" />}
             Paquetes activos

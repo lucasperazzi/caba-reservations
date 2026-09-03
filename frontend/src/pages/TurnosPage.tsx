@@ -112,7 +112,6 @@ export function TurnosPage() {
       setReservaOk(true);
       qc.invalidateQueries({ queryKey: ["turnos"] });
       qc.invalidateQueries({ queryKey: ["mis-turnos"] });
-      setTimeout(() => setTurnoAReservar(null), 1500);
     } catch (err) {
       setReservaError(err instanceof Error ? err.message : "Error al reservar");
     } finally {
@@ -242,6 +241,10 @@ export function TurnosPage() {
               <div className="text-center">
                 <img src="/holds-png/green-round.png" alt="" className="mx-auto h-12 w-12 object-contain" />
                 <p className="mt-3 text-lg font-bold text-white">¡Reserva confirmada!</p>
+                <button
+                  onClick={() => setTurnoAReservar(null)}
+                  className="mt-6 w-full border border-white/20 px-4 py-2 text-sm font-bold uppercase tracking-wider transition-colors hover:border-white"
+                >Entendido</button>
               </div>
             ) : (
               <>
