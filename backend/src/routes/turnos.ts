@@ -89,5 +89,8 @@ function normalizeMiTurno(r: OdooRegistration) {
     estado: r.state,
     create_date: r.create_date,
     evento: { id: r.event_id[0], nombre: r.event_id[1] },
+    // Fechas del evento en hora argentina (para generar .ics en el frontend).
+    inicio: r.event_begin ? toArgentinaISO(r.event_begin) : undefined,
+    fin: r.event_end ? toArgentinaISO(r.event_end) : undefined,
   };
 }

@@ -298,21 +298,37 @@ export class OdooClient {
     if (!info) throw new OdooError("No autenticado", "session");
 
     const domain = [[["partner_id.email", "=", info.email]]];
-    const fields = [
-      "id",
-      "event_id",
-      "state",
-      "create_date",
-      "name",
-    ];
+    const fields = ["id", "event_id", "state", "create_date", "name"];
 
-    const result = await this.callKw(
+    const regs = await this.callKw(
       "event.registration",
       "search_read",
       [domain[0], fields],
       { order: "create_date desc", limit: 50 },
-    );
-    return result as OdooRegistration[];
+    ) as OdooRegistration[];
+
+    // Enriquecer con las fechas del evento para poder generar links de calendario.
+    const eventIds = [...new Set(regs.map((r) => r.event_id[0]))];
+    if (eventIds.length > 0) {
+      try {
+        const events = await this.callKw("event.event", "read", [
+          eventIds,
+          ["date_begin", "date_end"],
+        ]) as Array<{ id: number; date_begin: string; date_end: string }>;
+        const byId = new Map(events.map((e) => [e.id, e]));
+        for (const reg of regs) {
+          const ev = byId.get(reg.event_id[0]);
+          if (ev) {
+            reg.event_begin = ev.date_begin;
+            reg.event_end = ev.date_end;
+          }
+        }
+      } catch {
+        // Si falla el enriquecimiento, devolvemos igual sin fechas.
+      }
+    }
+
+    return regs;
   }
 
   /** Lee los paquetes de acceso del usuario actual (climbing_gym.member_access_package). */
@@ -472,6 +488,10 @@ export interface OdooRegistration {
   state: "open" | "done" | "cancel";
   create_date: string;
   name: string;
+  /** Fecha/hora de inicio del evento en UTC ("YYYY-MM-DD HH:MM:SS"), enriquecido post-fetch. */
+  event_begin?: string;
+  /** Fecha/hora de fin del evento en UTC ("YYYY-MM-DD HH:MM:SS"), enriquecido post-fetch. */
+  event_end?: string;
 }
 
 export interface OdooAccessPackage {

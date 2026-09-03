@@ -18,6 +18,9 @@ export interface MiTurno {
   estado: "open" | "done" | "cancel";
   create_date: string;
   evento: { id: number; nombre: string };
+  /** Hora argentina "YYYY-MM-DDTHH:mm:ss" — disponible para generar .ics */
+  inicio?: string;
+  fin?: string;
 }
 
 export interface UserInfo {

@@ -70,12 +70,20 @@ export function MisTurnosPage() {
               <div>
                 <p className="text-2xl font-bold leading-tight tracking-tight text-white">{nombreLargo(proximo.evento.nombre)}</p>
                 <p className="mt-1 text-sm capitalize text-neutral-300">{fechaLarga(proximo.fecha!)}</p>
-                <button
-                  onClick={() => repetirProximaSemana(proximo)}
-                  className="mt-2 text-xs font-semibold text-emerald-400 transition-colors hover:text-emerald-300"
-                >
-                  Repetir próxima semana →
-                </button>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button
+                    onClick={() => repetirProximaSemana(proximo)}
+                    className={BTN_CLASS}
+                  >
+                    Repetir próxima semana
+                  </button>
+                  <button
+                    onClick={() => generarICS(proximo)}
+                    className={BTN_CLASS}
+                  >
+                    Agregar al calendario
+                  </button>
+                </div>
               </div>
             ) : (
               <div>
@@ -94,7 +102,7 @@ export function MisTurnosPage() {
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">Próximos turnos reservados</h3>
             <div className="bg-black/40 p-4 backdrop-blur-md">
               {siguientes.map((t, i) => (
-                <MiTurnoRow key={t.registrationId} t={t} index={i} total={siguientes.length} onRepetir={() => repetirProximaSemana(t)} />
+                <MiTurnoRow key={t.registrationId} t={t} index={i} total={siguientes.length} onRepetir={() => repetirProximaSemana(t)} onAgregarCalendario={() => generarICS(t)} />
               ))}
             </div>
           </section>
@@ -116,6 +124,65 @@ export function MisTurnosPage() {
   );
 }
 
+// ── Estilos compartidos ────────────────────────────────────────
+
+const BTN_CLASS =
+  "border border-emerald-400/40 px-3 py-1.5 text-xs font-semibold text-emerald-400 transition-colors hover:border-emerald-400 hover:bg-emerald-400/10 cursor-pointer";
+
+// ── Generador de .ics ─────────────────────────────────────────
+
+function generarICS(t: MiTurno & { fecha: Date }) {
+  const nombre = nombreLargo(t.evento.nombre);
+  const sede = nombre.toLowerCase().includes("bucarelli")
+    ? "CABA Bucarelli"
+    : nombre.toLowerCase().includes("centro")
+    ? "CABA Centro"
+    : "CABA";
+
+  const uid = `${t.registrationId}-${t.evento.id}@caba-reservations`;
+  const escape = (s: string) => s.replace(/[\\;,]/g, (c) => `\\${c}`);
+
+  const lines: string[] = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//CABA Reservations//ES",
+    "BEGIN:VEVENT",
+    `UID:${uid}`,
+    `SUMMARY:${escape(nombre)}`,
+    `LOCATION:${escape(sede)}`,
+  ];
+
+  if (t.inicio && t.fin) {
+    // Convertir hora argentina "YYYY-MM-DDTHH:mm:ss" → UTC "YYYYMMDDTHHmmssZ"
+    // Argentina no tiene DST, siempre UTC-3.
+    const toUTC = (argIso: string) =>
+      new Date(argIso + "-03:00").toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+    lines.push(`DTSTART:${toUTC(t.inicio)}`, `DTEND:${toUTC(t.fin)}`);
+  } else {
+    // Fallback: evento de día completo si no hay hora
+    const p = (n: number) => String(n).padStart(2, "0");
+    const d = t.fecha;
+    const ds = `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}`;
+    const nd = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);
+    const ns = `${nd.getFullYear()}${p(nd.getMonth() + 1)}${p(nd.getDate())}`;
+    lines.push(`DTSTART;VALUE=DATE:${ds}`, `DTEND;VALUE=DATE:${ns}`);
+  }
+
+  lines.push("END:VEVENT", "END:VCALENDAR");
+
+  const blob = new Blob([lines.join("\r\n") + "\r\n"], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  const p = (n: number) => String(n).padStart(2, "0");
+  const d = t.fecha;
+  a.download = `turno-caba-${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}.ics`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 const estadoColor: Record<string, string> = {
   open: "text-emerald-400",
   done: "text-neutral-300",
@@ -134,7 +201,13 @@ const estadoLabel: Record<string, string> = {
   cancel: "Cancelado",
 };
 
-function MiTurnoRow({ t, index, total, onRepetir }: { t: MiTurno & { fecha: Date }; index: number; total: number; onRepetir?: () => void }) {
+function MiTurnoRow({ t, index, total, onRepetir, onAgregarCalendario }: {
+  t: MiTurno & { fecha: Date };
+  index: number;
+  total: number;
+  onRepetir?: () => void;
+  onAgregarCalendario?: () => void;
+}) {
   const indexLabel = String(index + 1).padStart(2, "0");
   const totalLabel = String(total).padStart(2, "0");
 
@@ -150,13 +223,19 @@ function MiTurnoRow({ t, index, total, onRepetir }: { t: MiTurno & { fecha: Date
           {nombreLargo(t.evento.nombre)}
         </p>
         <p className="mt-1 text-xs capitalize text-neutral-300">{fechaLarga(t.fecha)}</p>
-        {onRepetir && (
-          <button
-            onClick={onRepetir}
-            className="mt-2 text-xs font-semibold text-emerald-400 transition-colors hover:text-emerald-300"
-          >
-            Repetir próxima semana →
-          </button>
+        {(onRepetir || onAgregarCalendario) && (
+          <div className="mt-2 flex flex-wrap gap-2">
+            {onRepetir && (
+              <button onClick={onRepetir} className={BTN_CLASS}>
+                Repetir próxima semana
+              </button>
+            )}
+            {onAgregarCalendario && (
+              <button onClick={onAgregarCalendario} className={BTN_CLASS}>
+                Agregar al calendario
+              </button>
+            )}
+          </div>
         )}
       </div>
 
