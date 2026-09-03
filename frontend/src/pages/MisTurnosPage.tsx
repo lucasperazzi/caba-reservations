@@ -68,14 +68,14 @@ export function MisTurnosPage() {
             </h3>
             {proximo ? (
               <div>
-                <p className="text-2xl font-bold leading-tight tracking-tight text-white">{nombreLargo(proximo.evento.nombre)}</p>
+                <p className="text-xl font-bold leading-tight tracking-tight text-white sm:text-2xl">{nombreLargo(proximo.evento.nombre)}</p>
                 <p className="mt-1 text-sm capitalize text-neutral-300">{fechaLarga(proximo.fecha!)}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <button
                     onClick={() => repetirProximaSemana(proximo)}
                     className={BTN_CLASS}
                   >
-                    Repetir próxima semana
+                    Repetir semana
                   </button>
                   <button
                     onClick={() => generarICS(proximo)}
@@ -101,8 +101,8 @@ export function MisTurnosPage() {
           <section>
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">Próximos turnos reservados</h3>
             <div className="bg-black/40 p-4 backdrop-blur-md">
-              {siguientes.map((t, i) => (
-                <MiTurnoRow key={t.registrationId} t={t} index={i} total={siguientes.length} onRepetir={() => repetirProximaSemana(t)} onAgregarCalendario={() => generarICS(t)} />
+              {siguientes.map((t) => (
+                <MiTurnoRow key={t.registrationId} t={t} onRepetir={() => repetirProximaSemana(t)} onAgregarCalendario={() => generarICS(t)} />
               ))}
             </div>
           </section>
@@ -113,8 +113,8 @@ export function MisTurnosPage() {
           <section>
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">Historial</h3>
             <div className="bg-black/40 p-4 backdrop-blur-md">
-              {historial.map((t, i) => (
-                <MiTurnoRow key={t.registrationId} t={t} index={i} total={historial.length} />
+              {historial.map((t) => (
+                <MiTurnoRow key={t.registrationId} t={t} />
               ))}
             </div>
           </section>
@@ -127,7 +127,7 @@ export function MisTurnosPage() {
 // ── Estilos compartidos ────────────────────────────────────────
 
 const BTN_CLASS =
-  "border border-emerald-400/40 px-3 py-1.5 text-xs font-semibold text-emerald-400 transition-colors hover:border-emerald-400 hover:bg-emerald-400/10 cursor-pointer";
+  "whitespace-nowrap border border-emerald-400/40 px-2 py-1 text-[10px] font-semibold text-emerald-400 transition-colors hover:border-emerald-400 hover:bg-emerald-400/10 cursor-pointer";
 
 // ── Generador de .ics ─────────────────────────────────────────
 
@@ -201,48 +201,41 @@ const estadoLabel: Record<string, string> = {
   cancel: "Cancelado",
 };
 
-function MiTurnoRow({ t, index, total, onRepetir, onAgregarCalendario }: {
+function MiTurnoRow({ t, onRepetir, onAgregarCalendario }: {
   t: MiTurno & { fecha: Date };
-  index: number;
-  total: number;
   onRepetir?: () => void;
   onAgregarCalendario?: () => void;
 }) {
-  const indexLabel = String(index + 1).padStart(2, "0");
-  const totalLabel = String(total).padStart(2, "0");
-
   return (
-    <div className="group grid grid-cols-[auto_1fr_auto] items-center gap-x-3 border-t border-white px-3 py-4 transition-colors first:border-t-0 sm:gap-x-4">
-      <span className="min-w-[3.5ch] self-start text-xs font-bold tracking-wide text-neutral-400">
-        {indexLabel}
-        <span className="opacity-60">/{totalLabel}</span>
-      </span>
+    <div className="border-t border-white px-3 py-4 transition-colors first:border-t-0">
+      <div className="grid grid-cols-[1fr_auto] items-center gap-x-3 sm:gap-x-4">
+        <div className="min-w-0">
+          <p className="break-words text-base font-bold leading-tight tracking-tight text-white sm:text-xl">
+            {nombreLargo(t.evento.nombre)}
+          </p>
+          <p className="mt-1 text-xs capitalize text-neutral-300">{fechaLarga(t.fecha)}</p>
+        </div>
 
-      <div className="min-w-0">
-        <p className="break-words text-lg font-bold leading-tight tracking-tight text-white sm:text-xl">
-          {nombreLargo(t.evento.nombre)}
-        </p>
-        <p className="mt-1 text-xs capitalize text-neutral-300">{fechaLarga(t.fecha)}</p>
-        {(onRepetir || onAgregarCalendario) && (
-          <div className="mt-2 flex flex-wrap gap-2">
-            {onRepetir && (
-              <button onClick={onRepetir} className={BTN_CLASS}>
-                Repetir próxima semana
-              </button>
-            )}
-            {onAgregarCalendario && (
-              <button onClick={onAgregarCalendario} className={BTN_CLASS}>
-                Agregar al calendario
-              </button>
-            )}
-          </div>
-        )}
+        <span className={`flex items-center gap-1.5 self-start text-[10px] font-semibold uppercase tracking-wider sm:text-xs ${estadoColor[t.estado] ?? "text-neutral-300"}`}>
+          <img src={estadoHold[t.estado] ?? "/holds-png/hold-14.png"} alt="" className="h-3 w-3 object-contain sm:h-3.5 sm:w-3.5" />
+          {estadoLabel[t.estado] ?? t.estado}
+        </span>
       </div>
 
-      <span className={`flex items-center gap-1.5 self-start text-xs font-semibold uppercase tracking-wider ${estadoColor[t.estado] ?? "text-neutral-300"}`}>
-        <img src={estadoHold[t.estado] ?? "/holds-png/hold-14.png"} alt="" className="h-3.5 w-3.5 object-contain" />
-        {estadoLabel[t.estado] ?? t.estado}
-      </span>
+      {(onRepetir || onAgregarCalendario) && (
+        <div className="mt-2 flex gap-2">
+          {onRepetir && (
+            <button onClick={onRepetir} className={BTN_CLASS}>
+              Repetir semana
+            </button>
+          )}
+          {onAgregarCalendario && (
+            <button onClick={onAgregarCalendario} className={BTN_CLASS}>
+              Agregar al calendario
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

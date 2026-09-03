@@ -38,8 +38,8 @@ export function PaquetesPage() {
           <section>
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">Activos</h3>
             <div className="bg-black/40 p-4 backdrop-blur-md">
-              {activos.map((p, i) => (
-                <PaqueteRow key={p.id} p={p} index={i} total={activos.length} activo />
+              {activos.map((p) => (
+                <PaqueteRow key={p.id} p={p} activo />
               ))}
             </div>
           </section>
@@ -52,8 +52,8 @@ export function PaquetesPage() {
               Pendientes de uso
             </h3>
             <div className="bg-black/40 p-4 backdrop-blur-md">
-              {pendientes.map((p, i) => (
-                <PaqueteRow key={p.id} p={p} index={i} total={pendientes.length} />
+              {pendientes.map((p) => (
+                <PaqueteRow key={p.id} p={p} />
               ))}
             </div>
           </section>
@@ -64,8 +64,8 @@ export function PaquetesPage() {
           <section>
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">Historial</h3>
             <div className="bg-black/40 p-4 backdrop-blur-md">
-              {historial.map((p, i) => (
-                <PaqueteRow key={p.id} p={p} index={i} total={historial.length} />
+              {historial.map((p) => (
+                <PaqueteRow key={p.id} p={p} />
               ))}
             </div>
           </section>
@@ -93,9 +93,7 @@ const estadoHold: Record<string, string> = {
   pending: "/holds-png/hold-01.png",
 };
 
-function PaqueteRow({ p, index, total, activo }: { p: Paquete; index: number; total: number; activo?: boolean }) {
-  const indexLabel = String(index + 1).padStart(2, "0");
-  const totalLabel = String(total).padStart(2, "0");
+function PaqueteRow({ p, activo }: { p: Paquete; activo?: boolean }) {
   const usados = p.creditosTotales - p.creditosDisponibles;
   const pct = p.creditosTotales > 0 ? (p.creditosDisponibles / p.creditosTotales) * 100 : 0;
 
@@ -104,14 +102,9 @@ function PaqueteRow({ p, index, total, activo }: { p: Paquete; index: number; to
   const vencCercano = diasVenc !== null && diasVenc >= 0 && diasVenc <= 7;
 
   return (
-    <div className={`group grid grid-cols-[auto_1fr_auto] items-center gap-x-3 border-t px-3 py-4 transition-colors first:border-t-0 sm:gap-x-4 ${activo ? "border-white" : "border-white"}`}>
-      <span className="min-w-[3.5ch] self-start text-xs font-bold tracking-wide text-neutral-400">
-        {indexLabel}
-        <span className="opacity-60">/{totalLabel}</span>
-      </span>
-
+    <div className={`group grid grid-cols-[1fr_auto] items-center gap-x-3 border-t px-3 py-4 transition-colors first:border-t-0 sm:gap-x-4 ${activo ? "border-white" : "border-white"}`}>
       <div className="min-w-0">
-        <p className="break-words text-lg font-bold leading-tight tracking-tight text-white sm:text-xl">
+        <p className="break-words text-base font-bold leading-tight tracking-tight text-white sm:text-xl">
           {p.descripcion}
         </p>
         <p className="mt-1 text-xs text-neutral-300">
@@ -143,8 +136,8 @@ function PaqueteRow({ p, index, total, activo }: { p: Paquete; index: number; to
       </div>
 
       <div className="flex items-center gap-2 self-start">
-        <span className={`flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider ${estadoColor[p.estado] ?? "text-neutral-300"}`}>
-          <img src={estadoHold[p.estado] ?? "/holds-png/hold-14.png"} alt="" className="h-3.5 w-3.5 object-contain" />
+        <span className={`flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider sm:text-xs ${estadoColor[p.estado] ?? "text-neutral-300"}`}>
+          <img src={estadoHold[p.estado] ?? "/holds-png/hold-14.png"} alt="" className="h-3 w-3 object-contain sm:h-3.5 sm:w-3.5" />
           {p.estadoLabel}
         </span>
       </div>
