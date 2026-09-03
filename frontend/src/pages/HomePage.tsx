@@ -37,7 +37,7 @@ export function HomePage() {
   return (
     <div className="min-h-screen">
       <Header user={user?.name ?? ""} userEmail={user?.email} onLogout={logout} />
-      <main className="mx-auto max-w-3xl px-4 pt-16 pb-10 sm:pt-24 sm:pb-16">
+      <main className="mx-auto max-w-5xl px-4 pt-16 pb-10 sm:pt-24 sm:pb-16">
         {/* Saludo directo sobre el fondo, sin caja */}
         <h2 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
           Hola, {primerNombre(user?.name)}
@@ -223,7 +223,7 @@ export function Header({ user, userEmail, onLogout }: { user: string; userEmail?
   return (
     <>
       <header className="border-b border-black bg-black">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
           <Link to="/" className="text-lg font-bold tracking-tight text-white">
             CABA
           </Link>

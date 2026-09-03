@@ -106,7 +106,7 @@ export function EditarPerfilPage() {
   return (
     <div className="min-h-screen">
       <Header user={user?.name ?? ""} userEmail={user?.email} onLogout={logout} />
-      <main className="mx-auto max-w-3xl px-4 pt-16 pb-10 sm:pt-20 sm:pb-16">
+      <main className="mx-auto max-w-5xl px-4 pt-16 pb-10 sm:pt-20 sm:pb-16">
         {isLoading && (
           <div className="flex justify-center py-20">
             <img src="/holds-png/hold-14.png" alt="" className="hold-spin h-8 w-8 object-contain" />

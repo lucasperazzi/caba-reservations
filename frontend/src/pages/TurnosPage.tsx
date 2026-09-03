@@ -122,7 +122,7 @@ export function TurnosPage() {
   return (
     <div className="min-h-screen">
       <Header user={user?.name ?? ""} userEmail={user?.email} onLogout={logout} />
-      <main className="mx-auto max-w-3xl px-4 py-8">
+      <main className="mx-auto max-w-5xl px-4 py-8">
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h2 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Turnos disponibles</h2>

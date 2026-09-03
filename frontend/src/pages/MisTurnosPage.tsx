@@ -54,7 +54,7 @@ export function MisTurnosPage() {
   return (
     <div className="min-h-screen">
       <Header user={user?.name ?? ""} userEmail={user?.email} onLogout={logout} />
-      <main className="mx-auto max-w-3xl space-y-6 px-4 py-8">
+      <main className="mx-auto max-w-5xl space-y-6 px-4 py-8">
         <h2 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Mis turnos</h2>
 
         {isLoading && <p className="text-neutral-300">Cargando…</p>}
