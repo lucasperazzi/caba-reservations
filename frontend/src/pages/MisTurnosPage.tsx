@@ -62,8 +62,8 @@ export function MisTurnosPage() {
         {/* Próximo turno: caja destacada, distinta a los items de lista */}
         {!isLoading && (
           <section className={`border-2 bg-neutral-950 p-6 ${proximo ? "border-emerald-400" : "border-white"}`}>
-            <h3 className={`mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider ${proximo ? "text-emerald-400" : "text-neutral-200"}`}>
-              {proximo && <img src="/holds-png/green-round.png" alt="" className="inline-block h-4 w-4 object-contain" />}
+            <h3 className={`mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider sm:text-sm ${proximo ? "text-emerald-400" : "text-neutral-200"}`}>
+              {proximo && <img src="/holds-png/green-round.png" alt="" className="inline-block h-3.5 w-3.5 object-contain sm:h-4 sm:w-4" />}
               Turno reservado más cercano:
             </h3>
             {proximo ? (
