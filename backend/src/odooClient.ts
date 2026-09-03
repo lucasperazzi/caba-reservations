@@ -466,9 +466,101 @@ export class OdooClient {
       throw new OdooError(`Error al confirmar reserva (HTTP ${confirmRes.status}): ${text.substring(0, 200)}`);
     }
   }
+
+  // ── Shop (catálogo) ───────────────────────────────────────────
+
+  /** Lee las categorías públicas del shop. */
+  async searchCategories(): Promise<OdooPublicCategory[]> {
+    const catIds = await this.callKw("product.public.category", "search", [[]]) as number[];
+    if (catIds.length === 0) return [];
+    const cats = await this.callKw("product.public.category", "read", [catIds, ["id", "name", "parent_id", "sequence"]]) as OdooPublicCategory[];
+    cats.sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0));
+    return cats;
+  }
+
+  /**
+   * Lee los productos publicados en el shop, opcionalmente filtrados por categoría.
+   * Incluye variantes con sus precios y atributos.
+   */
+  async searchProducts(categoryId?: number): Promise<{
+    products: OdooProductTemplate[];
+    variants: OdooProductVariant[];
+    attributes: OdooAttributeValue[];
+  }> {
+    const domain: unknown[] = [["website_published", "=", true]];
+    if (categoryId) domain.push(["public_categ_ids", "in", [categoryId]]);
+
+    const prodIds = await this.callKw("product.template", "search", [domain], {
+      order: "website_sequence asc, name asc",
+    }) as number[];
+    if (prodIds.length === 0) return { products: [], variants: [], attributes: [] };
+
+    const products = await this.callKw("product.template", "read", [prodIds, [
+      "id", "name", "list_price", "website_url", "website_sequence",
+      "public_categ_ids", "description", "description_sale",
+      "image_medium", "product_variant_ids",
+    ]]) as OdooProductTemplate[];
+
+    // Traer variantes
+    const allVariantIds = products.flatMap((p) => p.product_variant_ids);
+    let variants: OdooProductVariant[] = [];
+    let attributes: OdooAttributeValue[] = [];
+
+    if (allVariantIds.length > 0) {
+      variants = await this.callKw("product.product", "read", [allVariantIds, [
+        "id", "name", "list_price", "default_code", "product_tmpl_id", "attribute_value_ids",
+      ]]) as OdooProductVariant[];
+
+      // Traer los valores de atributos
+      const allAttrValueIds = [...new Set(variants.flatMap((v) => v.attribute_value_ids ?? []))];
+      if (allAttrValueIds.length > 0) {
+        attributes = await this.callKw("product.attribute.value", "read", [allAttrValueIds, [
+          "id", "name", "price_extra", "attribute_id",
+        ]]) as OdooAttributeValue[];
+      }
+    }
+
+    return { products, variants, attributes };
+  }
 }
 
 // ── Tipos de Odoo ──────────────────────────────────────────────
+
+export interface OdooPublicCategory {
+  id: number;
+  name: string;
+  parent_id: [number, string] | false;
+  sequence: number;
+}
+
+export interface OdooProductTemplate {
+  id: number;
+  name: string;
+  list_price: number;
+  website_url: string;
+  website_sequence: number;
+  public_categ_ids: number[];
+  description: string | false;
+  description_sale: string | false;
+  image_medium: string | false;
+  product_variant_ids: number[];
+}
+
+export interface OdooProductVariant {
+  id: number;
+  name: string;
+  list_price: number;
+  default_code: string | false;
+  product_tmpl_id: [number, string] | number;
+  attribute_value_ids: number[];
+}
+
+export interface OdooAttributeValue {
+  id: number;
+  name: string;
+  price_extra: number;
+  attribute_id: [number, string];
+}
 
 export interface OdooEvent {
   id: number;

@@ -90,9 +90,11 @@ export function HomePage() {
 
         {/* Navegación — estilo role-selector del portfolio */}
         <nav className="mt-20 border-t border-white/40 sm:mt-16">
-          {NAV_CARDS.map((item) => (
-            <NavRow key={item.to} to={item.to} title={item.title} desc={item.desc} hold={item.hold} />
-          ))}
+          {NAV_CARDS
+            .filter((item) => !item.featureFlag || user?.[item.featureFlag])
+            .map((item) => (
+              <NavRow key={item.to} to={item.to} title={item.title} desc={item.desc} hold={item.hold} />
+            ))}
         </nav>
       </main>
     </div>
@@ -148,6 +150,7 @@ const NAV_CARDS = [
   { to: "/turnos", title: "Turnos CABA", desc: "Ver y reservar", hold: "/holds-png/hold-15.png" },
   { to: "/mis-turnos", title: "Mis turnos", desc: "Turnos reservados", hold: "/holds-png/hold-16.png" },
   { to: "/paquetes", title: "Mis paquetes", desc: "Paquetes e historial", hold: "/holds-png/hold-02.png" },
+  { to: "/shop", title: "Catálogo", desc: "Productos y servicios", hold: "/holds-png/hold-03.png", featureFlag: "puedeVerCatalogo" as const },
 ];
 
 function NavRow({ to, title, desc, hold }: { to: string; title: string; desc: string; hold: string }) {
@@ -184,10 +187,12 @@ const NAV_ITEMS = [
   { to: "/turnos", label: "Turnos" },
   { to: "/mis-turnos", label: "Mis turnos" },
   { to: "/paquetes", label: "Paquetes" },
+  { to: "/shop", label: "Catálogo", featureFlag: "puedeVerCatalogo" as const },
   { to: "/mi-cuenta", label: "Mi cuenta" },
 ];
 
 export function Header({ user, userEmail, onLogout }: { user: string; userEmail?: string; onLogout: () => void }) {
+  const { user: userInfo } = useAuth();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
@@ -267,7 +272,9 @@ export function Header({ user, userEmail, onLogout }: { user: string; userEmail?
             onClick={(e) => e.stopPropagation()}
           >
             <nav className="flex flex-col items-start gap-1.5">
-              {NAV_ITEMS.map((item, i) => {
+              {NAV_ITEMS
+                .filter((item) => !item.featureFlag || userInfo?.[item.featureFlag])
+                .map((item, i) => {
                 const active = location.pathname === item.to;
                 return (
                   <Link

@@ -1,4 +1,4 @@
-import type { UserInfo, Turno, MiTurno, PaquetesData, Profile, Country, State } from "./types";
+import type { UserInfo, Turno, MiTurno, PaquetesData, Profile, Country, State, CategoriaShop, ProductoShop } from "./types";
 
 async function api<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(path, { credentials: "include", ...options });
@@ -43,4 +43,7 @@ export const apiClient = {
     }),
   countries: () => api<{ data: Country[] }>("/api/me/countries"),
   states: (countryId: number) => api<{ data: State[] }>(`/api/me/states?country_id=${countryId}`),
+  shopCategorias: () => api<{ data: CategoriaShop[] }>("/api/shop/categorias"),
+  shopProductos: (categoria?: number) =>
+    api<{ data: ProductoShop[] }>(`/api/shop/productos${categoria ? `?categoria=${categoria}` : ""}`),
 };

@@ -53,6 +53,17 @@ export const config = {
       .filter(Boolean),
   },
 
+  /**
+   * Catálogo (shop): emails habilitados a ver la feature de catálogo.
+   * Coma-separado en SHOP_ALLOWLIST. Vacío = nadie (feature apagada).
+   */
+  shop: {
+    allowlist: (process.env.SHOP_ALLOWLIST ?? "")
+      .split(",")
+      .map((s) => s.trim().toLowerCase())
+      .filter(Boolean),
+  },
+
   /** Secreto para firmar la cookie de sesión. Obligatorio en producción. */
   sessionSecret: process.env.SESSION_SECRET ?? "dev-secret-change-me",
 
@@ -95,6 +106,12 @@ export function canReserve(email?: string): boolean {
 export function canUseFavoritos(email?: string): boolean {
   if (!email) return false;
   return config.favoritos.allowlist.includes(email.toLowerCase());
+}
+
+/** ¿El email está habilitado a ver el catálogo? Vacío = feature apagada. */
+export function canSeeShop(email?: string): boolean {
+  if (!email) return false;
+  return config.shop.allowlist.includes(email.toLowerCase());
 }
 
 function loadDotEnv() {

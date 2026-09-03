@@ -6,6 +6,7 @@ import { HomePage } from "./pages/HomePage";
 import { MisTurnosPage } from "./pages/MisTurnosPage";
 import { TurnosPage } from "./pages/TurnosPage";
 import { PaquetesPage } from "./pages/PaquetesPage";
+import { ShopPage } from "./pages/ShopPage";
 import { MiCuentaPage } from "./pages/MiCuentaPage";
 import { EditarPerfilPage } from "./pages/EditarPerfilPage";
 
@@ -37,6 +38,7 @@ function App() {
       <Route path="/mis-turnos" element={<Protected><MisTurnosPage /></Protected>} />
       <Route path="/turnos" element={<Protected><TurnosPage /></Protected>} />
       <Route path="/paquetes" element={<Protected><PaquetesPage /></Protected>} />
+      <Route path="/shop" element={<Protected><ShopPage /></Protected>} />
       <Route path="/mi-cuenta" element={<Protected><MiCuentaPage /></Protected>} />
       <Route path="/mi-cuenta/editar" element={<Protected><EditarPerfilPage /></Protected>} />
       <Route path="*" element={<Navigate to="/" replace />} />

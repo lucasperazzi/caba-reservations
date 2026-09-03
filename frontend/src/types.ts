@@ -30,6 +30,7 @@ export interface UserInfo {
   username?: string;
   puedeReservar?: boolean;
   puedeUsarFavoritos?: boolean;
+  puedeVerCatalogo?: boolean;
   phone?: string;
   mobile?: string;
   street?: string;
@@ -113,4 +114,31 @@ export interface PaquetesData {
   activos: Paquete[];
   pendientes: Paquete[];
   historial: Paquete[];
+}
+
+export interface CategoriaShop {
+  id: number;
+  nombre: string;
+  parentId: number | null;
+}
+
+export interface VarianteProducto {
+  id: number;
+  precio: number;
+  codigo: string | null;
+  esSocio: boolean | null;
+  atributos: { nombre: string; valor: string; extra: number }[];
+}
+
+export interface ProductoShop {
+  id: number;
+  nombre: string;
+  descripcion: string | null;
+  descripcionVenta: string | null;
+  precioMin: number;
+  precioMax: number;
+  imagen: string | null;
+  websiteUrl: string;
+  categorias: number[];
+  variantes: VarianteProducto[];
 }

@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { requireAuth } from "../middleware.js";
-import { canReserve, canUseFavoritos } from "../config.js";
+import { canReserve, canUseFavoritos, canSeeShop } from "../config.js";
 
 export const me = new Hono();
 
@@ -78,6 +78,7 @@ me.get("/", async (c) => {
     username: user.username,
     puedeReservar: canReserve(user.email),
     puedeUsarFavoritos: canUseFavoritos(user.email),
+    puedeVerCatalogo: canSeeShop(user.email),
     ...partnerInfo,
   });
 });
