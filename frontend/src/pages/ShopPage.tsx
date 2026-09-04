@@ -350,19 +350,19 @@ function ProductoModal({
           {tieneVariantes && (
             <div>
               <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-200">Opciones</h4>
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 {variantes.map((v) => {
                   const attrsTexto = atributosVisibles(v).join(" · ");
                   const extra = v.atributos.reduce((sum, a) => sum + a.extra, 0);
                   return (
                     <div
                       key={v.id}
-                      className="flex items-center justify-between gap-3 border border-white/10 px-3 py-2"
+                      className="flex items-center justify-between gap-3 border-l-4 border-emerald-500 bg-white/[0.03] px-4 py-3"
                     >
                       <div className="min-w-0">
-                        <span className="text-sm text-white">{attrsTexto || "Estándar"}</span>
+                        <span className="text-sm font-medium text-white">{attrsTexto || "Estándar"}</span>
                       </div>
-                      <span className="flex-shrink-0 whitespace-nowrap text-sm font-semibold text-white">
+                      <span className="flex-shrink-0 whitespace-nowrap text-sm font-bold text-emerald-400">
                         {formatoPrecio(v.precio)}
                         {extra > 0 && (
                           <span className="ml-1 text-[10px] text-neutral-500">+${extra}</span>
@@ -377,9 +377,9 @@ function ProductoModal({
 
           {/* Producto sin variantes — mostrar precio único */}
           {!tieneVariantes && variantes.length === 1 && (
-            <div className="flex items-center justify-between border border-white/10 px-3 py-2">
-              <span className="text-sm text-white">Estándar</span>
-              <span className="flex-shrink-0 whitespace-nowrap text-sm font-semibold text-white">
+            <div className="flex items-center justify-between border-l-4 border-emerald-500 bg-white/[0.03] px-4 py-3">
+              <span className="text-sm font-medium text-white">Estándar</span>
+              <span className="flex-shrink-0 whitespace-nowrap text-sm font-bold text-emerald-400">
                 {formatoPrecio(variantes[0].precio)}
               </span>
             </div>
