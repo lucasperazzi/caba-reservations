@@ -14,6 +14,7 @@ const PARTNER_FIELDS = [
   "health_insurance", "health_insurance_number", "health_insurance_emergency_phone",
   "emergency_contact_name", "emergency_contact_relationship", "emergency_contact_phone",
   "birthdate_date", "image_small",
+  "climbing_gym_member_membership_active",
 ];
 
 me.get("/", async (c) => {
@@ -64,6 +65,7 @@ me.get("/", async (c) => {
           emergencyContactPhone: (p.emergency_contact_phone as string) || undefined,
           birthdate: (p.birthdate_date as string) || undefined,
           image: (p.image_small as string | false) || undefined,
+          esSocio: (p.climbing_gym_member_membership_active as boolean) === true,
         };
       }
     }

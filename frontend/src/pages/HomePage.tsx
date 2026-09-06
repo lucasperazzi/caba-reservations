@@ -229,7 +229,7 @@ export function Header({ userEmail, onLogout }: { userEmail?: string; onLogout: 
 
   return (
     <>
-      <header className="border-b border-black bg-black">
+      <header className="sticky top-0 z-[70] border-b border-black bg-black">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
           <Link to="/" className="text-lg font-bold tracking-tight text-white">
             CABA

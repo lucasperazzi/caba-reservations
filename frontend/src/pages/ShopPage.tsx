@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "../api";
 import { Header } from "./HomePage";
@@ -10,8 +10,22 @@ import { usePageBg } from "../hooks/usePageBg";
 export function ShopPage() {
   usePageBg("home");
   const { user, logout } = useAuth();
+  const esMiembroActivo = user?.esSocio === true;
   const [categoriaSel, setCategoriaSel] = useState<number | null>(null);
-  const [esSocio, setEsSocio] = useState(false);
+  const [esSocio, setEsSocio] = useState(() => esMiembroActivo);
+  const [switchVisible, setSwitchVisible] = useState(true);
+  const switchRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = switchRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setSwitchVisible(entry.isIntersecting),
+      { threshold: 0 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
   const [productoSel, setProductoSel] = useState<ProductoShop | null>(null);
 
   const { data: catsData } = useQuery<{ data: CategoriaShop[] }>({
@@ -32,61 +46,95 @@ export function ShopPage() {
   return (
     <div className="min-h-screen">
       <Header userEmail={user?.email} onLogout={logout} />
+
+      {/* Pill sticky — solo aparece cuando el switch ya no se ve */}
+      <div
+        className={`sticky top-[48px] z-[60] flex justify-center px-4 pointer-events-none transition-all duration-300 ${
+          switchVisible ? "opacity-0 -translate-y-1 pointer-events-none" : "opacity-100 translate-y-0"
+        }`}
+      >
+        <div className="pointer-events-auto mt-2 inline-flex items-center gap-2 rounded-full border border-white/10 bg-neutral-900/80 px-4 py-1.5 shadow-lg backdrop-blur-md">
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+          <span className="text-xs text-neutral-300">
+            Precios para{" "}
+            <span className="font-semibold text-white">{esSocio ? "socios" : "no socios"}</span>
+          </span>
+        </div>
+      </div>
+
       <main className="mx-auto max-w-5xl space-y-6 px-4 py-8">
         {/* Título */}
         <h2 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Catálogo</h2>
 
-        {/* Toggle Socio / No socio */}
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Mostrar precios:</span>
-          <div className="flex border border-white/30">
-            <button
-              onClick={() => setEsSocio(false)}
-              className={`px-4 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors ${
-                !esSocio ? "bg-white text-black" : "text-neutral-300 hover:text-white"
-              }`}
-            >
-              No socio
-            </button>
-            <button
-              onClick={() => setEsSocio(true)}
-              className={`px-4 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors ${
-                esSocio ? "bg-white text-black" : "text-neutral-300 hover:text-white"
-              }`}
-            >
-              Socio
-            </button>
+        {/* Switch Socio / No socio — en el flujo normal, con ref para detectar cuando desaparece */}
+        <div ref={switchRef} className="space-y-2">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Mostrar precios:</span>
+            <div className="flex border border-white/30">
+              <button
+                onClick={() => setEsSocio(false)}
+                className={`px-4 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors ${
+                  !esSocio ? "bg-white text-black" : "text-neutral-300 hover:text-white"
+                }`}
+              >
+                No socio
+              </button>
+              <button
+                onClick={() => { if (esMiembroActivo) setEsSocio(true); }}
+                disabled={!esMiembroActivo}
+                className={`px-4 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors ${
+                  esSocio
+                    ? "bg-white text-black"
+                    : esMiembroActivo
+                      ? "text-neutral-300 hover:text-white"
+                      : "cursor-not-allowed text-neutral-600"
+                }`}
+              >
+                Socio
+              </button>
+            </div>
           </div>
+          {!esMiembroActivo && (
+            <p className="flex items-start gap-1.5 border-l-2 border-amber-500/60 pl-2.5 text-xs leading-relaxed text-amber-200">
+              <svg xmlns="http://www.w3.org/2000/svg" className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+              </svg>
+              {/* Próximamente: link a solicitud de asociación */}
+              Los precios de socio están disponibles exclusivamente para miembros activos del CABA. Para acceder a ellos, necesitás tener una membresía vigente.
+            </p>
+          )}
         </div>
 
-        {/* Filtro de categorías */}
+        {/* Filtro de categorías — scroll horizontal en mobile, wrap en desktop */}
         {categorias.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => setCategoriaSel(null)}
-              className={`border px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors ${
-                categoriaSel === null
-                  ? "border-white bg-white text-black"
-                  : "border-white/30 text-neutral-300 hover:border-white"
-              }`}
-            >
-              Todos
-            </button>
-            {categorias
-              .filter((c) => c.parentId === null)
-              .map((c) => (
-                <button
-                  key={c.id}
-                  onClick={() => setCategoriaSel(c.id)}
-                  className={`border px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors ${
-                    categoriaSel === c.id
-                      ? "border-white bg-white text-black"
-                      : "border-white/30 text-neutral-300 hover:border-white"
-                  }`}
-                >
-                  {c.nombre}
-                </button>
-              ))}
+          <div className="-mx-4 px-4 sm:mx-0 sm:px-0">
+            <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-x-visible sm:pb-0 [&::-webkit-scrollbar]:hidden">
+              <button
+                onClick={() => setCategoriaSel(null)}
+                className={`flex-shrink-0 border px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors ${
+                  categoriaSel === null
+                    ? "border-white bg-white text-black"
+                    : "border-white/30 text-neutral-300 hover:border-white"
+                }`}
+              >
+                Todos
+              </button>
+              {categorias
+                .filter((c) => c.parentId === null)
+                .map((c) => (
+                  <button
+                    key={c.id}
+                    onClick={() => setCategoriaSel(c.id)}
+                    className={`flex-shrink-0 border px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors ${
+                      categoriaSel === c.id
+                        ? "border-white bg-white text-black"
+                        : "border-white/30 text-neutral-300 hover:border-white"
+                    }`}
+                  >
+                    {c.nombre}
+                  </button>
+                ))}
+            </div>
           </div>
         )}
 
@@ -215,8 +263,6 @@ function ProductoCard({
   const precioTexto =
     precioMin === precioMax ? formatoPrecio(precioMin) : `${formatoPrecio(precioMin)} – ${formatoPrecio(precioMax)}`;
 
-  const tieneSocio = p.variantes.some((v) => v.esSocio !== null);
-
   return (
     <button
       onClick={onClick}
@@ -245,19 +291,11 @@ function ProductoCard({
         <div className="mt-2">
           <span className="text-sm font-bold whitespace-nowrap text-white">{precioTexto}</span>
         </div>
-        {/* Badges — línea separada */}
-        {(tieneSocio || tieneVariantes) && (
-          <div className="mt-1.5 flex items-center gap-2">
-            {tieneSocio && (
-              <span className="border border-white/30 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-neutral-300">
-                {esSocio ? "Socio" : "No socio"}
-              </span>
-            )}
-            {tieneVariantes && (
-              <span className="text-[10px] uppercase tracking-wider text-neutral-400">
-                {variantes.length} opciones
-              </span>
-            )}
+        {tieneVariantes && (
+          <div className="mt-1.5">
+            <span className="text-[10px] uppercase tracking-wider text-neutral-400">
+              {variantes.length} opciones
+            </span>
           </div>
         )}
       </div>
