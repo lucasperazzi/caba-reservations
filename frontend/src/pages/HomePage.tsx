@@ -6,6 +6,7 @@ import { apiClient } from "../api";
 import type { MiTurno, Paquete } from "../types";
 import { fechaLarga, diasHastaVencimiento } from "../utils/fecha";
 import { usePageBg } from "../hooks/usePageBg";
+import { useCart } from "../cart";
 
 export function HomePage() {
   usePageBg("home");
@@ -36,7 +37,7 @@ export function HomePage() {
 
   return (
     <div className="min-h-screen">
-      <Header user={user?.name ?? ""} userEmail={user?.email} onLogout={logout} />
+      <Header userEmail={user?.email} onLogout={logout} />
       <main className="mx-auto max-w-5xl px-4 pt-16 pb-10 sm:pt-24 sm:pb-16">
         {/* Saludo directo sobre el fondo, sin caja */}
         <h2 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
@@ -191,8 +192,9 @@ const NAV_ITEMS = [
   { to: "/mi-cuenta", label: "Mi cuenta" },
 ];
 
-export function Header({ user, userEmail, onLogout }: { user: string; userEmail?: string; onLogout: () => void }) {
+export function Header({ userEmail, onLogout }: { userEmail?: string; onLogout: () => void }) {
   const { user: userInfo } = useAuth();
+  const { itemCount, openCarrito } = useCart();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
@@ -233,7 +235,20 @@ export function Header({ user, userEmail, onLogout }: { user: string; userEmail?
             CABA
           </Link>
           <div className="flex items-center gap-4">
-            {user && <span className="hidden text-sm text-neutral-300 sm:inline">{user}</span>}
+            {itemCount > 0 && (
+              <button
+                onClick={openCarrito}
+                aria-label={`Carrito — ${itemCount} item${itemCount === 1 ? "" : "s"}`}
+                className="relative text-white"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[10px] font-bold leading-none text-black">
+                  {itemCount > 9 ? "9+" : itemCount}
+                </span>
+              </button>
+            )}
             <button
               onClick={toggleMenu}
               aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}

@@ -46,4 +46,12 @@ export const apiClient = {
   shopCategorias: () => api<{ data: CategoriaShop[] }>("/api/shop/categorias"),
   shopProductos: (categoria?: number) =>
     api<{ data: ProductoShop[] }>(`/api/shop/productos${categoria ? `?categoria=${categoria}` : ""}`),
+  shopCheckout: (items: { varianteId: number; qty: number }[]) =>
+    api<{ ok: boolean; checkoutUrl: string }>("/api/shop/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ items }),
+    }),
+  shopLimpiarCarrito: () =>
+    api<{ ok: boolean }>("/api/shop/carrito/limpiar", { method: "POST" }),
 };

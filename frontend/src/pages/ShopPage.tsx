@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "../api";
 import { Header } from "./HomePage";
 import { useAuth } from "../auth";
+import { useCart } from "../cart";
 import type { ProductoShop, CategoriaShop, VarianteProducto } from "../types";
 import { usePageBg } from "../hooks/usePageBg";
 
@@ -30,8 +31,9 @@ export function ShopPage() {
 
   return (
     <div className="min-h-screen">
-      <Header user={user?.name ?? ""} userEmail={user?.email} onLogout={logout} />
+      <Header userEmail={user?.email} onLogout={logout} />
       <main className="mx-auto max-w-5xl space-y-6 px-4 py-8">
+        {/* Título */}
         <h2 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Catálogo</h2>
 
         {/* Toggle Socio / No socio */}
@@ -123,6 +125,7 @@ export function ShopPage() {
           onClose={() => setProductoSel(null)}
         />
       )}
+
     </div>
   );
 }
@@ -278,6 +281,9 @@ function ProductoModal({
   esSocio: boolean;
   onClose: () => void;
 }) {
+  const { addItem } = useCart();
+  const [added, setAdded] = useState<number | null>(null);
+
   // Cerrar con Escape + bloquear scroll del body
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -294,6 +300,19 @@ function ProductoModal({
   const variantes = variantesAgrupadas(variantesFiltradas(p, esSocio));
   const tieneVariantes = variantes.length > 1;
   const tieneSocio = p.variantes.some((v) => v.esSocio !== null);
+
+  const handleAdd = (v: VarianteProducto) => {
+    const attrsTexto = atributosVisibles(v).join(" · ");
+    addItem({
+      varianteId: v.id,
+      productoId: p.id,
+      nombre: p.nombre,
+      varianteNombre: attrsTexto || "Estándar",
+      precio: v.precio,
+    });
+    setAdded(v.id);
+    setTimeout(() => setAdded(null), 1500);
+  };
 
   return (
     <div
@@ -354,20 +373,32 @@ function ProductoModal({
                 {variantes.map((v) => {
                   const attrsTexto = atributosVisibles(v).join(" · ");
                   const extra = v.atributos.reduce((sum, a) => sum + a.extra, 0);
+                  const isAdded = added === v.id;
                   return (
                     <div
                       key={v.id}
                       className="flex items-center justify-between gap-3 border-l-4 border-emerald-500 bg-white/[0.03] px-4 py-3"
                     >
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <span className="text-sm font-medium text-white">{attrsTexto || "Estándar"}</span>
+                        <span className="mt-0.5 block whitespace-nowrap text-sm font-bold text-emerald-400">
+                          {formatoPrecio(v.precio)}
+                          {extra > 0 && (
+                            <span className="ml-1 text-[10px] text-neutral-500">+${extra}</span>
+                          )}
+                        </span>
                       </div>
-                      <span className="flex-shrink-0 whitespace-nowrap text-sm font-bold text-emerald-400">
-                        {formatoPrecio(v.precio)}
-                        {extra > 0 && (
-                          <span className="ml-1 text-[10px] text-neutral-500">+${extra}</span>
-                        )}
-                      </span>
+                      <button
+                        onClick={() => handleAdd(v)}
+                        disabled={isAdded}
+                        className={`flex-shrink-0 border px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors ${
+                          isAdded
+                            ? "border-emerald-500 bg-emerald-500 text-black"
+                            : "border-white/30 text-white hover:bg-white/10"
+                        }`}
+                      >
+                        {isAdded ? "Agregado" : "Agregar"}
+                      </button>
                     </div>
                   );
                 })}
@@ -377,14 +408,169 @@ function ProductoModal({
 
           {/* Producto sin variantes — mostrar precio único */}
           {!tieneVariantes && variantes.length === 1 && (
-            <div className="flex items-center justify-between border-l-4 border-emerald-500 bg-white/[0.03] px-4 py-3">
-              <span className="text-sm font-medium text-white">Estándar</span>
-              <span className="flex-shrink-0 whitespace-nowrap text-sm font-bold text-emerald-400">
-                {formatoPrecio(variantes[0].precio)}
-              </span>
+            <div className="flex items-center justify-between gap-3 border-l-4 border-emerald-500 bg-white/[0.03] px-4 py-3">
+              <div className="min-w-0 flex-1">
+                <span className="text-sm font-medium text-white">Estándar</span>
+                <span className="mt-0.5 block whitespace-nowrap text-sm font-bold text-emerald-400">
+                  {formatoPrecio(variantes[0].precio)}
+                </span>
+              </div>
+              <button
+                onClick={() => handleAdd(variantes[0])}
+                disabled={added === variantes[0].id}
+                className={`flex-shrink-0 border px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors ${
+                  added === variantes[0].id
+                    ? "border-emerald-500 bg-emerald-500 text-black"
+                    : "border-white/30 text-white hover:bg-white/10"
+                }`}
+              >
+                {added === variantes[0].id ? "Agregado" : "Agregar"}
+              </button>
             </div>
           )}
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Modal del carrito ──────────────────────────────────────────
+
+export function CarritoModal({ onClose }: { onClose: () => void }) {
+  const { items, total, updateQty, removeItem, clear } = useCart();
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [onClose]);
+
+  const handleCheckout = async () => {
+    setCheckoutLoading(true);
+    setCheckoutError(null);
+    try {
+      const res = await apiClient.shopCheckout(
+        items.map((i) => ({ varianteId: i.varianteId, qty: i.qty })),
+      );
+      // Los items ya están en el carrito de Odoo — limpiar nuestro carrito
+      clear();
+      // Redirigir al checkout de Odoo — el usuario completa la compra y el pago ahí
+      window.location.href = res.checkoutUrl;
+    } catch (err) {
+      setCheckoutError(err instanceof Error ? err.message : "Error al procesar el checkout");
+      setCheckoutLoading(false);
+    }
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden border border-white/20 bg-black/90 backdrop-blur-xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-white/10 p-5">
+          <h3 className="text-lg font-bold tracking-tight text-white">Carrito</h3>
+          <button
+            onClick={onClose}
+            aria-label="Cerrar"
+            className="text-neutral-400 transition-colors hover:text-white"
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Contenido */}
+        <div className="overflow-y-auto p-5">
+          {items.length === 0 ? (
+            <p className="py-8 text-center text-sm text-neutral-400">Tu carrito está vacío</p>
+          ) : (
+            <div className="space-y-3">
+              {items.map((item) => (
+                <div
+                  key={item.varianteId}
+                  className="border-l-4 border-white/20 bg-white/[0.03] px-4 py-3"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-bold leading-tight text-white">{item.nombre}</p>
+                      <p className="mt-0.5 text-xs text-neutral-400">{item.varianteNombre}</p>
+                      <p className="mt-1 text-sm font-bold text-emerald-400">
+                        {formatoPrecio(item.precio)}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => removeItem(item.varianteId)}
+                      className="flex-shrink-0 text-xs text-neutral-500 transition-colors hover:text-red-400"
+                      aria-label="Eliminar"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  {/* Controles de cantidad */}
+                  <div className="mt-2 flex items-center gap-2">
+                    <button
+                      onClick={() => updateQty(item.varianteId, item.qty - 1)}
+                      className="flex h-6 w-6 items-center justify-center border border-white/30 text-sm text-white transition-colors hover:bg-white/10"
+                    >
+                      −
+                    </button>
+                    <span className="min-w-8 text-center text-sm font-semibold text-white">{item.qty}</span>
+                    <button
+                      onClick={() => updateQty(item.varianteId, item.qty + 1)}
+                      className="flex h-6 w-6 items-center justify-center border border-white/30 text-sm text-white transition-colors hover:bg-white/10"
+                    >
+                      +
+                    </button>
+                    <span className="ml-auto text-sm font-bold text-white">
+                      {formatoPrecio(item.precio * item.qty)}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Footer con total y checkout */}
+        {items.length > 0 && (
+          <div className="border-t border-white/10 p-5">
+            {checkoutError && (
+              <p className="mb-3 text-xs text-red-400">{checkoutError}</p>
+            )}
+            <div className="mb-3 flex items-center justify-between">
+              <span className="text-sm font-semibold uppercase tracking-wider text-neutral-300">Total</span>
+              <span className="text-lg font-bold text-white">{formatoPrecio(total)}</span>
+            </div>
+            <button
+              onClick={handleCheckout}
+              disabled={checkoutLoading}
+              className="w-full bg-emerald-500 py-3 text-sm font-bold uppercase tracking-wider text-black transition-colors hover:bg-emerald-400 disabled:opacity-50"
+            >
+              {checkoutLoading ? "Procesando..." : "Finalizar compra"}
+            </button>
+            <button
+              onClick={clear}
+              className="mt-2 w-full text-xs text-neutral-500 transition-colors hover:text-neutral-300"
+            >
+              Vaciar carrito
+            </button>
+            <p className="mt-3 text-center text-[10px] text-neutral-500">
+              Serás redirigido al sitio de CABA para completar el pago
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

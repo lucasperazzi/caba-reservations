@@ -121,7 +121,7 @@ export function TurnosPage() {
 
   return (
     <div className="min-h-screen">
-      <Header user={user?.name ?? ""} userEmail={user?.email} onLogout={logout} />
+      <Header userEmail={user?.email} onLogout={logout} />
       <main className="mx-auto max-w-5xl px-4 py-8">
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>

@@ -1,11 +1,12 @@
 import { Hono } from "hono";
 import { requireAuth } from "../middleware.js";
-import { canSeeShop } from "../config.js";
+import { canSeeShop, config } from "../config.js";
 import {
   OdooProductTemplate,
   OdooProductVariant,
   OdooAttributeValue,
   OdooPublicCategory,
+  OdooError,
 } from "../odooClient.js";
 
 export const shop = new Hono();
@@ -58,6 +59,115 @@ shop.get("/productos", async (c) => {
   } catch (err) {
     console.error("[shop/productos] Error:", err instanceof Error ? err.message : err);
     return c.json({ error: "Error al obtener productos" }, 500);
+  }
+});
+
+// POST /api/shop/checkout
+// Recibe los items del carrito nuestro, los agrega al carrito de Odoo,
+// y devuelve la URL de checkout de Odoo para que el frontend redirija ahí.
+shop.post("/checkout", async (c) => {
+  const user = c.get("user");
+  if (!canSeeShop(user.email)) {
+    return c.json({ error: "Catálogo no disponible" }, 403);
+  }
+
+  let body: { items?: { varianteId: number; qty: number }[] };
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: "Body inválido" }, 400);
+  }
+
+  const items = body.items;
+  if (!Array.isArray(items) || items.length === 0) {
+    return c.json({ error: "El carrito está vacío" }, 400);
+  }
+
+  // Validar items
+  for (const item of items) {
+    if (!Number.isInteger(item.varianteId) || item.varianteId <= 0) {
+      return c.json({ error: "varianteId inválido" }, 400);
+    }
+    if (!Number.isInteger(item.qty) || item.qty <= 0) {
+      return c.json({ error: "qty inválido" }, 400);
+    }
+  }
+
+  const odoo = c.get("odoo");
+  try {
+    // Limpiar el carrito existente de Odoo antes de agregar nuestros items.
+    // Odoo reusa sale.order draft existentes (via session o partner.last_website_so_id),
+    // así que si el usuario ya tenía items en el carrito del sitio real, se mezclarían.
+    await odoo.clearCart();
+
+    await odoo.addMultipleToCart(
+      items.map((i) => ({ productId: i.varianteId, qty: i.qty })),
+    );
+
+    // Devolver la URL de checkout de Odoo.
+    // El frontend redirige al usuario ahí para completar la compra y el pago.
+    const checkoutUrl = `${config.odoo.baseUrl}/shop/checkout`;
+    return c.json({ ok: true, checkoutUrl });
+  } catch (err) {
+    if (err instanceof OdooError) {
+      console.error("[shop/checkout] OdooError:", err.message);
+      return c.json({ error: err.message }, 502);
+    }
+    console.error("[shop/checkout] Error:", err instanceof Error ? err.message : err);
+    return c.json({ error: "Error al procesar el checkout" }, 500);
+  }
+});
+
+// POST /api/shop/carrito/limpiar
+// Vacía el carrito de Odoo (safe lock antes de empezar a agregar items).
+shop.post("/carrito/limpiar", async (c) => {
+  const user = c.get("user");
+  if (!canSeeShop(user.email)) {
+    return c.json({ error: "Catálogo no disponible" }, 403);
+  }
+  const odoo = c.get("odoo");
+  try {
+    await odoo.clearCart();
+    return c.json({ ok: true });
+  } catch (err) {
+    if (err instanceof OdooError) {
+      console.error("[shop/carrito/limpiar] OdooError:", err.message);
+      return c.json({ error: err.message }, 502);
+    }
+    console.error("[shop/carrito/limpiar] Error:", err instanceof Error ? err.message : err);
+    return c.json({ error: "Error al limpiar el carrito" }, 500);
+  }
+});
+
+// GET /api/shop/carrito
+// Lee el carrito actual de Odoo (sale.order draft de la sesión).
+shop.get("/carrito", async (c) => {
+  const user = c.get("user");
+  if (!canSeeShop(user.email)) {
+    return c.json({ error: "Catálogo no disponible" }, 403);
+  }
+  const odoo = c.get("odoo");
+  try {
+    const lines = await odoo.getCart();
+    const total = lines.reduce((sum, l) => sum + l.price_subtotal, 0);
+    return c.json({
+      data: lines.map((l) => ({
+        id: l.id,
+        productoId: l.product_id[0],
+        productoNombre: l.product_id[1],
+        cantidad: l.product_uom_qty,
+        precioUnitario: l.price_unit,
+        subtotal: l.price_subtotal,
+      })),
+      total,
+    });
+  } catch (err) {
+    if (err instanceof OdooError) {
+      console.error("[shop/carrito] OdooError:", err.message);
+      return c.json({ error: err.message }, 502);
+    }
+    console.error("[shop/carrito] Error:", err instanceof Error ? err.message : err);
+    return c.json({ error: "Error al obtener el carrito" }, 500);
   }
 });
 

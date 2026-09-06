@@ -1,12 +1,13 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useAuth } from "./auth";
+import { useCart } from "./cart";
 import { LoginPage } from "./pages/LoginPage";
 import { SignupPage } from "./pages/SignupPage";
 import { HomePage } from "./pages/HomePage";
 import { MisTurnosPage } from "./pages/MisTurnosPage";
 import { TurnosPage } from "./pages/TurnosPage";
 import { PaquetesPage } from "./pages/PaquetesPage";
-import { ShopPage } from "./pages/ShopPage";
+import { ShopPage, CarritoModal } from "./pages/ShopPage";
 import { MiCuentaPage } from "./pages/MiCuentaPage";
 import { EditarPerfilPage } from "./pages/EditarPerfilPage";
 
@@ -25,24 +26,33 @@ function Protected({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function GlobalCarritoModal() {
+  const { carritoOpen, closeCarrito } = useCart();
+  if (!carritoOpen) return null;
+  return <CarritoModal onClose={closeCarrito} />;
+}
+
 function App() {
   const { user, isLoading } = useAuth();
 
   if (isLoading) return <Loading />;
 
   return (
-    <Routes>
-      <Route path="/login" element={user ? <Navigate to="/" replace /> : <LoginPage />} />
-      <Route path="/signup" element={user ? <Navigate to="/" replace /> : <SignupPage />} />
-      <Route path="/" element={<Protected><HomePage /></Protected>} />
-      <Route path="/mis-turnos" element={<Protected><MisTurnosPage /></Protected>} />
-      <Route path="/turnos" element={<Protected><TurnosPage /></Protected>} />
-      <Route path="/paquetes" element={<Protected><PaquetesPage /></Protected>} />
-      <Route path="/shop" element={<Protected><ShopPage /></Protected>} />
-      <Route path="/mi-cuenta" element={<Protected><MiCuentaPage /></Protected>} />
-      <Route path="/mi-cuenta/editar" element={<Protected><EditarPerfilPage /></Protected>} />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/login" element={user ? <Navigate to="/" replace /> : <LoginPage />} />
+        <Route path="/signup" element={user ? <Navigate to="/" replace /> : <SignupPage />} />
+        <Route path="/" element={<Protected><HomePage /></Protected>} />
+        <Route path="/mis-turnos" element={<Protected><MisTurnosPage /></Protected>} />
+        <Route path="/turnos" element={<Protected><TurnosPage /></Protected>} />
+        <Route path="/paquetes" element={<Protected><PaquetesPage /></Protected>} />
+        <Route path="/shop" element={<Protected><ShopPage /></Protected>} />
+        <Route path="/mi-cuenta" element={<Protected><MiCuentaPage /></Protected>} />
+        <Route path="/mi-cuenta/editar" element={<Protected><EditarPerfilPage /></Protected>} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+      {user && <GlobalCarritoModal />}
+    </>
   );
 }
 

@@ -522,6 +522,157 @@ export class OdooClient {
 
     return { products, variants, attributes };
   }
+
+  // ── Shop (carrito) ────────────────────────────────────────────
+
+  /**
+   * Agrega un producto (variante) al carrito de Odoo vía POST /shop/cart/update.
+   * El carrito de Odoo es un sale.order en estado draft, vinculado a la sesión.
+   * Como el OdooClient mantiene la cookie de sesión, múltiples llamadas
+   * acumulan items en el mismo sale.order.
+   *
+   * El endpoint tiene csrf=False, así que no necesita CSRF token.
+   *
+   * @param product_id ID de la variante (product.product), NO del template
+   * @param add_qty Cantidad a agregar
+   */
+  async addToCart(productId: number, addQty: number = 1): Promise<void> {
+    const body = new URLSearchParams({
+      product_id: String(productId),
+      add_qty: String(addQty),
+    });
+
+    const res = await this.rawFetch("/shop/cart/update", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Referer: `${this.baseUrl}/shop`,
+      },
+      body: body.toString(),
+    });
+
+    // Odoo responde con 303 redirect a /shop/cart en éxito
+    if (res.status >= 400) {
+      const text = await res.text();
+      throw new OdooError(
+        `Error al agregar al carrito (HTTP ${res.status}): ${text.substring(0, 200)}`,
+      );
+    }
+  }
+
+  /**
+   * Vacía el carrito actual de Odoo.
+   *
+   * Obtiene las líneas directamente desde GET /shop/cart (HTML), que usa la misma
+   * lógica de sale_get_order() que los endpoints de Odoo — así siempre operamos
+   * sobre el carrito correcto, el mismo que ve el usuario en la página original.
+   *
+   * Luego elimina cada línea via /shop/cart/update_json con set_qty=0.
+   */
+  async clearCart(): Promise<void> {
+    const lineIds = await this.getCartLineIdsFromHtml();
+    console.log(`[clearCart] líneas encontradas en /shop/cart: ${lineIds.length}`, lineIds);
+    for (const { lineId, productId } of lineIds) {
+      const res = await this.rawFetch("/shop/cart/update_json", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Referer: `${this.baseUrl}/shop/cart`,
+        },
+        body: JSON.stringify({
+          jsonrpc: "2.0",
+          method: "call",
+          params: {
+            product_id: productId,
+            line_id: lineId,
+            set_qty: 0,
+          },
+        }),
+      });
+      const json = await res.json() as { result?: { cart_quantity?: number } };
+      console.log(`[clearCart] eliminada línea ${lineId} (producto ${productId}), cart_quantity=${json?.result?.cart_quantity}`);
+    }
+  }
+
+  /**
+   * Lee GET /shop/cart (HTML) y extrae los line_id y product_id de cada línea.
+   * Usar esto en lugar de JSON-RPC garantiza que operamos sobre el mismo
+   * sale.order que sale_get_order() — el que Odoo considera el carrito activo.
+   */
+  private async getCartLineIdsFromHtml(): Promise<{ lineId: number; productId: number }[]> {
+    const res = await this.rawFetch("/shop/cart", {
+      method: "GET",
+      headers: { Referer: `${this.baseUrl}/shop` },
+    });
+    const html = await res.text();
+
+    // El HTML tiene inputs con data-line-id y data-product-id en cada fila del carrito:
+    // <input ... data-line-id="123" data-product-id="456" ...>
+    const lines: { lineId: number; productId: number }[] = [];
+    const lineRegex = /data-line-id="(\d+)"[^>]*data-product-id="(\d+)"/g;
+    const altRegex = /data-product-id="(\d+)"[^>]*data-line-id="(\d+)"/g;
+
+    let match;
+    while ((match = lineRegex.exec(html)) !== null) {
+      lines.push({ lineId: Number(match[1]), productId: Number(match[2]) });
+    }
+    // Si no encontró con el orden normal, probar el orden inverso
+    if (lines.length === 0) {
+      while ((match = altRegex.exec(html)) !== null) {
+        lines.push({ lineId: Number(match[2]), productId: Number(match[1]) });
+      }
+    }
+    return lines;
+  }
+
+  /**
+   * Agrega múltiples items al carrito de Odoo, uno por uno.
+   * Todos se acumulan en el mismo sale.order (misma sesión).
+   * Si un item falla, los anteriores ya fueron agregados.
+   */
+  async addMultipleToCart(items: { productId: number; qty: number }[]): Promise<void> {
+    for (const item of items) {
+      await this.addToCart(item.productId, item.qty);
+    }
+  }
+
+  /**
+   * Lee el carrito actual de Odoo (sale.order draft de la sesión).
+   * Devuelve las líneas con producto, cantidad y precio.
+   */
+  async getCart(): Promise<OdooCartLine[]> {
+    const info = await this.getSessionInfo();
+    if (!info) throw new OdooError("No autenticado", "session");
+
+    // Obtener el partner_id
+    const userData = await this.callKw("res.users", "read", [
+      [info.uid],
+      ["partner_id"],
+    ]) as Array<{ partner_id: [number, string] }>;
+    if (!userData?.[0]?.partner_id) return [];
+    const partnerId = userData[0].partner_id[0];
+
+    // Buscar el sale.order draft más reciente del partner (el carrito actual)
+    const orderIds = await this.callKw("sale.order", "search", [
+      [["partner_id", "=", partnerId], ["state", "=", "draft"]],
+    ], { order: "date_order desc, id desc", limit: 1 }) as number[];
+
+    if (orderIds.length === 0) return [];
+
+    // Leer las líneas del carrito
+    const lineIds = await this.callKw("sale.order.line", "search", [
+      [["order_id", "=", orderIds[0]]],
+    ]) as number[];
+
+    if (lineIds.length === 0) return [];
+
+    const lines = await this.callKw("sale.order.line", "read", [
+      lineIds,
+      ["id", "product_id", "product_uom_qty", "price_unit", "price_subtotal", "name"],
+    ]) as OdooCartLine[];
+
+    return lines;
+  }
 }
 
 // ── Tipos de Odoo ──────────────────────────────────────────────
@@ -601,6 +752,15 @@ export interface OdooAccessPackage {
   access_package: [number, string] | false; // tipo de paquete
   product: [number, string] | false; // producto comprado
   event_registrations: number[]; // IDs de reservas asociadas
+}
+
+export interface OdooCartLine {
+  id: number;
+  product_id: [number, string];
+  product_uom_qty: number;
+  price_unit: number;
+  price_subtotal: number;
+  name: string;
 }
 
 // ── Error personalizado ────────────────────────────────────────

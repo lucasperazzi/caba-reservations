@@ -105,7 +105,7 @@ export function EditarPerfilPage() {
 
   return (
     <div className="min-h-screen">
-      <Header user={user?.name ?? ""} userEmail={user?.email} onLogout={logout} />
+      <Header userEmail={user?.email} onLogout={logout} />
       <main className="mx-auto max-w-5xl px-4 pt-16 pb-10 sm:pt-20 sm:pb-16">
         {isLoading && (
           <div className="flex justify-center py-20">
