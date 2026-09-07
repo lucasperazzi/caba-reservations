@@ -266,7 +266,7 @@ function ProductoCard({
   return (
     <button
       onClick={onClick}
-      className="flex w-full items-start gap-4 border-l-4 border-white/20 bg-black/40 p-4 text-left backdrop-blur-md transition-colors hover:bg-white/[0.06]"
+      className="brutal-card brutal-card-interactive flex w-full items-start gap-4 bg-black/50 p-4 text-left"
     >
       {/* Imagen */}
       {p.imagen && (
@@ -358,7 +358,7 @@ function ProductoModal({
       onClick={onClose}
     >
       <div
-        className="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden border border-white/20 bg-black/90 backdrop-blur-xl"
+        className="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden brutal-modal bg-black/90 backdrop-blur-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header del modal */}
@@ -415,8 +415,10 @@ function ProductoModal({
                   return (
                     <div
                       key={v.id}
-                      className="flex items-center justify-between gap-3 border-l-4 border-emerald-500 bg-white/[0.03] px-4 py-3"
+                      className="brutal-card flex overflow-hidden border-emerald-500 bg-black/40"
                     >
+                      <div className="w-1.5 flex-shrink-0 bg-emerald-500" />
+                      <div className="flex flex-1 items-center justify-between gap-3 px-4 py-3">
                       <div className="min-w-0 flex-1">
                         <span className="text-sm font-medium text-white">{attrsTexto || "Estándar"}</span>
                         <span className="mt-0.5 block whitespace-nowrap text-sm font-bold text-emerald-400">
@@ -437,6 +439,7 @@ function ProductoModal({
                       >
                         {isAdded ? "Agregado" : "Agregar"}
                       </button>
+                      </div>
                     </div>
                   );
                 })}
@@ -446,7 +449,9 @@ function ProductoModal({
 
           {/* Producto sin variantes — mostrar precio único */}
           {!tieneVariantes && variantes.length === 1 && (
-            <div className="flex items-center justify-between gap-3 border-l-4 border-emerald-500 bg-white/[0.03] px-4 py-3">
+            <div className="brutal-card flex overflow-hidden border-emerald-500 bg-black/40">
+              <div className="w-1.5 flex-shrink-0 bg-emerald-500" />
+              <div className="flex flex-1 items-center justify-between gap-3 px-4 py-3">
               <div className="min-w-0 flex-1">
                 <span className="text-sm font-medium text-white">Estándar</span>
                 <span className="mt-0.5 block whitespace-nowrap text-sm font-bold text-emerald-400">
@@ -464,6 +469,7 @@ function ProductoModal({
               >
                 {added === variantes[0].id ? "Agregado" : "Agregar"}
               </button>
+              </div>
             </div>
           )}
         </div>
@@ -514,7 +520,7 @@ export function CarritoModal({ onClose }: { onClose: () => void }) {
       onClick={onClose}
     >
       <div
-        className="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden border border-white/20 bg-black/90 backdrop-blur-xl"
+        className="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden brutal-modal bg-black/90 backdrop-blur-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -538,8 +544,10 @@ export function CarritoModal({ onClose }: { onClose: () => void }) {
               {items.map((item) => (
                 <div
                   key={item.varianteId}
-                  className="border-l-4 border-white/20 bg-white/[0.03] px-4 py-3"
+                  className="brutal-card flex overflow-hidden bg-black/40"
                 >
+                  <div className="w-1.5 flex-shrink-0 bg-white/40" />
+                  <div className="flex-1 px-4 py-3">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-bold leading-tight text-white">{item.nombre}</p>
@@ -574,6 +582,7 @@ export function CarritoModal({ onClose }: { onClose: () => void }) {
                     <span className="ml-auto text-sm font-bold text-white">
                       {formatoPrecio(item.precio * item.qty)}
                     </span>
+                  </div>
                   </div>
                 </div>
               ))}

@@ -61,7 +61,9 @@ export function MisTurnosPage() {
 
         {/* Próximo turno: barra lateral, igual que el resto de las cards */}
         {!isLoading && (
-          <section className={`border-l-4 bg-black/40 p-4 backdrop-blur-md ${proximo ? "border-blue-600" : "border-neutral-700"}`}>
+          <section className="brutal-card flex overflow-hidden bg-black/50">
+            <div className={`w-1.5 flex-shrink-0 ${proximo ? "bg-blue-600" : "bg-neutral-700"}`} />
+            <div className="p-4">
             <h3 className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider sm:text-sm ${proximo ? "text-blue-500" : "text-neutral-200"}`}>
               {proximo && <img src="/holds-png/hold-21.png" alt="" className="inline-block h-3.5 w-3.5 object-contain sm:h-4 sm:w-4" />}
               Turno reservado más cercano:
@@ -93,6 +95,7 @@ export function MisTurnosPage() {
                 </Link>
               </div>
             )}
+            </div>
           </section>
         )}
 
@@ -100,7 +103,7 @@ export function MisTurnosPage() {
         {!isLoading && siguientes.length > 0 && (
           <section>
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">Próximos turnos reservados</h3>
-            <div className="bg-black/40 p-4 backdrop-blur-md">
+            <div className="brutal-card bg-black/50 p-4">
               {siguientes.map((t) => (
                 <MiTurnoRow key={t.registrationId} t={t} onRepetir={() => repetirProximaSemana(t)} onAgregarCalendario={() => generarICS(t)} />
               ))}
@@ -112,7 +115,7 @@ export function MisTurnosPage() {
         {!isLoading && historial.length > 0 && (
           <section>
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">Historial</h3>
-            <div className="bg-black/40 p-4 backdrop-blur-md">
+            <div className="brutal-card bg-black/50 p-4">
               {historial.map((t) => (
                 <MiTurnoRow key={t.registrationId} t={t} />
               ))}

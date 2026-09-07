@@ -284,7 +284,7 @@ export function EditarPerfilPage() {
       {/* Modal de confirmación */}
       {saved && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm">
-          <div className="w-full max-w-md border border-white/20 bg-black/80 p-8 text-center text-white backdrop-blur-xl">
+          <div className="w-full max-w-md brutal-modal bg-black/80 p-8 text-center text-white backdrop-blur-xl">
             <img src="/holds-png/green-round.png" alt="" className="mx-auto h-12 w-12 object-contain" />
             <p className="mt-3 text-lg font-bold text-white">¡Cambios guardados!</p>
           </div>

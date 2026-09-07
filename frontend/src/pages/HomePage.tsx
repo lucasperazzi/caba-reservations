@@ -45,7 +45,10 @@ export function HomePage() {
         </h2>
 
         {/* Próximo turno — llamativo, con acento azul */}
-        <section className={`mt-16 border-l-4 bg-black/40 p-4 backdrop-blur-md sm:mt-20 ${proximo ? "border-blue-600" : "border-neutral-700"}`}>
+        <section className="brutal-card mt-16 flex overflow-hidden bg-black/50 sm:mt-20">
+          {/* Barra de color lateral izquierdo */}
+          <div className={`w-1.5 flex-shrink-0 ${proximo ? "bg-blue-600" : "bg-neutral-700"}`} />
+          <div className="p-4">
           <h3 className={`flex items-center gap-2 text-sm font-semibold uppercase tracking-wider ${proximo ? "text-blue-500" : "text-neutral-200"}`}>
             {proximo && <img src="/holds-png/hold-21.png" alt="" className="inline-block h-4 w-4 object-contain" />}
             Tu próximo turno
@@ -66,10 +69,14 @@ export function HomePage() {
           ) : (
             <p className="mt-3 text-lg text-neutral-400">No hay próximos turnos reservados.</p>
           )}
+          </div>
         </section>
 
         {/* Paquetes activos — resumido */}
-        <section className={`mt-12 border-l-4 bg-black/40 p-4 backdrop-blur-md ${paquetesActivos.length > 0 ? "border-emerald-400" : "border-neutral-700"}`}>
+        <section className="brutal-card mt-12 flex overflow-hidden bg-black/50">
+          {/* Barra de color lateral izquierdo */}
+          <div className={`w-1.5 flex-shrink-0 ${paquetesActivos.length > 0 ? "bg-emerald-400" : "bg-neutral-700"}`} />
+          <div className="p-4">
           <h3 className={`flex items-center gap-2 text-sm font-semibold uppercase tracking-wider ${paquetesActivos.length > 0 ? "text-emerald-400" : "text-neutral-200"}`}>
             {paquetesActivos.length > 0 && <img src="/holds-png/hold-05.png" alt="" className="inline-block h-4 w-4 object-contain" />}
             Paquetes activos
@@ -87,10 +94,11 @@ export function HomePage() {
           ) : (
             <p className="mt-3 text-lg text-neutral-400">No tenés paquetes de acceso activos.</p>
           )}
+          </div>
         </section>
 
         {/* Navegación — estilo role-selector del portfolio */}
-        <nav className="mt-20 border-t border-white/40 sm:mt-16">
+        <nav className="mt-20 border-t-2 border-white sm:mt-16">
           {NAV_CARDS
             .filter((item) => !item.featureFlag || user?.[item.featureFlag])
             .map((item) => (
@@ -158,7 +166,7 @@ function NavRow({ to, title, desc, hold }: { to: string; title: string; desc: st
   return (
     <Link
       to={to}
-      className="group flex items-center gap-6 border-b border-white/20 px-6 py-5 transition-colors hover:bg-white/[0.03] sm:gap-8 sm:py-6"
+      className="group flex items-center gap-6 border-b-2 border-white px-6 py-5 transition-colors hover:bg-white/[0.03] sm:gap-8 sm:py-6"
     >
       <div className="min-w-0 flex-1">
         <p className="text-2xl font-bold leading-tight tracking-tight text-white transition-colors group-hover:text-neutral-300 sm:text-3xl">

@@ -126,3 +126,49 @@ body[data-bg="paquetes"]::after {
   animation: hold-spin 1.2s linear infinite;
 }
 
+/* ── Neo-brutalist cards & buttons ── */
+/* Adaptado a dark theme: borde blanco, sombra hard gris oscuro sólida, radius 10-12px */
+
+.brutal-card {
+  border: 2px solid #fff;
+  border-radius: 10px;
+  box-shadow: 4px 4px 0 #fff;
+  transition: translate 0.14s ease, box-shadow 0.14s ease, background 0.14s ease;
+}
+
+.brutal-card-interactive {
+  cursor: pointer;
+}
+
+.brutal-card-interactive:hover {
+  box-shadow: 6px 6px 0 #fff;
+}
+
+.brutal-card-interactive:active {
+  translate: 2px 2px;
+  box-shadow: 2px 2px 0 #fff;
+}
+
+/* Botones brutalistas */
+.brutal-btn {
+  border: 2px solid #fff;
+  border-radius: 8px;
+  box-shadow: 4px 4px 0 #fff;
+  transition: translate 0.14s ease, box-shadow 0.14s ease;
+}
+
+.brutal-btn:hover {
+  box-shadow: 6px 6px 0 #fff;
+}
+
+.brutal-btn:active {
+  translate: 2px 2px;
+  box-shadow: 2px 2px 0 #fff;
+}
+
+/* Modales brutalistas */
+.brutal-modal {
+  border: 2px solid #fff;
+  border-radius: 12px;
+}
+

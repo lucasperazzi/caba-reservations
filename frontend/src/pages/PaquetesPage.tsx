@@ -37,7 +37,7 @@ export function PaquetesPage() {
         {!isLoading && activos.length > 0 && (
           <section>
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">Activos</h3>
-            <div className="bg-black/40 p-4 backdrop-blur-md">
+            <div className="brutal-card bg-black/50 p-4">
               {activos.map((p) => (
                 <PaqueteRow key={p.id} p={p} activo />
               ))}
@@ -51,7 +51,7 @@ export function PaquetesPage() {
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">
               Pendientes de uso
             </h3>
-            <div className="bg-black/40 p-4 backdrop-blur-md">
+            <div className="brutal-card bg-black/50 p-4">
               {pendientes.map((p) => (
                 <PaqueteRow key={p.id} p={p} />
               ))}
@@ -63,7 +63,7 @@ export function PaquetesPage() {
         {!isLoading && historial.length > 0 && (
           <section>
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">Historial</h3>
-            <div className="bg-black/40 p-4 backdrop-blur-md">
+            <div className="brutal-card bg-black/50 p-4">
               {historial.map((p) => (
                 <PaqueteRow key={p.id} p={p} />
               ))}

@@ -164,7 +164,7 @@ export function TurnosPage() {
 
         <div className="grid gap-6 md:grid-cols-2">
           {/* Calendario */}
-          <div className="flex justify-center overflow-x-auto bg-black/40 p-4 text-white backdrop-blur-md">
+          <div className="brutal-card flex justify-center overflow-x-auto bg-black/50 p-4 text-white">
             <DayPicker
               mode="single"
               selected={diaSeleccionado}
@@ -189,7 +189,7 @@ export function TurnosPage() {
           </div>
 
           {/* Lista de turnos del día */}
-          <div className="bg-black/40 p-4 backdrop-blur-md">
+          <div className="brutal-card bg-black/50 p-4">
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">
               {diaSeleccionado
                 ? diaSeleccionado.toLocaleDateString("es-AR", { weekday: "long", day: "numeric", month: "long" })
@@ -236,7 +236,7 @@ export function TurnosPage() {
       {/* Modal de confirmación */}
       {turnoAReservar && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm">
-          <div className="w-full max-w-md border border-white/20 bg-black/80 p-8 text-white backdrop-blur-xl">
+          <div className="w-full max-w-md brutal-modal bg-black/80 p-8 text-white backdrop-blur-xl">
             {reservaOk ? (
               <div className="text-center">
                 <img src="/holds-png/green-round.png" alt="" className="mx-auto h-12 w-12 object-contain" />
@@ -280,7 +280,7 @@ export function TurnosPage() {
       {/* Modal de bloqueo — no se puede reservar */}
       {turnoBloqueado && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm">
-          <div className="w-full max-w-md border border-white/20 bg-black/80 p-8 text-center text-white backdrop-blur-xl">
+          <div className="w-full max-w-md brutal-modal bg-black/80 p-8 text-center text-white backdrop-blur-xl">
             <img src="/holds-png/red-round.png" alt="" className="mx-auto h-12 w-12 object-contain" />
             <p className="mt-3 text-lg font-bold text-white">{turnoBloqueado.mensaje}</p>
             <button
