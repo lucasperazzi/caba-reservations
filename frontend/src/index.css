@@ -129,6 +129,35 @@ body[data-bg="paquetes"]::after {
 /* ── Neo-brutalist cards & buttons ── */
 /* Adaptado a dark theme: borde blanco, sombra hard gris oscuro sólida, radius 10-12px */
 
+/* Título grande (ej: "Hola, Lucas") — como "August at a glance" */
+.brutal-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+/* Números / contenido principal — como los stats (48,210) */
+.brutal-number {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Labels uppercase — como "Monthly revenue, USD" */
+.brutal-label {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Subtítulo / texto secundario — como "Compared with the 30 days before it" */
+.brutal-sub {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 400;
+}
+
 .brutal-card {
   border: 2px solid #fff;
   border-radius: 10px;

@@ -117,12 +117,12 @@ export function EditarPerfilPage() {
           <>
             {/* Header con título y botón volver */}
             <div className="flex items-center justify-between">
-              <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+              <h2 className="brutal-title text-3xl text-white sm:text-4xl">
                 Editar perfil
               </h2>
               <Link
                 to="/mi-cuenta"
-                className="text-sm font-semibold text-neutral-300 transition-colors hover:text-white"
+                className="brutal-sub text-sm font-semibold text-neutral-300 transition-colors hover:text-white"
               >
                 ← Volver
               </Link>
@@ -131,10 +131,10 @@ export function EditarPerfilPage() {
             <form onSubmit={submit} className="mt-12 space-y-10" noValidate>
               {/* Datos personales */}
               <section>
-                <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">
+                <h3 className="brutal-label mb-3 text-sm text-neutral-200">
                   Datos personales
                 </h3>
-                <div className="grid gap-4 bg-black/40 p-4 backdrop-blur-md sm:grid-cols-2">
+                <div className="grid gap-4 brutal-card bg-black/50 p-4 sm:grid-cols-2">
                   <Field label="Nombre/s" required={isFirstEdit} error={fieldErrors.firstname}>
                     <input type="text" value={form.firstname} onChange={(e) => update("firstname", e.target.value)} className={inputClass} />
                   </Field>
@@ -152,10 +152,10 @@ export function EditarPerfilPage() {
 
               {/* Documento */}
               <section>
-                <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">
+                <h3 className="brutal-label mb-3 text-sm text-neutral-200">
                   Documento
                 </h3>
-                <div className="grid gap-4 bg-black/40 p-4 backdrop-blur-md sm:grid-cols-2">
+                <div className="grid gap-4 brutal-card bg-black/50 p-4 sm:grid-cols-2">
                   <Field label="Tipo de documento" required={isFirstEdit} error={fieldErrors.idCategoryId}>
                     <select
                       value={form.idCategoryId ?? ""}
@@ -181,7 +181,7 @@ export function EditarPerfilPage() {
                     />
                   </Field>
                   {!dniEditable && (
-                    <p className="text-xs text-neutral-500 sm:col-span-2">
+                    <p className="brutal-sub text-xs text-neutral-500 sm:col-span-2">
                       El documento no se puede modificar una vez cargado.
                     </p>
                   )}
@@ -190,10 +190,10 @@ export function EditarPerfilPage() {
 
               {/* Dirección */}
               <section>
-                <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">
+                <h3 className="brutal-label mb-3 text-sm text-neutral-200">
                   Dirección
                 </h3>
-                <div className="grid gap-4 bg-black/40 p-4 backdrop-blur-md sm:grid-cols-2">
+                <div className="grid gap-4 brutal-card bg-black/50 p-4 sm:grid-cols-2">
                   <Field label="Calle" full required={isFirstEdit} error={fieldErrors.street}>
                     <input type="text" value={form.street} onChange={(e) => update("street", e.target.value)} className={inputClass} />
                   </Field>
@@ -234,10 +234,10 @@ export function EditarPerfilPage() {
 
               {/* Salud y emergencia */}
               <section>
-                <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">
+                <h3 className="brutal-label mb-3 text-sm text-neutral-200">
                   Salud y contacto de emergencia
                 </h3>
-                <div className="grid gap-4 bg-black/40 p-4 backdrop-blur-md sm:grid-cols-2">
+                <div className="grid gap-4 brutal-card bg-black/50 p-4 sm:grid-cols-2">
                   <Field label="Seguro médico">
                     <input type="text" value={form.healthInsurance} onChange={(e) => update("healthInsurance", e.target.value)} className={inputClass} />
                   </Field>
@@ -267,14 +267,14 @@ export function EditarPerfilPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="bg-white px-6 py-2.5 text-sm font-bold uppercase tracking-wider text-black transition-colors hover:bg-neutral-300 disabled:opacity-50"
+                  className="brutal-label bg-white px-6 py-2.5 text-sm text-black transition-colors hover:bg-neutral-300 disabled:opacity-50"
                 >
                   {saving ? "Guardando…" : "Guardar cambios"}
                 </button>
-                <Link to="/mi-cuenta" className="text-sm font-semibold text-neutral-300 transition-colors hover:text-white">
+                <Link to="/mi-cuenta" className="brutal-sub text-sm font-semibold text-neutral-300 transition-colors hover:text-white">
                   Cancelar
                 </Link>
-                {error && <p className="text-sm text-red-400">{error}</p>}
+                {error && <p className="brutal-sub text-sm text-red-400">{error}</p>}
               </div>
             </form>
           </>
@@ -286,7 +286,7 @@ export function EditarPerfilPage() {
         <div className="fixed inset-0 flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm">
           <div className="w-full max-w-md brutal-modal bg-black/80 p-8 text-center text-white backdrop-blur-xl">
             <img src="/holds-png/green-round.png" alt="" className="mx-auto h-12 w-12 object-contain" />
-            <p className="mt-3 text-lg font-bold text-white">¡Cambios guardados!</p>
+            <p className="brutal-title mt-3 text-lg text-white">¡Cambios guardados!</p>
           </div>
         </div>
       )}
@@ -295,20 +295,20 @@ export function EditarPerfilPage() {
 }
 
 const inputClass =
-  "w-full border-b border-white/20 bg-transparent px-1 py-2 text-base text-white placeholder-neutral-600 focus:border-white focus:outline-none sm:text-sm disabled:cursor-not-allowed disabled:opacity-50";
+  "brutal-sub w-full border-b border-white/20 bg-transparent px-1 py-2 text-base text-white placeholder-neutral-600 focus:border-white focus:outline-none sm:text-sm disabled:cursor-not-allowed disabled:opacity-50";
 
 const selectClass =
-  "w-full border-b border-white/20 bg-neutral-900 px-1 py-2 text-base text-white focus:border-white focus:outline-none sm:text-sm disabled:cursor-not-allowed disabled:opacity-50 [&>option]:bg-neutral-900 [&>option]:text-white";
+  "brutal-sub w-full border-b border-white/20 bg-neutral-900 px-1 py-2 text-base text-white focus:border-white focus:outline-none sm:text-sm disabled:cursor-not-allowed disabled:opacity-50 [&>option]:bg-neutral-900 [&>option]:text-white";
 
 function Field({ label, children, full, required, error }: { label: string; children: React.ReactNode; full?: boolean; required?: boolean; error?: string }) {
   return (
     <div className={full ? "sm:col-span-2" : ""}>
-      <label className="mb-1 flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-neutral-400">
+      <label className="brutal-label mb-1 flex items-center gap-1 text-xs text-neutral-400">
         {label}
-        {required && <span className="text-red-400">*</span>}
+        {required && <span className="brutal-label text-red-400">*</span>}
       </label>
       {children}
-      {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
+      {error && <p className="brutal-sub mt-1 text-xs text-red-400">{error}</p>}
     </div>
   );
 }

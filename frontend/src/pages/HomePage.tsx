@@ -40,7 +40,7 @@ export function HomePage() {
       <Header userEmail={user?.email} onLogout={logout} />
       <main className="mx-auto max-w-5xl px-4 pt-16 pb-10 sm:pt-24 sm:pb-16">
         {/* Saludo directo sobre el fondo, sin caja */}
-        <h2 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
+        <h2 className="brutal-title text-4xl text-white sm:text-5xl">
           Hola, {primerNombre(user?.name)}
         </h2>
 
@@ -49,25 +49,25 @@ export function HomePage() {
           {/* Barra de color lateral izquierdo */}
           <div className={`w-1.5 flex-shrink-0 ${proximo ? "bg-blue-600" : "bg-neutral-700"}`} />
           <div className="p-4">
-          <h3 className={`flex items-center gap-2 text-sm font-semibold uppercase tracking-wider ${proximo ? "text-blue-500" : "text-neutral-200"}`}>
-            {proximo && <img src="/holds-png/hold-21.png" alt="" className="inline-block h-4 w-4 object-contain" />}
-            Tu próximo turno
-          </h3>
+            <h3 className={`brutal-label flex items-center gap-2 text-sm ${proximo ? "text-blue-500" : "text-neutral-200"}`}>
+              {proximo && <img src="/holds-png/hold-21.png" alt="" className="inline-block h-4 w-4 object-contain" />}
+              Tu próximo turno
+            </h3>
           {turnosLoading ? (
             <div className="mt-3">
               <img src="/holds-png/hold-21.png" alt="" className="hold-spin h-6 w-6 object-contain" />
             </div>
           ) : proximo ? (
             <div className="mt-3">
-              <p className="text-lg font-bold leading-tight tracking-tight text-white sm:text-xl">
+              <p className="brutal-title text-lg leading-tight text-white sm:text-xl">
                 {proximo.evento.nombre.split(" (")[0]}
               </p>
-              <p className="mt-1.5 text-sm capitalize text-neutral-300">
+              <p className="brutal-sub mt-1.5 text-sm capitalize text-neutral-300">
                 {proximo.fecha ? fechaLarga(proximo.fecha) : ""}
               </p>
             </div>
           ) : (
-            <p className="mt-3 text-lg text-neutral-400">No hay próximos turnos reservados.</p>
+            <p className="brutal-sub mt-3 text-lg text-neutral-400">No hay próximos turnos reservados.</p>
           )}
           </div>
         </section>
@@ -77,23 +77,23 @@ export function HomePage() {
           {/* Barra de color lateral izquierdo */}
           <div className={`w-1.5 flex-shrink-0 ${paquetesActivos.length > 0 ? "bg-emerald-400" : "bg-neutral-700"}`} />
           <div className="p-4">
-          <h3 className={`flex items-center gap-2 text-sm font-semibold uppercase tracking-wider ${paquetesActivos.length > 0 ? "text-emerald-400" : "text-neutral-200"}`}>
-            {paquetesActivos.length > 0 && <img src="/holds-png/hold-05.png" alt="" className="inline-block h-4 w-4 object-contain" />}
-            Paquetes activos
-          </h3>
-          {paquetesLoading ? (
-            <div className="mt-3">
-              <img src="/holds-png/hold-05.png" alt="" className="hold-spin h-6 w-6 object-contain" />
-            </div>
-          ) : paquetesActivos.length > 0 ? (
-            <div className="mt-4">
-              {paquetesActivos.map((p) => (
-                <PaqueteCompacto key={p.id} p={p} />
-              ))}
-            </div>
-          ) : (
-            <p className="mt-3 text-lg text-neutral-400">No tenés paquetes de acceso activos.</p>
-          )}
+            <h3 className={`brutal-label flex items-center gap-2 text-sm ${paquetesActivos.length > 0 ? "text-emerald-400" : "text-neutral-200"}`}>
+              {paquetesActivos.length > 0 && <img src="/holds-png/hold-05.png" alt="" className="inline-block h-4 w-4 object-contain" />}
+              Paquetes activos
+            </h3>
+            {paquetesLoading ? (
+              <div className="mt-3">
+                <img src="/holds-png/hold-05.png" alt="" className="hold-spin h-6 w-6 object-contain" />
+              </div>
+            ) : paquetesActivos.length > 0 ? (
+              <div className="mt-4">
+                {paquetesActivos.map((p) => (
+                  <PaqueteCompacto key={p.id} p={p} />
+                ))}
+              </div>
+            ) : (
+              <p className="brutal-sub mt-3 text-lg text-neutral-400">No tenés paquetes de acceso activos.</p>
+            )}
           </div>
         </section>
 
@@ -130,24 +130,24 @@ function PaqueteCompacto({ p }: { p: Paquete }) {
   return (
     <div className="py-3.5 first:pt-0 last:pb-0">
       <div className="flex items-baseline justify-between gap-3">
-        <p className="text-lg font-bold leading-tight tracking-tight text-white sm:text-xl">{p.descripcion}</p>
-        <span className={`flex-shrink-0 text-sm font-semibold ${alerta ? "text-amber-400" : "text-neutral-300"}`}>
+        <p className="brutal-title text-lg leading-tight text-white sm:text-xl">{p.descripcion}</p>
+        <span className={`brutal-number flex-shrink-0 text-sm ${alerta ? "text-amber-400" : "text-neutral-300"}`}>
           {p.creditosDisponibles}/{p.creditosTotales}
         </span>
       </div>
       <div className="mt-2 flex items-center gap-3">
-        <span className="text-sm text-neutral-400">{fechaCorta(p.fechaInicio)} → {fechaCorta(p.fechaFin)}</span>
+        <span className="brutal-sub text-sm text-neutral-400">{fechaCorta(p.fechaInicio)} → {fechaCorta(p.fechaFin)}</span>
         <div className="h-1 flex-1 bg-white/10">
           <div className={`h-full ${barraColor} transition-all`} style={{ width: `${pct}%` }} />
         </div>
       </div>
       {alerta && (
-        <p className="mt-1.5 text-xs font-semibold text-amber-400">
+        <p className="brutal-sub mt-1.5 text-xs font-semibold text-amber-400">
           Te queda 1 crédito
         </p>
       )}
       {vencCercano && (
-        <p className="mt-1.5 text-xs font-semibold text-amber-400">
+        <p className="brutal-sub mt-1.5 text-xs font-semibold text-amber-400">
           Se te está por vencer{diasVenc === 0 ? " hoy" : `, te quedan ${diasVenc} día${diasVenc === 1 ? "" : "s"}`} para usar este paquete
         </p>
       )}
@@ -166,17 +166,15 @@ function NavRow({ to, title, desc, hold }: { to: string; title: string; desc: st
   return (
     <Link
       to={to}
-      className="group flex items-center gap-6 border-b-2 border-white px-6 py-5 transition-colors hover:bg-white/[0.03] sm:gap-8 sm:py-6"
+      className="group flex items-center gap-6 border-b-2 border-white px-6 py-5 transition-colors hover:bg-white/[0.03] sm:py-6"
     >
-      <div className="min-w-0 flex-1">
-        <p className="text-2xl font-bold leading-tight tracking-tight text-white transition-colors group-hover:text-neutral-300 sm:text-3xl">
-          {title}
-        </p>
-        <p className="mt-0.5 text-xs text-neutral-300 transition-colors group-hover:text-neutral-200">
-          {desc}
-        </p>
-      </div>
-      <img src={hold} alt="" className="h-8 w-8 flex-shrink-0 object-contain transition-transform group-hover:scale-110" />
+      <img src={hold} alt="" className="h-5 w-5 flex-shrink-0 object-contain transition-transform group-hover:scale-110" />
+      <p className="brutal-title w-44 flex-shrink-0 text-2xl leading-tight text-white transition-colors group-hover:text-neutral-300 sm:text-3xl">
+        {title}
+      </p>
+      <p className="brutal-sub text-xs text-neutral-400 transition-colors group-hover:text-neutral-300">
+        {desc}
+      </p>
     </Link>
   );
 }
@@ -239,7 +237,7 @@ export function Header({ userEmail, onLogout }: { userEmail?: string; onLogout: 
     <>
       <header className="sticky top-0 z-[70] border-b border-black bg-black">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-          <Link to="/" className="text-lg font-bold tracking-tight text-white">
+          <Link to="/" className="brutal-title text-lg text-white">
             CABA
           </Link>
           <div className="flex items-center gap-4">
@@ -252,7 +250,7 @@ export function Header({ userEmail, onLogout }: { userEmail?: string; onLogout: 
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
-                <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[10px] font-bold leading-none text-black">
+                <span className="brutal-number absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[10px] leading-none text-black">
                   {itemCount > 9 ? "9+" : itemCount}
                 </span>
               </button>
@@ -263,7 +261,7 @@ export function Header({ userEmail, onLogout }: { userEmail?: string; onLogout: 
               aria-expanded={isOpen}
               className="relative z-[60] flex items-center gap-2 text-white"
             >
-              <span className="text-xs font-semibold uppercase tracking-wider">{isOpen ? "Close" : "Menu"}</span>
+              <span className="brutal-label text-xs">{isOpen ? "Close" : "Menu"}</span>
               <span className="relative flex h-4 w-6 items-center justify-center">
                 <span
                   className={`absolute h-[2px] w-6 bg-white transition-transform duration-300 ${
@@ -304,7 +302,7 @@ export function Header({ userEmail, onLogout }: { userEmail?: string; onLogout: 
                     key={item.to}
                     to={item.to}
                     onClick={closeMenu}
-                    className={`menu-item-animated text-2xl font-semibold leading-tight tracking-tight transition-colors sm:text-3xl ${
+                    className={`menu-item-animated brutal-title text-2xl leading-tight transition-colors sm:text-3xl ${
                       active ? "text-white" : "text-neutral-400 hover:text-white"
                     }`}
                     style={{ animationDelay: `${i * 0.05}s` }}
@@ -315,14 +313,14 @@ export function Header({ userEmail, onLogout }: { userEmail?: string; onLogout: 
               })}
             </nav>
             {userEmail && (
-              <p className="text-xs text-neutral-500">{userEmail}</p>
+              <p className="brutal-sub text-xs text-neutral-500">{userEmail}</p>
             )}
             <button
               onClick={() => {
                 closeMenu();
                 onLogout();
               }}
-              className="self-start text-sm text-neutral-400 hover:text-white"
+              className="brutal-sub self-start text-sm text-neutral-400 hover:text-white"
             >
               Salir
             </button>

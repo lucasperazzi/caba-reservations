@@ -48,45 +48,45 @@ export function LoginPage() {
   return (
     <div className="relative flex min-h-screen items-center justify-center px-4">
       <div className={`w-full max-w-sm text-center transition ${loading ? "pointer-events-none blur-sm" : ""}`}>
-        <h1 className="mb-1 text-3xl font-bold tracking-tight text-white">CABA</h1>
-        <p className="mb-6 text-sm text-neutral-300">Iniciá sesión con tu cuenta del Centro Andino</p>
+        <h1 className="brutal-title mb-1 text-3xl text-white">CABA</h1>
+        <p className="brutal-sub mb-6 text-sm text-neutral-300">Iniciá sesión con tu cuenta del Centro Andino</p>
 
         <form onSubmit={submit} className="space-y-4 border border-white/20 p-6" noValidate>
           <div>
-            <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-neutral-300">Usuario / Email</label>
+            <label className="brutal-label mb-1 block text-xs text-neutral-300">Usuario / Email</label>
             <input
               type="text"
               value={user}
               onChange={(e) => { setUser(e.target.value); setFieldErrors((f) => ({ ...f, user: "" })); }}
               autoFocus
-              className="w-full border-b border-white/20 bg-transparent px-1 py-2 text-base text-white placeholder-neutral-600 focus:border-white focus:outline-none sm:text-sm"
+              className="brutal-sub w-full border-b border-white/20 bg-transparent px-1 py-2 text-base text-white placeholder-neutral-600 focus:border-white focus:outline-none sm:text-sm"
             />
-            {fieldErrors.user && <p className="mt-1 text-left text-xs text-red-400">{fieldErrors.user}</p>}
+            {fieldErrors.user && <p className="brutal-sub mt-1 text-left text-xs text-red-400">{fieldErrors.user}</p>}
           </div>
           <div>
-            <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-neutral-300">Contraseña</label>
+            <label className="brutal-label mb-1 block text-xs text-neutral-300">Contraseña</label>
             <input
               type="password"
               value={password}
               onChange={(e) => { setPassword(e.target.value); setFieldErrors((f) => ({ ...f, password: "" })); }}
-              className="w-full border-b border-white/20 bg-transparent px-1 py-2 text-base text-white placeholder-neutral-600 focus:border-white focus:outline-none sm:text-sm"
+              className="brutal-sub w-full border-b border-white/20 bg-transparent px-1 py-2 text-base text-white placeholder-neutral-600 focus:border-white focus:outline-none sm:text-sm"
             />
-            {fieldErrors.password && <p className="mt-1 text-left text-xs text-red-400">{fieldErrors.password}</p>}
+            {fieldErrors.password && <p className="brutal-sub mt-1 text-left text-xs text-red-400">{fieldErrors.password}</p>}
           </div>
 
-          {error && <p className="text-sm text-red-400">{error}</p>}
+          {error && <p className="brutal-sub text-sm text-red-400">{error}</p>}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-white px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-black transition-colors hover:bg-neutral-300 disabled:opacity-50"
+            className="brutal-label w-full bg-white px-4 py-2.5 text-sm text-black transition-colors hover:bg-neutral-300 disabled:opacity-50"
           >
             {loading ? "Ingresando…" : "Ingresar"}
           </button>
 
           {features.google && (
             <>
-              <div className="flex items-center gap-3 py-1 text-xs uppercase tracking-wider text-neutral-400">
+              <div className="brutal-label flex items-center gap-3 py-1 text-xs text-neutral-400">
                 <span className="h-px flex-1 bg-white/20" />
                 o
                 <span className="h-px flex-1 bg-white/20" />
@@ -94,7 +94,7 @@ export function LoginPage() {
 
               <a
                 href="/api/auth/google"
-                className="flex w-full items-center justify-center gap-2 border border-white/20 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+                className="brutal-sub flex w-full items-center justify-center gap-2 border border-white/20 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
               >
                 <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.76h3.56c2.08-1.92 3.28-4.74 3.28-8.09Z" />
@@ -109,15 +109,15 @@ export function LoginPage() {
         </form>
 
         {features.signup && (
-          <p className="mt-4 text-sm text-neutral-300">
+          <p className="brutal-sub mt-4 text-sm text-neutral-300">
             ¿No tenés cuenta?{" "}
-            <Link to="/signup" className="font-semibold text-white underline hover:text-neutral-300">
+            <Link to="/signup" className="brutal-sub font-semibold text-white underline hover:text-neutral-300">
               Registrarse
             </Link>
           </p>
         )}
 
-        <div className="mt-4 px-4 text-xs text-neutral-300">
+        <div className="brutal-sub mt-4 px-4 text-xs text-neutral-300">
           <p>
             Tu contraseña se usa una sola vez para autenticarte contra el sitio oficial de CABA y
             nunca se guarda. Solo se conserva la sesión, igual que en el sitio real.

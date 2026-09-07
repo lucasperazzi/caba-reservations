@@ -45,78 +45,78 @@ export function SignupPage() {
   return (
     <div className="relative flex min-h-screen items-center justify-center px-4">
       <div className={`w-full max-w-sm text-center transition ${loading ? "pointer-events-none blur-sm" : ""}`}>
-        <h1 className="mb-1 text-3xl font-bold tracking-tight text-white">CABA</h1>
-        <p className="mb-6 text-sm text-neutral-300">Creá tu cuenta del Centro Andino</p>
+        <h1 className="brutal-title mb-1 text-3xl text-white">CABA</h1>
+        <p className="brutal-sub mb-6 text-sm text-neutral-300">Creá tu cuenta del Centro Andino</p>
 
         <form onSubmit={submit} className="space-y-4 border border-white/20 p-6" noValidate>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-neutral-300">Nombre/s</label>
+              <label className="brutal-label mb-1 block text-xs text-neutral-300">Nombre/s</label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => { setName(e.target.value); clearError("name"); }}
                 autoFocus
-                className="w-full border-b border-white/20 bg-transparent px-1 py-2 text-base text-white placeholder-neutral-600 focus:border-white focus:outline-none sm:text-sm"
+                className="brutal-sub w-full border-b border-white/20 bg-transparent px-1 py-2 text-base text-white placeholder-neutral-600 focus:border-white focus:outline-none sm:text-sm"
               />
-              {fieldErrors.name && <p className="mt-1 text-left text-xs text-red-400">{fieldErrors.name}</p>}
+              {fieldErrors.name && <p className="brutal-sub mt-1 text-left text-xs text-red-400">{fieldErrors.name}</p>}
             </div>
             <div>
-              <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-neutral-300">Apellido/s</label>
+              <label className="brutal-label mb-1 block text-xs text-neutral-300">Apellido/s</label>
               <input
                 type="text"
                 value={lastname}
                 onChange={(e) => { setLastname(e.target.value); clearError("lastname"); }}
-                className="w-full border-b border-white/20 bg-transparent px-1 py-2 text-base text-white placeholder-neutral-600 focus:border-white focus:outline-none sm:text-sm"
+                className="brutal-sub w-full border-b border-white/20 bg-transparent px-1 py-2 text-base text-white placeholder-neutral-600 focus:border-white focus:outline-none sm:text-sm"
               />
-              {fieldErrors.lastname && <p className="mt-1 text-left text-xs text-red-400">{fieldErrors.lastname}</p>}
+              {fieldErrors.lastname && <p className="brutal-sub mt-1 text-left text-xs text-red-400">{fieldErrors.lastname}</p>}
             </div>
           </div>
           <div>
-            <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-neutral-300">Email</label>
+            <label className="brutal-label mb-1 block text-xs text-neutral-300">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => { setEmail(e.target.value); clearError("email"); }}
-              className="w-full border-b border-white/20 bg-transparent px-1 py-2 text-base text-white placeholder-neutral-600 focus:border-white focus:outline-none sm:text-sm"
+              className="brutal-sub w-full border-b border-white/20 bg-transparent px-1 py-2 text-base text-white placeholder-neutral-600 focus:border-white focus:outline-none sm:text-sm"
             />
-            {fieldErrors.email && <p className="mt-1 text-left text-xs text-red-400">{fieldErrors.email}</p>}
+            {fieldErrors.email && <p className="brutal-sub mt-1 text-left text-xs text-red-400">{fieldErrors.email}</p>}
           </div>
           <div>
-            <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-neutral-300">Contraseña</label>
+            <label className="brutal-label mb-1 block text-xs text-neutral-300">Contraseña</label>
             <input
               type="password"
               value={password}
               onChange={(e) => { setPassword(e.target.value); clearError("password"); }}
-              className="w-full border-b border-white/20 bg-transparent px-1 py-2 text-base text-white placeholder-neutral-600 focus:border-white focus:outline-none sm:text-sm"
+              className="brutal-sub w-full border-b border-white/20 bg-transparent px-1 py-2 text-base text-white placeholder-neutral-600 focus:border-white focus:outline-none sm:text-sm"
             />
-            {fieldErrors.password && <p className="mt-1 text-left text-xs text-red-400">{fieldErrors.password}</p>}
+            {fieldErrors.password && <p className="brutal-sub mt-1 text-left text-xs text-red-400">{fieldErrors.password}</p>}
           </div>
           <div>
-            <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-neutral-300">Confirmar contraseña</label>
+            <label className="brutal-label mb-1 block text-xs text-neutral-300">Confirmar contraseña</label>
             <input
               type="password"
               value={confirm}
               onChange={(e) => { setConfirm(e.target.value); clearError("confirm"); }}
-              className="w-full border-b border-white/20 bg-transparent px-1 py-2 text-base text-white placeholder-neutral-600 focus:border-white focus:outline-none sm:text-sm"
+              className="brutal-sub w-full border-b border-white/20 bg-transparent px-1 py-2 text-base text-white placeholder-neutral-600 focus:border-white focus:outline-none sm:text-sm"
             />
-            {fieldErrors.confirm && <p className="mt-1 text-left text-xs text-red-400">{fieldErrors.confirm}</p>}
+            {fieldErrors.confirm && <p className="brutal-sub mt-1 text-left text-xs text-red-400">{fieldErrors.confirm}</p>}
           </div>
 
-          {error && <p className="text-sm text-red-400">{error}</p>}
+          {error && <p className="brutal-sub text-sm text-red-400">{error}</p>}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-white px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-black transition-colors hover:bg-neutral-300 disabled:opacity-50"
+            className="brutal-label w-full bg-white px-4 py-2.5 text-sm text-black transition-colors hover:bg-neutral-300 disabled:opacity-50"
           >
             {loading ? "Registrando…" : "Registrarse"}
           </button>
         </form>
 
-        <p className="mt-4 text-sm text-neutral-300">
+        <p className="brutal-sub mt-4 text-sm text-neutral-300">
           ¿Ya tenés cuenta?{" "}
-          <Link to="/login" className="font-semibold text-white underline hover:text-neutral-300">
+          <Link to="/login" className="brutal-sub font-semibold text-white underline hover:text-neutral-300">
             Iniciar sesión
           </Link>
         </p>

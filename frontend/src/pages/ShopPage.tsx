@@ -55,25 +55,25 @@ export function ShopPage() {
       >
         <div className="pointer-events-auto mt-2 inline-flex items-center gap-2 rounded-full border border-white/10 bg-neutral-900/80 px-4 py-1.5 shadow-lg backdrop-blur-md">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-          <span className="text-xs text-neutral-300">
+          <span className="brutal-sub text-xs text-neutral-300">
             Precios para{" "}
-            <span className="font-semibold text-white">{esSocio ? "socios" : "no socios"}</span>
+            <span className="brutal-sub font-semibold text-white">{esSocio ? "socios" : "no socios"}</span>
           </span>
         </div>
       </div>
 
       <main className="mx-auto max-w-5xl space-y-6 px-4 py-8">
         {/* Título */}
-        <h2 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Catálogo</h2>
+        <h2 className="brutal-title text-2xl text-white sm:text-3xl">Catálogo</h2>
 
         {/* Switch Socio / No socio — en el flujo normal, con ref para detectar cuando desaparece */}
         <div ref={switchRef} className="space-y-2">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Mostrar precios:</span>
+            <span className="brutal-label text-xs text-neutral-400">Mostrar precios:</span>
             <div className="flex border border-white/30">
               <button
                 onClick={() => setEsSocio(false)}
-                className={`px-4 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors ${
+                className={`px-4 py-1.5 brutal-label text-xs transition-colors ${
                   !esSocio ? "bg-white text-black" : "text-neutral-300 hover:text-white"
                 }`}
               >
@@ -82,7 +82,7 @@ export function ShopPage() {
               <button
                 onClick={() => { if (esMiembroActivo) setEsSocio(true); }}
                 disabled={!esMiembroActivo}
-                className={`px-4 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors ${
+                className={`px-4 py-1.5 brutal-label text-xs transition-colors ${
                   esSocio
                     ? "bg-white text-black"
                     : esMiembroActivo
@@ -95,7 +95,7 @@ export function ShopPage() {
             </div>
           </div>
           {!esMiembroActivo && (
-            <p className="flex items-start gap-1.5 border-l-2 border-amber-500/60 pl-2.5 text-xs leading-relaxed text-amber-200">
+            <p className="brutal-sub flex items-start gap-1.5 border-l-2 border-amber-500/60 pl-2.5 text-xs leading-relaxed text-amber-200">
               <svg xmlns="http://www.w3.org/2000/svg" className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
               </svg>
@@ -111,7 +111,7 @@ export function ShopPage() {
             <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-x-visible sm:pb-0 [&::-webkit-scrollbar]:hidden">
               <button
                 onClick={() => setCategoriaSel(null)}
-                className={`flex-shrink-0 border px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors ${
+                className={`flex-shrink-0 border px-3 py-1.5 brutal-label text-xs transition-colors ${
                   categoriaSel === null
                     ? "border-white bg-white text-black"
                     : "border-white/30 text-neutral-300 hover:border-white"
@@ -125,7 +125,7 @@ export function ShopPage() {
                   <button
                     key={c.id}
                     onClick={() => setCategoriaSel(c.id)}
-                    className={`flex-shrink-0 border px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors ${
+                    className={`flex-shrink-0 border px-3 py-1.5 brutal-label text-xs transition-colors ${
                       categoriaSel === c.id
                         ? "border-white bg-white text-black"
                         : "border-white/30 text-neutral-300 hover:border-white"
@@ -147,11 +147,11 @@ export function ShopPage() {
 
         {/* Sin productos */}
         {!isLoading && productos.length === 0 && (
-          <p className="text-sm text-neutral-400">No hay productos en esta categoría.</p>
+          <p className="brutal-sub text-sm text-neutral-400">No hay productos en esta categoría.</p>
         )}
 
         {/* Lista de productos */}
-        <div className="space-y-3">
+        <div className="space-y-5">
           {productos.map((p) => (
             <ProductoCard
               key={p.id}
@@ -280,20 +280,20 @@ function ProductoCard({
       {/* Info */}
       <div className="min-w-0 flex-1">
         {p.categorias.length > 0 && (
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400">
+          <span className="brutal-label text-[10px] text-neutral-400">
             {p.categorias.map(catNombre).join(" · ")}
           </span>
         )}
-        <h3 className="mt-0.5 text-base font-bold leading-tight tracking-tight text-white sm:text-lg">
+        <h3 className="brutal-title mt-0.5 text-base leading-tight text-white sm:text-lg">
           {p.nombre}
         </h3>
         {/* Precio — siempre en una línea */}
         <div className="mt-2">
-          <span className="text-sm font-bold whitespace-nowrap text-white">{precioTexto}</span>
+          <span className="brutal-number text-sm whitespace-nowrap text-white">{precioTexto}</span>
         </div>
         {tieneVariantes && (
           <div className="mt-1.5">
-            <span className="text-[10px] uppercase tracking-wider text-neutral-400">
+            <span className="brutal-sub text-[10px] uppercase text-neutral-400">
               {variantes.length} opciones
             </span>
           </div>
@@ -301,7 +301,7 @@ function ProductoCard({
       </div>
 
       {/* Chevron */}
-      <span className="mt-1 flex-shrink-0 text-neutral-400">›</span>
+      <span className="brutal-sub mt-1 flex-shrink-0 text-neutral-400">›</span>
     </button>
   );
 }
@@ -372,15 +372,15 @@ function ProductoModal({
           )}
           <div className="min-w-0 flex-1">
             {p.categorias.length > 0 && (
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400">
+              <span className="brutal-label text-[10px] text-neutral-400">
                 {p.categorias.map(catNombre).join(" · ")}
               </span>
             )}
-            <h3 className="mt-0.5 text-lg font-bold leading-tight tracking-tight text-white">
+            <h3 className="brutal-title mt-0.5 text-lg leading-tight text-white">
               {p.nombre}
             </h3>
             {tieneSocio && (
-              <span className="mt-1.5 inline-block whitespace-nowrap border border-white/30 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-neutral-300">
+              <span className="brutal-label mt-1.5 inline-block whitespace-nowrap border border-white/30 px-1.5 py-0.5 text-[9px] text-neutral-300">
                 {esSocio ? "Socio" : "No socio"}
               </span>
             )}
@@ -388,7 +388,7 @@ function ProductoModal({
           <button
             onClick={onClose}
             aria-label="Cerrar"
-            className="flex-shrink-0 text-neutral-400 transition-colors hover:text-white"
+            className="brutal-sub flex-shrink-0 text-neutral-400 transition-colors hover:text-white"
           >
             ✕
           </button>
@@ -398,7 +398,7 @@ function ProductoModal({
         <div className="overflow-y-auto p-5">
           {/* Descripción de venta */}
           {p.descripcionVenta && (
-            <div className="mb-5 whitespace-pre-line text-sm leading-relaxed text-neutral-300">
+            <div className="brutal-sub mb-5 whitespace-pre-line text-sm leading-relaxed text-neutral-300">
               {p.descripcionVenta}
             </div>
           )}
@@ -406,7 +406,7 @@ function ProductoModal({
           {/* Variantes */}
           {tieneVariantes && (
             <div>
-              <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-200">Opciones</h4>
+              <h4 className="brutal-label mb-2 text-xs text-neutral-200">Opciones</h4>
               <div className="space-y-2">
                 {variantes.map((v) => {
                   const attrsTexto = atributosVisibles(v).join(" · ");
@@ -420,18 +420,18 @@ function ProductoModal({
                       <div className="w-1.5 flex-shrink-0 bg-emerald-500" />
                       <div className="flex flex-1 items-center justify-between gap-3 px-4 py-3">
                       <div className="min-w-0 flex-1">
-                        <span className="text-sm font-medium text-white">{attrsTexto || "Estándar"}</span>
-                        <span className="mt-0.5 block whitespace-nowrap text-sm font-bold text-emerald-400">
+                        <span className="brutal-sub text-sm text-white">{attrsTexto || "Estándar"}</span>
+                        <span className="brutal-number mt-0.5 block whitespace-nowrap text-sm text-emerald-400">
                           {formatoPrecio(v.precio)}
                           {extra > 0 && (
-                            <span className="ml-1 text-[10px] text-neutral-500">+${extra}</span>
+                            <span className="brutal-sub ml-1 text-[10px] text-neutral-500">+${extra}</span>
                           )}
                         </span>
                       </div>
                       <button
                         onClick={() => handleAdd(v)}
                         disabled={isAdded}
-                        className={`flex-shrink-0 border px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors ${
+                        className={`flex-shrink-0 border px-3 py-1.5 brutal-label text-xs transition-colors ${
                           isAdded
                             ? "border-emerald-500 bg-emerald-500 text-black"
                             : "border-white/30 text-white hover:bg-white/10"
@@ -453,15 +453,15 @@ function ProductoModal({
               <div className="w-1.5 flex-shrink-0 bg-emerald-500" />
               <div className="flex flex-1 items-center justify-between gap-3 px-4 py-3">
               <div className="min-w-0 flex-1">
-                <span className="text-sm font-medium text-white">Estándar</span>
-                <span className="mt-0.5 block whitespace-nowrap text-sm font-bold text-emerald-400">
+                <span className="brutal-sub text-sm text-white">Estándar</span>
+                <span className="brutal-number mt-0.5 block whitespace-nowrap text-sm text-emerald-400">
                   {formatoPrecio(variantes[0].precio)}
                 </span>
               </div>
               <button
                 onClick={() => handleAdd(variantes[0])}
                 disabled={added === variantes[0].id}
-                className={`flex-shrink-0 border px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors ${
+                className={`flex-shrink-0 border px-3 py-1.5 brutal-label text-xs transition-colors ${
                   added === variantes[0].id
                     ? "border-emerald-500 bg-emerald-500 text-black"
                     : "border-white/30 text-white hover:bg-white/10"
@@ -525,11 +525,11 @@ export function CarritoModal({ onClose }: { onClose: () => void }) {
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-white/10 p-5">
-          <h3 className="text-lg font-bold tracking-tight text-white">Carrito</h3>
+          <h3 className="brutal-title text-lg text-white">Carrito</h3>
           <button
             onClick={onClose}
             aria-label="Cerrar"
-            className="text-neutral-400 transition-colors hover:text-white"
+            className="brutal-sub text-neutral-400 transition-colors hover:text-white"
           >
             ✕
           </button>
@@ -538,7 +538,7 @@ export function CarritoModal({ onClose }: { onClose: () => void }) {
         {/* Contenido */}
         <div className="overflow-y-auto p-5">
           {items.length === 0 ? (
-            <p className="py-8 text-center text-sm text-neutral-400">Tu carrito está vacío</p>
+            <p className="brutal-sub py-8 text-center text-sm text-neutral-400">Tu carrito está vacío</p>
           ) : (
             <div className="space-y-3">
               {items.map((item) => (
@@ -550,15 +550,15 @@ export function CarritoModal({ onClose }: { onClose: () => void }) {
                   <div className="flex-1 px-4 py-3">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-bold leading-tight text-white">{item.nombre}</p>
-                      <p className="mt-0.5 text-xs text-neutral-400">{item.varianteNombre}</p>
-                      <p className="mt-1 text-sm font-bold text-emerald-400">
+                      <p className="brutal-title text-sm leading-tight text-white">{item.nombre}</p>
+                      <p className="brutal-sub mt-0.5 text-xs text-neutral-400">{item.varianteNombre}</p>
+                      <p className="brutal-number mt-1 text-sm text-emerald-400">
                         {formatoPrecio(item.precio)}
                       </p>
                     </div>
                     <button
                       onClick={() => removeItem(item.varianteId)}
-                      className="flex-shrink-0 text-xs text-neutral-500 transition-colors hover:text-red-400"
+                      className="brutal-sub flex-shrink-0 text-xs text-neutral-500 transition-colors hover:text-red-400"
                       aria-label="Eliminar"
                     >
                       ✕
@@ -568,18 +568,18 @@ export function CarritoModal({ onClose }: { onClose: () => void }) {
                   <div className="mt-2 flex items-center gap-2">
                     <button
                       onClick={() => updateQty(item.varianteId, item.qty - 1)}
-                      className="flex h-6 w-6 items-center justify-center border border-white/30 text-sm text-white transition-colors hover:bg-white/10"
+                      className="brutal-sub flex h-6 w-6 items-center justify-center border border-white/30 text-sm text-white transition-colors hover:bg-white/10"
                     >
                       −
                     </button>
-                    <span className="min-w-8 text-center text-sm font-semibold text-white">{item.qty}</span>
+                    <span className="brutal-number min-w-8 text-center text-sm text-white">{item.qty}</span>
                     <button
                       onClick={() => updateQty(item.varianteId, item.qty + 1)}
-                      className="flex h-6 w-6 items-center justify-center border border-white/30 text-sm text-white transition-colors hover:bg-white/10"
+                      className="brutal-sub flex h-6 w-6 items-center justify-center border border-white/30 text-sm text-white transition-colors hover:bg-white/10"
                     >
                       +
                     </button>
-                    <span className="ml-auto text-sm font-bold text-white">
+                    <span className="brutal-number ml-auto text-sm text-white">
                       {formatoPrecio(item.precio * item.qty)}
                     </span>
                   </div>
@@ -594,26 +594,26 @@ export function CarritoModal({ onClose }: { onClose: () => void }) {
         {items.length > 0 && (
           <div className="border-t border-white/10 p-5">
             {checkoutError && (
-              <p className="mb-3 text-xs text-red-400">{checkoutError}</p>
+              <p className="brutal-sub mb-3 text-xs text-red-400">{checkoutError}</p>
             )}
             <div className="mb-3 flex items-center justify-between">
-              <span className="text-sm font-semibold uppercase tracking-wider text-neutral-300">Total</span>
-              <span className="text-lg font-bold text-white">{formatoPrecio(total)}</span>
+              <span className="brutal-label text-sm text-neutral-300">Total</span>
+              <span className="brutal-number text-lg text-white">{formatoPrecio(total)}</span>
             </div>
             <button
               onClick={handleCheckout}
               disabled={checkoutLoading}
-              className="w-full bg-emerald-500 py-3 text-sm font-bold uppercase tracking-wider text-black transition-colors hover:bg-emerald-400 disabled:opacity-50"
+              className="brutal-label w-full bg-emerald-500 py-3 text-sm text-black transition-colors hover:bg-emerald-400 disabled:opacity-50"
             >
               {checkoutLoading ? "Procesando..." : "Finalizar compra"}
             </button>
             <button
               onClick={clear}
-              className="mt-2 w-full text-xs text-neutral-500 transition-colors hover:text-neutral-300"
+              className="brutal-sub mt-2 w-full text-xs text-neutral-500 transition-colors hover:text-neutral-300"
             >
               Vaciar carrito
             </button>
-            <p className="mt-3 text-center text-[10px] text-neutral-500">
+            <p className="brutal-sub mt-3 text-center text-[10px] text-neutral-500">
               Serás redirigido al sitio de CABA para completar el pago
             </p>
           </div>

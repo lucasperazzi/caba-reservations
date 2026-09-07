@@ -55,23 +55,23 @@ export function MisTurnosPage() {
     <div className="min-h-screen">
       <Header userEmail={user?.email} onLogout={logout} />
       <main className="mx-auto max-w-5xl space-y-6 px-4 py-8">
-        <h2 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Mis turnos</h2>
+        <h2 className="brutal-title text-2xl text-white sm:text-3xl">Mis turnos</h2>
 
-        {isLoading && <p className="text-neutral-300">Cargando…</p>}
+        {isLoading && <p className="brutal-sub text-neutral-300">Cargando…</p>}
 
         {/* Próximo turno: barra lateral, igual que el resto de las cards */}
         {!isLoading && (
           <section className="brutal-card flex overflow-hidden bg-black/50">
             <div className={`w-1.5 flex-shrink-0 ${proximo ? "bg-blue-600" : "bg-neutral-700"}`} />
             <div className="p-4">
-            <h3 className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider sm:text-sm ${proximo ? "text-blue-500" : "text-neutral-200"}`}>
+            <h3 className={`brutal-label flex items-center gap-2 text-xs sm:text-sm ${proximo ? "text-blue-500" : "text-neutral-200"}`}>
               {proximo && <img src="/holds-png/hold-21.png" alt="" className="inline-block h-3.5 w-3.5 object-contain sm:h-4 sm:w-4" />}
               Turno reservado más cercano:
             </h3>
             {proximo ? (
               <div className="mt-3">
-                <p className="text-xl font-bold leading-tight tracking-tight text-white sm:text-2xl">{nombreLargo(proximo.evento.nombre)}</p>
-                <p className="mt-1 text-sm capitalize text-neutral-300">{fechaLarga(proximo.fecha!)}</p>
+                <p className="brutal-title text-xl leading-tight text-white sm:text-2xl">{nombreLargo(proximo.evento.nombre)}</p>
+                <p className="brutal-sub mt-1 text-sm capitalize text-neutral-300">{fechaLarga(proximo.fecha!)}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <button
                     onClick={() => repetirProximaSemana(proximo)}
@@ -89,8 +89,8 @@ export function MisTurnosPage() {
               </div>
             ) : (
               <div className="mt-3">
-                <p className="text-sm text-neutral-300">No tenés turnos reservados.</p>
-                <Link to="/turnos" className="mt-3 inline-block text-sm font-semibold text-blue-500 hover:text-blue-400">
+                <p className="brutal-sub text-sm text-neutral-300">No tenés turnos reservados.</p>
+                <Link to="/turnos" className="brutal-sub mt-3 inline-block text-sm font-semibold text-blue-500 hover:text-blue-400">
                   Reservar un turno →
                 </Link>
               </div>
@@ -102,7 +102,7 @@ export function MisTurnosPage() {
         {/* Siguientes turnos */}
         {!isLoading && siguientes.length > 0 && (
           <section>
-            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">Próximos turnos reservados</h3>
+            <h3 className="brutal-label mb-3 text-sm text-neutral-200">Próximos turnos reservados</h3>
             <div className="brutal-card bg-black/50 p-4">
               {siguientes.map((t) => (
                 <MiTurnoRow key={t.registrationId} t={t} onRepetir={() => repetirProximaSemana(t)} onAgregarCalendario={() => generarICS(t)} />
@@ -114,7 +114,7 @@ export function MisTurnosPage() {
         {/* Historial */}
         {!isLoading && historial.length > 0 && (
           <section>
-            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">Historial</h3>
+            <h3 className="brutal-label mb-3 text-sm text-neutral-200">Historial</h3>
             <div className="brutal-card bg-black/50 p-4">
               {historial.map((t) => (
                 <MiTurnoRow key={t.registrationId} t={t} />
@@ -130,7 +130,7 @@ export function MisTurnosPage() {
 // ── Estilos compartidos ────────────────────────────────────────
 
 const BTN_CLASS =
-  "whitespace-nowrap border border-white/40 px-2 py-1 text-[10px] font-semibold text-white transition-colors hover:border-white hover:bg-white/10 cursor-pointer";
+  "brutal-label whitespace-nowrap border border-white/40 px-2 py-1 text-[10px] text-white transition-colors hover:border-white hover:bg-white/10 cursor-pointer";
 
 // ── Generador de .ics ─────────────────────────────────────────
 
@@ -213,13 +213,13 @@ function MiTurnoRow({ t, onRepetir, onAgregarCalendario }: {
     <div className="border-t border-white px-3 py-4 transition-colors first:border-t-0">
       <div className="grid grid-cols-[1fr_auto] items-center gap-x-3 sm:gap-x-4">
         <div className="min-w-0">
-          <p className="break-words text-base font-bold leading-tight tracking-tight text-white sm:text-xl">
+          <p className="brutal-title break-words text-base leading-tight text-white sm:text-xl">
             {nombreLargo(t.evento.nombre)}
           </p>
-          <p className="mt-1 text-xs capitalize text-neutral-300">{fechaLarga(t.fecha)}</p>
+          <p className="brutal-sub mt-1 text-xs capitalize text-neutral-300">{fechaLarga(t.fecha)}</p>
         </div>
 
-        <span className={`flex items-center gap-1.5 self-start text-[10px] font-semibold uppercase tracking-wider sm:text-xs ${estadoColor[t.estado] ?? "text-neutral-300"}`}>
+        <span className={`brutal-label flex items-center gap-1.5 self-start text-[10px] sm:text-xs ${estadoColor[t.estado] ?? "text-neutral-300"}`}>
           <img src={estadoHold[t.estado] ?? "/holds-png/hold-14.png"} alt="" className="h-3 w-3 object-contain sm:h-3.5 sm:w-3.5" />
           {estadoLabel[t.estado] ?? t.estado}
         </span>

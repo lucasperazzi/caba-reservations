@@ -33,13 +33,13 @@ export function MiCuentaPage() {
             <div className="flex items-center gap-4">
               <Avatar name={cuenta.name} image={cuenta.image} />
               <div className="min-w-0 flex-1">
-                <h2 className="text-xl font-extrabold leading-tight tracking-tight text-white sm:text-2xl">
+                <h2 className="brutal-title text-xl leading-tight text-white sm:text-2xl">
                   {cuenta.name}
                 </h2>
-                <p className="mt-0.5 break-words text-sm text-neutral-300">{cuenta.email}</p>
+                <p className="brutal-sub mt-0.5 break-words text-sm text-neutral-300">{cuenta.email}</p>
                 <button
                   onClick={() => nav("/mi-cuenta/editar")}
-                  className="mt-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-neutral-400 transition-colors hover:text-white"
+                  className="mt-2 brutal-label flex items-center gap-1.5 text-xs text-neutral-400 transition-colors hover:text-white"
                 >
                   <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -52,10 +52,10 @@ export function MiCuentaPage() {
 
             {/* Datos personales */}
             <section className="mt-12">
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">
+              <h3 className="brutal-label mb-3 text-sm text-neutral-200">
                 Datos personales
               </h3>
-              <dl className="divide-y divide-white/20 bg-black/40 p-4 backdrop-blur-md">
+              <dl className="divide-y divide-white/20 brutal-card bg-black/50 p-4">
                 <Row label="Nombre/s" value={cuenta.firstname} />
                 <Row label="Apellido/s" value={cuenta.lastname} />
                 <Row label="Email" value={cuenta.email} />
@@ -65,10 +65,10 @@ export function MiCuentaPage() {
 
             {/* Documento */}
             <section className="mt-10">
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">
+              <h3 className="brutal-label mb-3 text-sm text-neutral-200">
                 Documento
               </h3>
-              <dl className="divide-y divide-white/20 bg-black/40 p-4 backdrop-blur-md">
+              <dl className="divide-y divide-white/20 brutal-card bg-black/50 p-4">
                 <Row label="Tipo" value={cuenta.idCategory} />
                 <Row label="Número" value={cuenta.idNumber} />
               </dl>
@@ -76,10 +76,10 @@ export function MiCuentaPage() {
 
             {/* Dirección */}
             <section className="mt-10">
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">
+              <h3 className="brutal-label mb-3 text-sm text-neutral-200">
                 Dirección
               </h3>
-              <dl className="divide-y divide-white/20 bg-black/40 p-4 backdrop-blur-md">
+              <dl className="divide-y divide-white/20 brutal-card bg-black/50 p-4">
                 <Row label="Calle" value={cuenta.street} />
                 <Row label="Ciudad" value={cuenta.city} />
                 <Row label="Código postal" value={cuenta.zip} />
@@ -90,10 +90,10 @@ export function MiCuentaPage() {
 
             {/* Salud y emergencia */}
             <section className="mt-10">
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">
+              <h3 className="brutal-label mb-3 text-sm text-neutral-200">
                 Salud y contacto de emergencia
               </h3>
-              <dl className="divide-y divide-white/20 bg-black/40 p-4 backdrop-blur-md">
+              <dl className="divide-y divide-white/20 brutal-card bg-black/50 p-4">
                 <Row label="Seguro médico" value={cuenta.healthInsurance} />
                 <Row label="Número de afiliado" value={cuenta.healthInsuranceNumber} />
                 <Row label="Teléfono de emergencia" value={cuenta.healthInsuranceEmergencyPhone} />
@@ -113,8 +113,8 @@ export function MiCuentaPage() {
 function Row({ label, value }: { label: string; value?: string }) {
   return (
     <div className="flex items-center justify-between gap-4 py-3.5">
-      <dt className="text-sm text-neutral-400">{label}</dt>
-      <dd className="text-right text-sm font-medium text-white">
+      <dt className="brutal-sub text-sm text-neutral-400">{label}</dt>
+      <dd className="brutal-sub text-right text-sm font-medium text-white">
         {value || <span className="text-neutral-500">—</span>}
       </dd>
     </div>
@@ -140,7 +140,7 @@ function Avatar({ name, image }: { name: string; image?: string }) {
   }
 
   return (
-    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border border-white/20 bg-black/40 text-base font-bold text-white backdrop-blur-sm sm:h-14 sm:w-14 sm:text-lg">
+    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border-2 border-white bg-black/40 brutal-title text-base text-white shadow-[3px_3px_0_#fff] sm:h-14 sm:w-14 sm:text-lg">
       {initials || "?"}
     </div>
   );

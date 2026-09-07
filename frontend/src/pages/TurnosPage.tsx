@@ -125,14 +125,14 @@ export function TurnosPage() {
       <main className="mx-auto max-w-5xl px-4 py-8">
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h2 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Turnos disponibles</h2>
-            <p className="mt-1 text-sm text-neutral-300">Clickeá sobre un evento para reservarlo.</p>
+            <h2 className="brutal-title text-2xl text-white sm:text-3xl">Turnos disponibles</h2>
+            <p className="brutal-sub mt-1 text-sm text-neutral-300">Clickeá sobre un evento para reservarlo.</p>
           </div>
           <div className={`grid gap-2 sm:flex sm:w-auto ${favoritosHabilitados ? "grid-cols-3" : "grid-cols-2"}`}>
             {favoritosHabilitados && (
               <button
                 onClick={() => setSoloFavoritos((v) => !v)}
-                className={`h-10 border px-3 text-sm transition-colors ${
+                className={`brutal-label h-10 border px-3 text-sm transition-colors ${
                   soloFavoritos
                     ? "border-white bg-white text-black"
                     : "border-white/20 text-neutral-300 hover:border-white hover:text-white"
@@ -144,7 +144,7 @@ export function TurnosPage() {
             <select
               value={sede}
               onChange={(e) => setSede(e.target.value as "todas" | Sede)}
-              className="h-10 border border-white/20 bg-black/60 px-2 text-xs text-white backdrop-blur-sm sm:text-xs"
+              className="h-10 brutal-sub border-2 border-white rounded-lg bg-black/60 px-2 text-xs text-white shadow-[3px_3px_0_#fff] sm:text-xs"
             >
               <option value="todas">Todas las sedes</option>
               <option value="bucarelli">Bucarelli</option>
@@ -153,7 +153,7 @@ export function TurnosPage() {
             <select
               value={tipoFiltro}
               onChange={(e) => setTipoFiltro(e.target.value as "todos" | "libre" | "clases")}
-              className="h-10 border border-white/20 bg-black/60 px-2 text-xs text-white backdrop-blur-sm sm:text-xs"
+              className="h-10 brutal-sub border-2 border-white rounded-lg bg-black/60 px-2 text-xs text-white shadow-[3px_3px_0_#fff] sm:text-xs"
             >
               <option value="todos">Todos los tipos</option>
               <option value="libre">Boulder libre</option>
@@ -190,14 +190,14 @@ export function TurnosPage() {
 
           {/* Lista de turnos del día */}
           <div className="brutal-card bg-black/50 p-4">
-            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-200">
+            <h3 className="brutal-label mb-3 text-sm text-neutral-200">
               {diaSeleccionado
                 ? diaSeleccionado.toLocaleDateString("es-AR", { weekday: "long", day: "numeric", month: "long" })
                 : "Seleccioná un día"}
             </h3>
-            {isLoading && <p className="text-sm text-neutral-300">Cargando…</p>}
+            {isLoading && <p className="brutal-sub text-sm text-neutral-300">Cargando…</p>}
             {!isLoading && turnosDelDia.length === 0 && (
-              <p className="text-sm text-neutral-300">No hay turnos para este día.</p>
+              <p className="brutal-sub text-sm text-neutral-300">No hay turnos para este día.</p>
             )}
             {turnosDelDia.length > 0 && (
               <div className="border-y border-white">
@@ -240,35 +240,35 @@ export function TurnosPage() {
             {reservaOk ? (
               <div className="text-center">
                 <img src="/holds-png/green-round.png" alt="" className="mx-auto h-12 w-12 object-contain" />
-                <p className="mt-3 text-lg font-bold text-white">¡Reserva confirmada!</p>
+                <p className="brutal-title mt-3 text-lg text-white">¡Reserva confirmada!</p>
                 <button
                   onClick={() => setTurnoAReservar(null)}
-                  className="mt-6 w-full border border-white/20 px-4 py-2 text-sm font-bold uppercase tracking-wider transition-colors hover:border-white"
+                  className="brutal-label mt-6 w-full border border-white/20 px-4 py-2 text-sm transition-colors hover:border-white"
                 >Entendido</button>
               </div>
             ) : (
               <>
-                <h3 className="mb-6 text-2xl font-bold tracking-tight">¿Reservar?</h3>
-                <p className="mb-2 text-sm font-semibold capitalize text-emerald-400">
+                <h3 className="brutal-title mb-6 text-2xl">¿Reservar?</h3>
+                <p className="brutal-sub mb-2 text-sm font-semibold capitalize text-emerald-400">
                   {fechaLarga(new Date(turnoAReservar.inicio))}
                 </p>
-                <p className="mb-2 text-lg font-bold tracking-tight text-white">{turnoAReservar.nombre}</p>
-                <p className="mb-6 text-sm text-neutral-300">
+                <p className="brutal-title mb-2 text-lg text-white">{turnoAReservar.nombre}</p>
+                <p className="brutal-sub mb-6 text-sm text-neutral-300">
                   {turnoAReservar.inicio.slice(11, 16)}–{turnoAReservar.fin.slice(11, 16)} hs · {turnoAReservar.cuposLibres} cupos libres
                 </p>
-                {reservaError && <p className="mb-3 text-sm text-red-400">{reservaError}</p>}
+                {reservaError && <p className="brutal-sub mb-3 text-sm text-red-400">{reservaError}</p>}
                 {!reservaHabilitada && (
-                  <p className="mb-3 text-xs text-amber-400">La reserva online estará habilitada pronto.</p>
+                  <p className="brutal-sub mb-3 text-xs text-amber-400">La reserva online estará habilitada pronto.</p>
                 )}
                 <div className="flex gap-3">
                   <button
                     onClick={() => setTurnoAReservar(null)}
-                    className="flex-1 border border-white/20 px-4 py-2 text-sm transition-colors hover:border-white"
+                    className="brutal-sub flex-1 border border-white/20 px-4 py-2 text-sm transition-colors hover:border-white"
                   >Cancelar</button>
                   <button
                     onClick={confirmarReserva}
                     disabled={reservando || !reservaHabilitada}
-                    className="flex-1 bg-white px-4 py-2 text-sm font-bold uppercase tracking-wider text-black transition-colors hover:bg-neutral-300 disabled:opacity-50"
+                    className="brutal-label flex-1 bg-white px-4 py-2 text-sm text-black transition-colors hover:bg-neutral-300 disabled:opacity-50"
                   >{reservando ? "Reservando…" : "Confirmar"}</button>
                 </div>
               </>
@@ -282,10 +282,10 @@ export function TurnosPage() {
         <div className="fixed inset-0 flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm">
           <div className="w-full max-w-md brutal-modal bg-black/80 p-8 text-center text-white backdrop-blur-xl">
             <img src="/holds-png/red-round.png" alt="" className="mx-auto h-12 w-12 object-contain" />
-            <p className="mt-3 text-lg font-bold text-white">{turnoBloqueado.mensaje}</p>
+            <p className="brutal-title mt-3 text-lg text-white">{turnoBloqueado.mensaje}</p>
             <button
               onClick={() => setTurnoBloqueado(null)}
-              className="mt-6 w-full border border-white/20 px-4 py-2 text-sm font-bold uppercase tracking-wider transition-colors hover:border-white"
+              className="brutal-label mt-6 w-full border border-white/20 px-4 py-2 text-sm transition-colors hover:border-white"
             >Entendido</button>
           </div>
         </div>
@@ -380,23 +380,23 @@ function TurnoRow({
       onClick={onReservar}
       className={`group grid cursor-pointer items-center gap-x-3 border-t border-white px-3 py-4 transition-colors first:border-t-0 sm:gap-x-4 ${ringClass} ${mostrarFavorito ? "grid-cols-[auto_1fr_auto]" : "grid-cols-[auto_1fr]"}`}
     >
-      <span className={`min-w-[3.5ch] self-start text-xs font-bold tracking-wide text-neutral-400 transition-colors group-hover:text-neutral-300 ${dimmed ? "opacity-40" : ""}`}>
+      <span className={`brutal-number min-w-[3.5ch] self-start text-xs tracking-wide text-neutral-400 transition-colors group-hover:text-neutral-300 ${dimmed ? "opacity-40" : ""}`}>
         {indexLabel}
         <span className="opacity-60">/{totalLabel}</span>
       </span>
 
       <div className="min-w-0">
         <div className="flex items-center gap-2">
-          <p className={`break-words text-lg font-bold leading-tight tracking-tight text-white sm:text-xl ${dimmed ? "opacity-40" : ""}`}>
+          <p className={`brutal-title break-words text-lg leading-tight text-white sm:text-xl ${dimmed ? "opacity-40" : ""}`}>
             {turno.nombre}
           </p>
           {yaReservado && (
-            <span className="flex-shrink-0 rounded-sm bg-amber-400/20 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-400">
+            <span className="brutal-label flex-shrink-0 rounded-sm bg-amber-400/20 px-1.5 py-0.5 text-[10px] text-amber-400">
               Reservado
             </span>
           )}
         </div>
-        <p className={`mt-1 text-xs text-neutral-300 ${dimmed ? "opacity-40" : ""}`}>
+        <p className={`brutal-sub mt-1 text-xs text-neutral-300 ${dimmed ? "opacity-40" : ""}`}>
           {turno.inicio.slice(11, 16)}–{turno.fin.slice(11, 16)} hs ·{" "}
           <span style={{ color: cupoColor(turno.cuposLibres, turno.cuposMax) }} className="font-semibold">
             {turno.cuposLibres}/{turno.cuposMax} libres
