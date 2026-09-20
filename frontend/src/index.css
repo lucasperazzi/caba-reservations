@@ -9,7 +9,7 @@ html {
 body {
   background-color: transparent;
   color: #f5f5f4;
-  font-family: "Inter", sans-serif;
+  font-family: "Plus Jakarta Sans", sans-serif;
   position: relative;
 }
 
@@ -55,12 +55,12 @@ body[data-bg="home"]::after {
 }
 
 body[data-bg="turnos"]::after {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.72)), url("/fondo-turnos.jpg");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.72)), url("/paredescalada.jpg");
   opacity: 1;
 }
 
 body[data-bg="paquetes"]::after {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.82)), url("/fondo-paquetes.jpg");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.72)), url("/paredescalada.jpg");
   opacity: 1;
 }
 
@@ -131,14 +131,14 @@ body[data-bg="paquetes"]::after {
 
 /* Título grande (ej: "Hola, Lucas") — como "August at a glance" */
 .brutal-title {
-  font-family: "Space Grotesk", sans-serif;
+  font-family: "Plus Jakarta Sans", sans-serif;
   font-weight: 700;
   letter-spacing: -0.03em;
 }
 
 /* Números / contenido principal — como los stats (48,210) */
 .brutal-number {
-  font-family: "Space Grotesk", sans-serif;
+  font-family: "Plus Jakarta Sans", sans-serif;
   font-weight: 700;
   letter-spacing: -0.04em;
   font-variant-numeric: tabular-nums;
@@ -146,7 +146,7 @@ body[data-bg="paquetes"]::after {
 
 /* Labels uppercase — como "Monthly revenue, USD" */
 .brutal-label {
-  font-family: "Space Grotesk", sans-serif;
+  font-family: "Plus Jakarta Sans", sans-serif;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -154,7 +154,7 @@ body[data-bg="paquetes"]::after {
 
 /* Subtítulo / texto secundario — como "Compared with the 30 days before it" */
 .brutal-sub {
-  font-family: "Space Grotesk", sans-serif;
+  font-family: "Plus Jakarta Sans", sans-serif;
   font-weight: 400;
 }
 
@@ -162,6 +162,10 @@ body[data-bg="paquetes"]::after {
   border: 2px solid #fff;
   border-radius: 10px;
   box-shadow: 4px 4px 0 #fff;
+  /* La sombra dura sobresale 4px a la derecha, corriendo el peso visual.
+     Compensamos moviendo la card la mitad del offset a la izquierda para
+     que quede ópticamente centrada. */
+  translate: -2px 0;
   transition: translate 0.14s ease, box-shadow 0.14s ease, background 0.14s ease;
 }
 
@@ -174,25 +178,100 @@ body[data-bg="paquetes"]::after {
 }
 
 .brutal-card-interactive:active {
-  translate: 2px 2px;
+  /* Parte de la base -2px 0: el "press" mueve +2px en X y +2px en Y,
+     quedando en 0 2px, para mantener el efecto de hundido consistente. */
+  translate: 0 2px;
   box-shadow: 2px 2px 0 #fff;
 }
 
-/* Botones brutalistas */
-.brutal-btn {
-  border: 2px solid #fff;
+/* ── Botones y selectores consistentes ──
+   Las clases manejan forma/colores/estados; el padding, ancho y tipografía
+   (brutal-label / brutal-sub) se dejan como utilities en el markup. */
+
+.brutal-btn,
+.brutal-btn-secondary,
+.brutal-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   border-radius: 8px;
-  box-shadow: 4px 4px 0 #fff;
-  transition: translate 0.14s ease, box-shadow 0.14s ease;
+  cursor: pointer;
+  transition: background-color 0.14s ease, border-color 0.14s ease, color 0.14s ease, opacity 0.14s ease;
 }
 
+/* Primario: sólido blanco */
+.brutal-btn {
+  border: 1px solid #fff;
+  background-color: #fff;
+  color: #000;
+}
 .brutal-btn:hover {
-  box-shadow: 6px 6px 0 #fff;
+  background-color: #d4d4d4;
+  border-color: #d4d4d4;
 }
 
-.brutal-btn:active {
-  translate: 2px 2px;
-  box-shadow: 2px 2px 0 #fff;
+/* Secundario: outline */
+.brutal-btn-secondary {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background-color: transparent;
+  color: #fff;
+}
+.brutal-btn-secondary:hover {
+  border-color: #fff;
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Chip / filtro (toggle chico). Estado activo: .brutal-chip-active */
+.brutal-chip {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: transparent;
+  color: #d4d4d4;
+}
+.brutal-chip:hover {
+  border-color: #fff;
+  color: #fff;
+}
+.brutal-chip-active {
+  border-color: #fff;
+  background-color: #fff;
+  color: #000;
+}
+
+.brutal-btn:disabled,
+.brutal-btn-secondary:disabled,
+.brutal-chip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Selector / dropdown: caja con borde fino, sin sombra dura.
+   Ocultamos la flecha nativa y dibujamos un chevron propio, alineado a la
+   derecha de la caja, con padding para que no se pise con el texto. */
+.brutal-select {
+  height: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  padding: 0 2rem 0 0.75rem;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.625rem center;
+  background-size: 0.85rem;
+  transition: border-color 0.14s ease;
+}
+.brutal-select:hover,
+.brutal-select:focus {
+  border-color: #fff;
+  outline: none;
+}
+.brutal-select option {
+  background-color: #171717;
+  color: #fff;
 }
 
 /* Modales brutalistas */

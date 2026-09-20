@@ -111,10 +111,8 @@ export function ShopPage() {
             <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-x-visible sm:pb-0 [&::-webkit-scrollbar]:hidden">
               <button
                 onClick={() => setCategoriaSel(null)}
-                className={`flex-shrink-0 border px-3 py-1.5 brutal-label text-xs transition-colors ${
-                  categoriaSel === null
-                    ? "border-white bg-white text-black"
-                    : "border-white/30 text-neutral-300 hover:border-white"
+                className={`brutal-chip brutal-label flex-shrink-0 px-3 py-1.5 text-xs ${
+                  categoriaSel === null ? "brutal-chip-active" : ""
                 }`}
               >
                 Todos
@@ -125,10 +123,8 @@ export function ShopPage() {
                   <button
                     key={c.id}
                     onClick={() => setCategoriaSel(c.id)}
-                    className={`flex-shrink-0 border px-3 py-1.5 brutal-label text-xs transition-colors ${
-                      categoriaSel === c.id
-                        ? "border-white bg-white text-black"
-                        : "border-white/30 text-neutral-300 hover:border-white"
+                    className={`brutal-chip brutal-label flex-shrink-0 px-3 py-1.5 text-xs ${
+                      categoriaSel === c.id ? "brutal-chip-active" : ""
                     }`}
                   >
                     {c.nombre}

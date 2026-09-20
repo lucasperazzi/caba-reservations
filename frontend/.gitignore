@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Prueba local de fuente Inklination (TRIAL) — NO commitear (licencia solo testing)
+public/fonts-trial/
+src/inklination-trial.css
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

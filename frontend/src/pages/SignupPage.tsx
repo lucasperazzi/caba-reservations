@@ -108,7 +108,7 @@ export function SignupPage() {
           <button
             type="submit"
             disabled={loading}
-            className="brutal-label w-full bg-white px-4 py-2.5 text-sm text-black transition-colors hover:bg-neutral-300 disabled:opacity-50"
+            className="brutal-btn brutal-label w-full px-4 py-2.5 text-sm"
           >
             {loading ? "Registrando…" : "Registrarse"}
           </button>

@@ -29,7 +29,6 @@ export interface UserInfo {
   email: string;
   username?: string;
   puedeReservar?: boolean;
-  puedeUsarFavoritos?: boolean;
   puedeVerCatalogo?: boolean;
   esSocio?: boolean;
   phone?: string;

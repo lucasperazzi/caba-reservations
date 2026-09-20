@@ -79,7 +79,7 @@ export function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="brutal-label w-full bg-white px-4 py-2.5 text-sm text-black transition-colors hover:bg-neutral-300 disabled:opacity-50"
+            className="brutal-btn brutal-label w-full px-4 py-2.5 text-sm"
           >
             {loading ? "Ingresando…" : "Ingresar"}
           </button>
@@ -94,7 +94,7 @@ export function LoginPage() {
 
               <a
                 href="/api/auth/google"
-                className="brutal-sub flex w-full items-center justify-center gap-2 border border-white/20 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+                className="brutal-btn-secondary brutal-sub w-full px-4 py-2.5 text-sm font-semibold"
               >
                 <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.76h3.56c2.08-1.92 3.28-4.74 3.28-8.09Z" />

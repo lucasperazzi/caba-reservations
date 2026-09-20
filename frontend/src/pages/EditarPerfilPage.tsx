@@ -267,7 +267,7 @@ export function EditarPerfilPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="brutal-label bg-white px-6 py-2.5 text-sm text-black transition-colors hover:bg-neutral-300 disabled:opacity-50"
+                  className="brutal-btn brutal-label px-6 py-2.5 text-sm"
                 >
                   {saving ? "Guardando…" : "Guardar cambios"}
                 </button>
@@ -298,7 +298,7 @@ const inputClass =
   "brutal-sub w-full border-b border-white/20 bg-transparent px-1 py-2 text-base text-white placeholder-neutral-600 focus:border-white focus:outline-none sm:text-sm disabled:cursor-not-allowed disabled:opacity-50";
 
 const selectClass =
-  "brutal-sub w-full border-b border-white/20 bg-neutral-900 px-1 py-2 text-base text-white focus:border-white focus:outline-none sm:text-sm disabled:cursor-not-allowed disabled:opacity-50 [&>option]:bg-neutral-900 [&>option]:text-white";
+  "brutal-select brutal-sub w-full text-base sm:text-sm disabled:cursor-not-allowed disabled:opacity-50";
 
 function Field({ label, children, full, required, error }: { label: string; children: React.ReactNode; full?: boolean; required?: boolean; error?: string }) {
   return (

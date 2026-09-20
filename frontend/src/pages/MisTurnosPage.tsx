@@ -63,7 +63,7 @@ export function MisTurnosPage() {
         {!isLoading && (
           <section className="brutal-card flex overflow-hidden bg-black/50">
             <div className={`w-1.5 flex-shrink-0 ${proximo ? "bg-blue-600" : "bg-neutral-700"}`} />
-            <div className="p-4">
+            <div className="min-w-0 flex-1 p-4">
             <h3 className={`brutal-label flex items-center gap-2 text-xs sm:text-sm ${proximo ? "text-blue-500" : "text-neutral-200"}`}>
               {proximo && <img src="/holds-png/hold-21.png" alt="" className="inline-block h-3.5 w-3.5 object-contain sm:h-4 sm:w-4" />}
               Turno reservado más cercano:
@@ -130,7 +130,7 @@ export function MisTurnosPage() {
 // ── Estilos compartidos ────────────────────────────────────────
 
 const BTN_CLASS =
-  "brutal-label whitespace-nowrap border border-white/40 px-2 py-1 text-[10px] text-white transition-colors hover:border-white hover:bg-white/10 cursor-pointer";
+  "brutal-chip brutal-label whitespace-nowrap px-2.5 py-1 text-[10px]";
 
 // ── Generador de .ics ─────────────────────────────────────────
 
@@ -226,7 +226,7 @@ function MiTurnoRow({ t, onRepetir, onAgregarCalendario }: {
       </div>
 
       {(onRepetir || onAgregarCalendario) && (
-        <div className="mt-2 flex gap-2">
+        <div className="mt-2 flex flex-wrap gap-2">
           {onRepetir && (
             <button onClick={onRepetir} className={BTN_CLASS}>
               Repetir próxima semana

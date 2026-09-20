@@ -16,7 +16,6 @@ export function TurnosPage() {
   // La reserva se habilita por usuario (allowlist en el backend, ver
   // RESERVAS_ALLOWLIST). El backend expone `puedeReservar` en /api/me.
   const reservaHabilitada = user?.puedeReservar ?? false;
-  const favoritosHabilitados = user?.puedeUsarFavoritos ?? false;
   const qc = useQueryClient();
   const location = useLocation();
   const [sede, setSede] = useState<"todas" | Sede>("todas");
@@ -30,8 +29,6 @@ export function TurnosPage() {
   const [reservando, setReservando] = useState(false);
   const [reservaError, setReservaError] = useState("");
   const [reservaOk, setReservaOk] = useState(false);
-  const { favs, toggle: toggleFavorito } = useFavoritos();
-  const [soloFavoritos, setSoloFavoritos] = useState(false);
 
   // Si venimos de "Repetir próxima semana", leer el state
   const repeatState = location.state as { searchName?: string; targetDate?: string } | null;
@@ -68,9 +65,8 @@ export function TurnosPage() {
     if (sede !== "todas") all = all.filter((t) => t.nombre.toLowerCase().includes(sede));
     if (tipoFiltro === "libre") all = all.filter((t) => t.nombre.toLowerCase().includes("boulder libre"));
     if (tipoFiltro === "clases") all = all.filter((t) => !t.nombre.toLowerCase().includes("boulder libre"));
-    if (soloFavoritos && favoritosHabilitados) all = all.filter((t) => favs.has(claveFavorito(t.nombre)));
     return all;
-  }, [data, sede, tipoFiltro, soloFavoritos, favs]);
+  }, [data, sede, tipoFiltro]);
 
   // Agrupar por día
   const turnosPorDia = useMemo(() => {
@@ -128,23 +124,11 @@ export function TurnosPage() {
             <h2 className="brutal-title text-2xl text-white sm:text-3xl">Turnos disponibles</h2>
             <p className="brutal-sub mt-1 text-sm text-neutral-300">Clickeá sobre un evento para reservarlo.</p>
           </div>
-          <div className={`grid gap-2 sm:flex sm:w-auto ${favoritosHabilitados ? "grid-cols-3" : "grid-cols-2"}`}>
-            {favoritosHabilitados && (
-              <button
-                onClick={() => setSoloFavoritos((v) => !v)}
-                className={`brutal-label h-10 border px-3 text-sm transition-colors ${
-                  soloFavoritos
-                    ? "border-white bg-white text-black"
-                    : "border-white/20 text-neutral-300 hover:border-white hover:text-white"
-                }`}
-              >
-                {soloFavoritos ? "★ Favoritos" : "☆ Favoritos"}
-              </button>
-            )}
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:w-auto">
             <select
               value={sede}
               onChange={(e) => setSede(e.target.value as "todas" | Sede)}
-              className="h-10 brutal-sub border-2 border-white rounded-lg bg-black/60 px-2 text-xs text-white shadow-[3px_3px_0_#fff] sm:text-xs"
+              className="brutal-select brutal-sub text-xs"
             >
               <option value="todas">Todas las sedes</option>
               <option value="bucarelli">Bucarelli</option>
@@ -153,7 +137,7 @@ export function TurnosPage() {
             <select
               value={tipoFiltro}
               onChange={(e) => setTipoFiltro(e.target.value as "todos" | "libre" | "clases")}
-              className="h-10 brutal-sub border-2 border-white rounded-lg bg-black/60 px-2 text-xs text-white shadow-[3px_3px_0_#fff] sm:text-xs"
+              className="brutal-select brutal-sub text-xs"
             >
               <option value="todos">Todos los tipos</option>
               <option value="libre">Boulder libre</option>
@@ -207,9 +191,6 @@ export function TurnosPage() {
                     turno={t}
                     index={i}
                     total={turnosDelDia.length}
-                    esFavorito={favoritosHabilitados && favs.has(claveFavorito(t.nombre))}
-                    onToggleFavorito={() => toggleFavorito(t.nombre)}
-                    mostrarFavorito={favoritosHabilitados}
                     onReservar={() => {
                       if (eventosReservados.has(t.id)) {
                         setTurnoBloqueado({ nombre: t.nombre, mensaje: "Ya tenés una reserva activa para este evento." });
@@ -243,7 +224,7 @@ export function TurnosPage() {
                 <p className="brutal-title mt-3 text-lg text-white">¡Reserva confirmada!</p>
                 <button
                   onClick={() => setTurnoAReservar(null)}
-                  className="brutal-label mt-6 w-full border border-white/20 px-4 py-2 text-sm transition-colors hover:border-white"
+                  className="brutal-btn-secondary brutal-label mt-6 w-full px-4 py-2 text-sm"
                 >Entendido</button>
               </div>
             ) : (
@@ -263,12 +244,12 @@ export function TurnosPage() {
                 <div className="flex gap-3">
                   <button
                     onClick={() => setTurnoAReservar(null)}
-                    className="brutal-sub flex-1 border border-white/20 px-4 py-2 text-sm transition-colors hover:border-white"
+                    className="brutal-btn-secondary brutal-label flex-1 px-4 py-2 text-sm"
                   >Cancelar</button>
                   <button
                     onClick={confirmarReserva}
                     disabled={reservando || !reservaHabilitada}
-                    className="brutal-label flex-1 bg-white px-4 py-2 text-sm text-black transition-colors hover:bg-neutral-300 disabled:opacity-50"
+                    className="brutal-btn brutal-label flex-1 px-4 py-2 text-sm"
                   >{reservando ? "Reservando…" : "Confirmar"}</button>
                 </div>
               </>
@@ -285,7 +266,7 @@ export function TurnosPage() {
             <p className="brutal-title mt-3 text-lg text-white">{turnoBloqueado.mensaje}</p>
             <button
               onClick={() => setTurnoBloqueado(null)}
-              className="brutal-label mt-6 w-full border border-white/20 px-4 py-2 text-sm transition-colors hover:border-white"
+              className="brutal-btn-secondary brutal-label mt-6 w-full px-4 py-2 text-sm"
             >Entendido</button>
           </div>
         </div>
@@ -305,40 +286,11 @@ function cupoColor(libres: number, max: number): string {
   return `hsl(${hue}, 80%, 55%)`;
 }
 
-// ── Favoritos (localStorage, identificados por nombre sin fecha) ──
-
-function claveFavorito(nombre: string): string {
-  return nombre.split(" (")[0];
-}
-
-function useFavoritos() {
-  const [favs, setFavs] = useState<Set<string>>(() => {
-    const raw = localStorage.getItem("favoritos");
-    return new Set(raw ? JSON.parse(raw) : []);
-  });
-
-  const toggle = (nombre: string) => {
-    const clave = claveFavorito(nombre);
-    setFavs((prev) => {
-      const next = new Set(prev);
-      if (next.has(clave)) next.delete(clave);
-      else next.add(clave);
-      localStorage.setItem("favoritos", JSON.stringify([...next]));
-      return next;
-    });
-  };
-
-  return { favs, toggle };
-}
-
 function TurnoRow({
   turno,
   index,
   total,
   onReservar,
-  esFavorito,
-  onToggleFavorito,
-  mostrarFavorito,
   highlight,
   yaReservado,
 }: {
@@ -346,9 +298,6 @@ function TurnoRow({
   index: number;
   total: number;
   onReservar: () => void;
-  esFavorito: boolean;
-  onToggleFavorito: () => void;
-  mostrarFavorito: boolean;
   highlight?: boolean;
   yaReservado?: boolean;
 }) {
@@ -370,15 +319,13 @@ function TurnoRow({
     ? "ring-2 ring-inset ring-emerald-400 bg-emerald-400/10 hover:bg-emerald-400/20"
     : yaReservado
       ? "ring-1 ring-inset ring-amber-400 bg-amber-400/10 hover:bg-amber-400/20"
-      : esFavorito && mostrarFavorito
-        ? "ring-1 ring-inset ring-amber-400/70 bg-amber-400/5 hover:bg-amber-400/10 hover:ring-amber-400"
-        : "hover:bg-white/[0.06]";
+      : "hover:bg-white/[0.06]";
 
   return (
     <div
       ref={ref}
       onClick={onReservar}
-      className={`group grid cursor-pointer items-center gap-x-3 border-t border-white px-3 py-4 transition-colors first:border-t-0 sm:gap-x-4 ${ringClass} ${mostrarFavorito ? "grid-cols-[auto_1fr_auto]" : "grid-cols-[auto_1fr]"}`}
+      className={`group grid cursor-pointer grid-cols-[auto_1fr] items-center gap-x-3 border-t border-white px-3 py-4 transition-colors first:border-t-0 sm:gap-x-4 ${ringClass}`}
     >
       <span className={`brutal-number min-w-[3.5ch] self-start text-xs tracking-wide text-neutral-400 transition-colors group-hover:text-neutral-300 ${dimmed ? "opacity-40" : ""}`}>
         {indexLabel}
@@ -404,18 +351,6 @@ function TurnoRow({
           · {turno.sede}
         </p>
       </div>
-
-      {mostrarFavorito && (
-        <button
-          onClick={(e) => { e.stopPropagation(); onToggleFavorito(); }}
-          className="self-start p-1 leading-none transition-transform hover:scale-125"
-          title={esFavorito ? "Quitar de favoritos" : "Marcar como favorito"}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill={esFavorito ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" className={esFavorito ? "text-amber-400" : "text-neutral-400 hover:text-neutral-300"}>
-            <path d="M12 21s-7-4.5-9.5-9C1 9 2.5 5 6.5 5c2 0 3.5 1 5.5 3 2-2 3.5-3 5.5-3 4 0 5.5 4 4 7-2.5 4.5-9.5 9-9.5 9z" />
-          </svg>
-        </button>
-      )}
     </div>
   );
 }
