@@ -44,7 +44,7 @@ export function HomePage() {
         </h2>
 
         {/* Próximo turno — llamativo, con acento azul */}
-        <section className="brutal-card mt-16 flex overflow-hidden bg-black/50 sm:mt-20">
+        <Link to="/mis-turnos" className="brutal-card brutal-card-interactive mt-16 flex overflow-hidden bg-black/50 sm:mt-20">
           {/* Barra de color lateral izquierdo */}
           <div className={`w-1.5 flex-shrink-0 ${proximo ? "bg-blue-600" : "bg-neutral-700"}`} />
           <div className="p-4">
@@ -69,10 +69,10 @@ export function HomePage() {
             <p className="brutal-sub mt-3 text-lg text-neutral-400">No hay próximos turnos reservados.</p>
           )}
           </div>
-        </section>
+        </Link>
 
         {/* Paquetes activos — resumido */}
-        <section className="brutal-card mt-12 flex overflow-hidden bg-black/50">
+        <Link to="/paquetes" className="brutal-card brutal-card-interactive mt-12 flex overflow-hidden bg-black/50">
           {/* Barra de color lateral izquierdo */}
           <div className={`w-1.5 flex-shrink-0 ${paquetesActivos.length > 0 ? "bg-emerald-400" : "bg-neutral-700"}`} />
           <div className="p-4">
@@ -94,7 +94,7 @@ export function HomePage() {
               <p className="brutal-sub mt-3 text-lg text-neutral-400">No tenés paquetes de acceso activos.</p>
             )}
           </div>
-        </section>
+        </Link>
 
         {/* Navegación — estilo role-selector del portfolio */}
         <nav className="mt-20 border-t-2 border-white sm:mt-16">
@@ -264,12 +264,12 @@ export function Header({ userEmail, onLogout }: { userEmail?: string; onLogout: 
               <span className="relative flex h-4 w-6 items-center justify-center">
                 <span
                   className={`absolute h-[2px] w-6 bg-white transition-transform duration-300 ${
-                    isOpen ? "rotate-45" : "-translate-y-1.5"
+                    isOpen ? "rotate-45" : "-translate-y-1"
                   }`}
                 />
                 <span
                   className={`absolute h-[2px] w-6 bg-white transition-transform duration-300 ${
-                    isOpen ? "-rotate-45" : "translate-y-1.5"
+                    isOpen ? "-rotate-45" : "translate-y-1"
                   }`}
                 />
               </span>
