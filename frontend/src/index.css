@@ -65,9 +65,9 @@ body {
     /* luz clara arriba a la izquierda: caída más corta y más brillante */
     radial-gradient(ellipse at 14% 18%, rgba(255, 250, 242, 0.3) 0%, rgba(255, 250, 242, 0.1) 18%, transparent 36%),
     radial-gradient(ellipse at 86% 18%, rgba(8, 8, 8, 0.9) 0%, rgba(20, 20, 18, 0.5) 20%, transparent 38%),
-    /* calor abajo a la izquierda: amarillo → naranja → rojo */
-    radial-gradient(ellipse 48% 42% at 8% 88%, rgba(255, 214, 10, 0.85) 0%, rgba(255, 122, 24, 0.7) 28%, rgba(225, 38, 48, 0.5) 56%, transparent 85%),
-    radial-gradient(ellipse 36% 38% at 94% 90%, rgba(225, 38, 48, 0.5) 0%, rgba(150, 20, 60, 0.22) 45%, transparent 80%),
+    /* calor abajo a la izquierda: amarillo → naranja → violeta oscuro */
+    radial-gradient(ellipse 48% 42% at 8% 88%, rgba(255, 214, 10, 0.85) 0%, rgba(255, 122, 24, 0.7) 28%, rgba(96, 32, 160, 0.55) 56%, transparent 85%),
+    radial-gradient(ellipse 36% 38% at 94% 90%, rgba(96, 32, 160, 0.55) 0%, rgba(50, 16, 100, 0.25) 45%, transparent 80%),
     radial-gradient(ellipse at 62% 72%, rgba(255, 250, 242, 0.14) 0%, rgba(255, 250, 242, 0.04) 22%, transparent 42%);
   filter: blur(30px) saturate(1.1);
   opacity: var(--ambient-opacity);
