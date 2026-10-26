@@ -53,17 +53,6 @@ export const config = {
       .filter(Boolean),
   },
 
-  /**
-   * Tema (claro/oscuro): emails habilitados a ver el toggle de tema.
-   * Coma-separado en TEMA_ALLOWLIST. Vacío = nadie (toggle oculto).
-   */
-  tema: {
-    allowlist: (process.env.TEMA_ALLOWLIST ?? "")
-      .split(",")
-      .map((s) => s.trim().toLowerCase())
-      .filter(Boolean),
-  },
-
   /** Secreto para firmar la cookie de sesión. Obligatorio en producción. */
   sessionSecret: process.env.SESSION_SECRET ?? "dev-secret-change-me",
 
@@ -106,12 +95,6 @@ export function canReserve(email?: string): boolean {
 export function canSeeShop(email?: string): boolean {
   if (!email) return false;
   return config.shop.allowlist.includes(email.toLowerCase());
-}
-
-/** ¿El email está habilitado a cambiar el tema (claro/oscuro)? Vacío = toggle oculto. */
-export function canChangeTheme(email?: string): boolean {
-  if (!email) return false;
-  return config.tema.allowlist.includes(email.toLowerCase());
 }
 
 function loadDotEnv() {

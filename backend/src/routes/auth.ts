@@ -3,7 +3,7 @@ import { z } from "zod";
 import { OdooClient } from "../odooClient.js";
 import { clearSessionCookie, setSessionCookie } from "../middleware.js";
 import { sealSessionId, signOauthState, verifyOauthState } from "../session.js";
-import { canChangeTheme, canReserve, canSeeShop, config, isGoogleEnabled, isSignupEnabled } from "../config.js";
+import { canReserve, canSeeShop, config, isGoogleEnabled, isSignupEnabled } from "../config.js";
 
 export const auth = new Hono();
 
@@ -60,7 +60,6 @@ auth.post("/signup", async (c) => {
       email: info.email,
       puedeReservar: canReserve(info.email),
       puedeVerCatalogo: canSeeShop(info.email),
-      puedeCambiarTema: canChangeTheme(info.email),
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Error al registrar";
@@ -97,7 +96,6 @@ auth.post("/login", async (c) => {
       email: info.email,
       puedeReservar: canReserve(info.email),
       puedeVerCatalogo: canSeeShop(info.email),
-      puedeCambiarTema: canChangeTheme(info.email),
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Error de autenticación";

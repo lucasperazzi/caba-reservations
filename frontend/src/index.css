@@ -526,6 +526,9 @@ html[data-theme="light"] .hover\:bg-white\/\[0\.03\]:hover { background-color: r
 html[data-theme="light"] .border-neutral-700,
 html[data-theme="light"] .border-neutral-800 { border-color: rgba(11, 11, 15, 0.15); }
 html[data-theme="light"] .bg-neutral-700 { background-color: rgba(11, 11, 15, 0.22); }
+/* Spinners: el arco (border-t-white) debe ir DESPUÉS de border-neutral-*, porque
+   ese shorthand de border-color también pisa el color del borde superior. */
+html[data-theme="light"] .border-t-white { border-top-color: var(--edge); }
 
 /* Verdes (emerald): en claro los tonos 400/500 se ven lavados sobre la base
    clara, así que se oscurecen. Texto → emerald-700; rellenos/bordes/anillos →

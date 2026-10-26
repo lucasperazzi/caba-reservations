@@ -65,15 +65,10 @@ La reserva online de turnos está controlada por una allowlist de emails.
 - **Frontend**: el backend expone `puedeReservar` en `/api/me` y en el login; `TurnosPage` usa ese flag para habilitar/deshabilitar el botón de confirmar.
 - Para restringir el acceso, agregá emails a `RESERVAS_ALLOWLIST` (en `backend/.env` para dev y en Vercel para prod) y reiniciá/redeployá. Para abrir a todos, dejá la var vacía. No hace falta tocar código.
 
-## Tema claro/oscuro (allowlist)
+## Tema claro/oscuro
 
-El toggle "Modo claro/oscuro" del menú está controlado por una allowlist de emails (mismo patrón que `SHOP_ALLOWLIST`).
+El tema claro/oscuro está disponible para **todos los usuarios** (ya no hay allowlist; `TEMA_ALLOWLIST` fue eliminada y se ignora si quedó en algún `.env`/Vercel).
 
-- Var de entorno: `TEMA_ALLOWLIST` (emails coma-separados).
-  - **Vacío = nadie ve el toggle** (feature oculta — default seguro para prod).
-  - Con emails cargados, solo esos usuarios ven el toggle en el menú.
-  - Ej: `TEMA_ALLOWLIST=lucasperazzi98@gmail.com`
-- **Backend**: expone `puedeCambiarTema` en `/api/me` y en el login (`canChangeTheme()` en `config.ts`).
-- **Frontend**: `HomePage` muestra `ThemeToggle` solo si `user.puedeCambiarTema == true`. El tema elegido sigue persistiendo en `localStorage` (`caba_theme`) y el script anti-flash de `index.html` lo aplica antes del render.
-- **Excepción — login**: `LoginPage` muestra un ícono sutil (sol/luna, `ThemeIconButton` en `theme.tsx`) en la esquina superior derecha que **NO** está atado a la allowlist (antes de loguearse no se conoce el email). Es decir, cualquiera puede cambiar el tema desde el login; para ocultarlo, quitar `<ThemeIconButton />` de `LoginPage`.
-- Para habilitarlo en un entorno, cargá `TEMA_ALLOWLIST` (en `backend/.env` para dev y en Vercel para prod) y reiniciá/redeployá el backend.
+- **Dónde se cambia**: `ThemeToggle` ("Modo claro/oscuro") en el menú (`HomePage`) y un ícono sol/luna sutil arriba a la derecha en `LoginPage` (`ThemeIconButton` en `theme.tsx`).
+- **Persistencia**: `localStorage` (`caba_theme`); el script anti-flash de `index.html` lo aplica antes del render.
+- **Estilos**: tokens y overrides del tema claro en `index.css` (`html[data-theme="light"]`).

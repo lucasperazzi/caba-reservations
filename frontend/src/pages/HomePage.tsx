@@ -331,8 +331,7 @@ export function Header({ userEmail, onLogout }: { userEmail?: string; onLogout: 
             {userEmail && (
               <p className="brutal-sub text-xs text-neutral-500">{userEmail}</p>
             )}
-            {/* Tema toggle'ı allowlist'e bağlı (TEMA_ALLOWLIST → /api/me.puedeCambiarTema) */}
-            {userInfo?.puedeCambiarTema == true && <ThemeToggle />}
+            <ThemeToggle />
             <button
               onClick={() => {
                 closeMenu();
