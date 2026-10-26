@@ -3,11 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { apiClient } from "../api";
 import { Header } from "./HomePage";
 import { useAuth } from "../auth";
-import { usePageBg } from "../hooks/usePageBg";
 import type { UserInfo } from "../types";
 
 export function MiCuentaPage() {
-  usePageBg("home");
   const { user, logout } = useAuth();
   const nav = useNavigate();
   const { data, isLoading } = useQuery({

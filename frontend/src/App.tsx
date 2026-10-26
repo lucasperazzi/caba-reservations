@@ -1,4 +1,5 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { useLayoutEffect } from "react";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useAuth } from "./auth";
 import { useCart } from "./cart";
 import { LoginPage } from "./pages/LoginPage";
@@ -10,6 +11,18 @@ import { PaquetesPage } from "./pages/PaquetesPage";
 import { ShopPage, CarritoModal } from "./pages/ShopPage";
 import { MiCuentaPage } from "./pages/MiCuentaPage";
 import { EditarPerfilPage } from "./pages/EditarPerfilPage";
+
+// Cada navegación (incluso a la misma ruta, atrás/adelante o recarga) arranca arriba de todo.
+// `location.key` cambia en cada navegación; la restauración nativa del browser se desactiva.
+if ("scrollRestoration" in window.history) window.history.scrollRestoration = "manual";
+
+function ScrollToTop() {
+  const { key } = useLocation();
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, [key]);
+  return null;
+}
 
 function Loading() {
   return (
@@ -39,6 +52,7 @@ function App() {
 
   return (
     <>
+      <ScrollToTop />
       <Routes>
         <Route path="/login" element={user ? <Navigate to="/" replace /> : <LoginPage />} />
         <Route path="/signup" element={user ? <Navigate to="/" replace /> : <SignupPage />} />

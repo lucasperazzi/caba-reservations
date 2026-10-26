@@ -4,7 +4,6 @@ import { Header } from "./HomePage";
 import { useAuth } from "../auth";
 import type { Paquete } from "../types";
 import { diasHastaVencimiento } from "../utils/fecha";
-import { usePageBg } from "../hooks/usePageBg";
 
 function fechaCorta(iso: string): string {
   if (!iso) return "—";
@@ -13,7 +12,6 @@ function fechaCorta(iso: string): string {
 }
 
 export function PaquetesPage() {
-  usePageBg("paquetes");
   const { user, logout } = useAuth();
   const { data, isLoading } = useQuery({ queryKey: ["paquetes"], queryFn: apiClient.paquetes });
 

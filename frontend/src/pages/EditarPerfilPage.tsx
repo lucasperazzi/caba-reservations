@@ -4,11 +4,9 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../api";
 import { Header } from "./HomePage";
 import { useAuth } from "../auth";
-import { usePageBg } from "../hooks/usePageBg";
 import type { Profile, State } from "../types";
 
 export function EditarPerfilPage() {
-  usePageBg("home");
   const { user, logout } = useAuth();
   const qc = useQueryClient();
   const nav = useNavigate();

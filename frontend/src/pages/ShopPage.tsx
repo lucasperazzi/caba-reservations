@@ -5,10 +5,8 @@ import { Header } from "./HomePage";
 import { useAuth } from "../auth";
 import { useCart } from "../cart";
 import type { ProductoShop, CategoriaShop, VarianteProducto } from "../types";
-import { usePageBg } from "../hooks/usePageBg";
 
 export function ShopPage() {
-  usePageBg("home");
   const { user, logout } = useAuth();
   const esMiembroActivo = user?.esSocio === true;
   const [categoriaSel, setCategoriaSel] = useState<number | null>(null);

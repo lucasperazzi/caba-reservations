@@ -5,7 +5,6 @@ import { Header } from "./HomePage";
 import { useAuth } from "../auth";
 import type { MiTurno } from "../types";
 import { fechaLarga } from "../utils/fecha";
-import { usePageBg } from "../hooks/usePageBg";
 
 function fechaEvento(nombre: string): Date | null {
   const m = nombre.match(/\((\d{4}-\d{2}-\d{2})/);
@@ -17,7 +16,6 @@ function nombreLargo(nombre: string): string {
 }
 
 export function MisTurnosPage() {
-  usePageBg("turnos");
   const { user, logout } = useAuth();
   const nav = useNavigate();
   const { data, isLoading } = useQuery({ queryKey: ["mis-turnos"], queryFn: apiClient.misTurnos });
