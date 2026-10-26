@@ -311,9 +311,9 @@ function TurnoRow({
   // El ring va en el contenedor; el opacity va en el contenido.
   const dimmed = sinCupos && yaReservado;
   const ringClass = highlight
-    ? "ring-2 ring-inset ring-emerald-400 bg-emerald-400/10 hover:bg-emerald-400/20"
+    ? "turno-marcado turno-marcado-verde"
     : yaReservado
-      ? "ring-1 ring-inset ring-amber-400 bg-amber-400/10 hover:bg-amber-400/20"
+      ? "turno-marcado"
       : "hover:bg-white/[0.06]";
 
   return (
@@ -333,7 +333,7 @@ function TurnoRow({
             {turno.nombre}
           </p>
           {yaReservado && (
-            <span className="brutal-label flex-shrink-0 rounded-sm bg-amber-400/20 px-1.5 py-0.5 text-[10px] text-amber-400">
+            <span className="turno-badge brutal-label flex-shrink-0 rounded-sm bg-amber-400/20 px-1.5 py-0.5 text-[10px] text-amber-400">
               Reservado
             </span>
           )}

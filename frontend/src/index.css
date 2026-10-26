@@ -254,6 +254,49 @@ body {
   margin: 0 auto;
 }
 
+/* ── Fila de turno marcada (reservado / destacado) ──
+   En vez de un anillo fino pegado a las líneas blancas de la tabla, la fila se
+   "levanta": borde grueso de 2px redondeado que sale hacia afuera y tapa las
+   líneas divisorias de arriba y abajo, con un tinte suave adentro. El color
+   viene de --marca / --marca-bg (ámbar = reservado, verde = destacado). */
+.turno-marcado {
+  --marca: #fbbf24;
+  --marca-bg: rgba(251, 191, 36, 0.1);
+  --marca-bg-hover: rgba(251, 191, 36, 0.18);
+  position: relative;
+  z-index: 10;
+  border-radius: 8px;
+  border-top-color: transparent !important;
+  background-color: var(--marca-bg);
+  box-shadow: 0 0 0 2px var(--marca);
+}
+.turno-marcado:hover {
+  background-color: var(--marca-bg-hover);
+}
+/* La línea divisoria de la fila siguiente asomaría en las esquinas redondeadas */
+.turno-marcado + * {
+  border-top-color: transparent !important;
+}
+.turno-marcado-verde {
+  --marca: #34d399;
+  --marca-bg: rgba(52, 211, 153, 0.1);
+  --marca-bg-hover: rgba(52, 211, 153, 0.18);
+}
+html[data-theme="light"] .turno-marcado {
+  --marca: #b45309;
+  --marca-bg: rgba(217, 119, 6, 0.12);
+  --marca-bg-hover: rgba(217, 119, 6, 0.2);
+}
+html[data-theme="light"] .turno-marcado-verde {
+  --marca: #059669;
+  --marca-bg: rgba(5, 150, 105, 0.12);
+  --marca-bg-hover: rgba(5, 150, 105, 0.2);
+}
+html[data-theme="light"] .turno-marcado .turno-badge {
+  color: #92400e;
+  background-color: rgba(217, 119, 6, 0.18);
+}
+
 /* ── Hold girando (loader temático) ── */
 @keyframes hold-spin {
   from { transform: rotate(0deg); }
