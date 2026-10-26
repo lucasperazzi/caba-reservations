@@ -19,7 +19,7 @@ export function ShopPage() {
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => setSwitchVisible(entry.isIntersecting),
-      { threshold: 0 },
+      { threshold: 0, rootMargin: "-57px 0px 0px 0px" },
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -45,18 +45,28 @@ export function ShopPage() {
     <div className="min-h-screen">
       <Header userEmail={user?.email} onLogout={logout} />
 
-      {/* Pill sticky — solo aparece cuando el switch ya no se ve */}
-      <div
-        className={`sticky top-[48px] z-[60] flex justify-center px-4 pointer-events-none transition-all duration-300 ${
-          switchVisible ? "opacity-0 -translate-y-1 pointer-events-none" : "opacity-100 translate-y-0"
-        }`}
-      >
-        <div className="pointer-events-auto mt-2 inline-flex items-center gap-2 rounded-full border border-white/10 bg-neutral-900/80 px-4 py-1.5 shadow-lg backdrop-blur-md">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-          <span className="brutal-sub text-xs text-neutral-300">
-            Precios para{" "}
-            <span className="brutal-sub font-semibold text-white">{esSocio ? "socios" : "no socios"}</span>
-          </span>
+      {/* Barra pegada a la navbar — solo aparece cuando el switch ya no se ve.
+          El contenedor mide 0 de alto para no empujar el contenido cuando está oculta. */}
+      <div className="sticky top-[56px] z-[60] h-0">
+        <div
+          className={`absolute inset-x-0 top-0 border-b-2 border-white bg-black transition-all duration-300 ${
+            switchVisible ? "pointer-events-none -translate-y-2 opacity-0" : "translate-y-0 opacity-100"
+          }`}
+        >
+          <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-2">
+            <span className="brutal-label flex items-center gap-2.5 text-[11px] text-white">
+              <span className="h-4 w-1 flex-shrink-0 bg-emerald-400" />
+              Viendo precios de {esSocio ? "socio" : "no socio"}
+            </span>
+            {esMiembroActivo && (
+              <button
+                onClick={() => setEsSocio((v) => !v)}
+                className="brutal-label text-[11px] text-white underline underline-offset-2 opacity-80 transition-opacity hover:opacity-100"
+              >
+                Cambiar
+              </button>
+            )}
+          </div>
         </div>
       </div>
 

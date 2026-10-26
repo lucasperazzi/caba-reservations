@@ -619,6 +619,15 @@ html[data-theme="light"] .bg-emerald-400\/10 { background-color: rgba(5, 150, 10
 html[data-theme="light"] .hover\:bg-emerald-400\/20:hover { background-color: rgba(5, 150, 105, 0.22); }
 html[data-theme="light"] .hover\:bg-emerald-400:hover { background-color: #07966a; }
 
+/* Ámbar (avisos/alertas): los tonos claros pensados para fondo oscuro
+   (amber-200/400) casi no se leen sobre fondo claro → se oscurecen.
+   Texto de párrafo → amber-900; acentos (íconos, textos cortos) → amber-700;
+   barras → amber-600. */
+html[data-theme="light"] .text-amber-200 { color: #78350f; }
+html[data-theme="light"] .text-amber-400 { color: #b45309; }
+html[data-theme="light"] .bg-amber-400 { background-color: #d97706; }
+html[data-theme="light"] .border-amber-500\/60 { border-color: rgba(180, 83, 9, 0.7); }
+
 /* Panel del menú en desktop (las variantes md: viven dentro de su media query) */
 @media (min-width: 48rem) {
   html[data-theme="light"] .md\:bg-neutral-950 { background-color: #f7f4ec; }
