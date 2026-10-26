@@ -48,10 +48,12 @@ export function LoginPage() {
   return (
     <div className="relative flex min-h-screen items-center justify-center px-4">
       <div className={`w-full max-w-sm text-center transition ${loading ? "pointer-events-none blur-sm" : ""}`}>
-        <h1 className="brutal-title mb-1 text-3xl text-white">CABA</h1>
+        <h1 className="mb-3">
+          <img src="/logo-caba-bw-border.png" alt="CABA" className="mx-auto h-[100px] w-auto select-none" />
+        </h1>
         <p className="brutal-sub mb-6 text-sm text-neutral-300">Iniciá sesión con tu cuenta del Centro Andino</p>
 
-        <form onSubmit={submit} className="space-y-4 border border-white/20 p-6" noValidate>
+        <form onSubmit={submit} className="space-y-4 border border-white/20 bg-black/60 p-6 backdrop-blur-sm" noValidate>
           <div>
             <label className="brutal-label mb-1 block text-xs text-neutral-300">Usuario / Email</label>
             <input

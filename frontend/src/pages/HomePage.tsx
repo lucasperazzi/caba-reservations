@@ -235,8 +235,8 @@ export function Header({ userEmail, onLogout }: { userEmail?: string; onLogout: 
     <>
       <header className="sticky top-0 z-[70] border-b border-black bg-black">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-          <Link to="/" className="brutal-title text-lg text-white">
-            CABA
+          <Link to="/" aria-label="CABA — Inicio" className="flex items-center">
+            <img src="/logo-caba-bw-border-nav.png" alt="CABA" className="h-8 w-auto select-none" />
           </Link>
           <div className="flex items-center gap-4">
             {itemCount > 0 && (
@@ -259,7 +259,7 @@ export function Header({ userEmail, onLogout }: { userEmail?: string; onLogout: 
               aria-expanded={isOpen}
               className="relative z-[60] flex items-center gap-2 text-white"
             >
-              <span className="brutal-label text-xs">{isOpen ? "Close" : "Menu"}</span>
+              <span className="brutal-label text-xs">{isOpen ? "Cerrar" : "Menu"}</span>
               <span className="relative flex h-4 w-6 items-center justify-center">
                 <span
                   className={`absolute h-[2px] w-6 bg-white transition-transform duration-300 ${
@@ -279,13 +279,30 @@ export function Header({ userEmail, onLogout }: { userEmail?: string; onLogout: 
 
       {(isOpen || isClosing) && (
         <div
-          className={`fixed inset-0 z-50 flex items-end justify-center bg-black md:items-center md:justify-end ${
+          className={`fixed inset-0 z-[80] flex items-end justify-center bg-black md:items-center md:justify-end ${
             isClosing ? "menu-overlay-exit" : "menu-overlay-enter"
           }`}
           role="dialog"
           aria-modal="true"
           onClick={closeMenu}
         >
+          {/* El menú tapa toda la navbar: el botón de cerrar vive acá, en la misma posición que el del header. */}
+          <div className="absolute inset-x-0 top-0 mx-auto flex h-14 max-w-5xl items-center justify-end px-4">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                closeMenu();
+              }}
+              aria-label="Cerrar menú"
+              className="relative flex items-center gap-2 text-white"
+            >
+              <span className="brutal-label text-xs">Cerrar</span>
+              <span className="relative flex h-4 w-6 items-center justify-center">
+                <span className="absolute h-[2px] w-6 rotate-45 bg-white" />
+                <span className="absolute h-[2px] w-6 -rotate-45 bg-white" />
+              </span>
+            </button>
+          </div>
           <div
             className="flex w-full flex-col justify-end gap-6 p-8 pb-20 md:h-full md:w-[50vw] md:max-w-[640px] md:justify-center md:border-l md:border-white/20 md:bg-neutral-950 md:pb-8"
             onClick={(e) => e.stopPropagation()}
