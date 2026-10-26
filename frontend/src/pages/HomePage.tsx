@@ -6,6 +6,7 @@ import { apiClient } from "../api";
 import type { MiTurno, Paquete } from "../types";
 import { fechaLarga, diasHastaVencimiento } from "../utils/fecha";
 import { useCart } from "../cart";
+import { useTheme } from "../theme";
 
 export function HomePage() {
   const { user, logout } = useAuth();
@@ -248,7 +249,7 @@ export function Header({ userEmail, onLogout }: { userEmail?: string; onLogout: 
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
-                <span className="brutal-number absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[10px] leading-none text-black">
+                <span className="brutal-number absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[10px] leading-none text-[var(--page)]">
                   {itemCount > 9 ? "9+" : itemCount}
                 </span>
               </button>
@@ -330,6 +331,8 @@ export function Header({ userEmail, onLogout }: { userEmail?: string; onLogout: 
             {userEmail && (
               <p className="brutal-sub text-xs text-neutral-500">{userEmail}</p>
             )}
+            {/* Tema toggle'ı allowlist'e bağlı (TEMA_ALLOWLIST → /api/me.puedeCambiarTema) */}
+            {userInfo?.puedeCambiarTema == true && <ThemeToggle />}
             <button
               onClick={() => {
                 closeMenu();
@@ -343,6 +346,41 @@ export function Header({ userEmail, onLogout }: { userEmail?: string; onLogout: 
         </div>
       )}
     </>
+  );
+}
+
+// Switch de tema día/noche (adaptado del switch neubrutalista de CodeFronts).
+function ThemeToggle() {
+  const { theme, toggle } = useTheme();
+  const isDark = theme === "dark";
+  return (
+    <button
+      onClick={toggle}
+      aria-label={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
+      className="brutal-sub flex items-center gap-2 self-start text-sm text-neutral-400 transition-colors hover:text-white"
+    >
+      {isDark ? (
+        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="2.2" />
+          <path
+            d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M18.4 5.6l-1.6 1.6M7.2 16.8l-1.6 1.6"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+          />
+        </svg>
+      ) : (
+        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path
+            d="M20 14.2A8.2 8.2 0 0 1 9.8 4 8.4 8.4 0 1 0 20 14.2"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinejoin="round"
+          />
+        </svg>
+      )}
+      {isDark ? "Modo claro" : "Modo oscuro"}
+    </button>
   );
 }
 

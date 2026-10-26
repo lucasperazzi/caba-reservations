@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../auth";
 import { apiClient } from "../api";
+import { ThemeIconButton } from "../theme";
 
 const OAUTH_ERRORS: Record<string, string> = {
   google: "No se pudo iniciar sesión con Google. Verificá que tu cuenta esté registrada en CABA.",
@@ -47,6 +48,7 @@ export function LoginPage() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center px-4">
+      <ThemeIconButton className="absolute right-3 top-3" />
       <div className={`w-full max-w-sm text-center transition ${loading ? "pointer-events-none blur-sm" : ""}`}>
         <h1 className="mb-3">
           <img src="/logo-caba-bw-border.png" alt="CABA" className="mx-auto h-[100px] w-auto select-none" />

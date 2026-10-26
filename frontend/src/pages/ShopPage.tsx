@@ -72,7 +72,7 @@ export function ShopPage() {
               <button
                 onClick={() => setEsSocio(false)}
                 className={`px-4 py-1.5 brutal-label text-xs transition-colors ${
-                  !esSocio ? "bg-white text-black" : "text-neutral-300 hover:text-white"
+                  !esSocio ? "bg-white text-[var(--page)]" : "text-neutral-300 hover:text-white"
                 }`}
               >
                 No socio
@@ -82,7 +82,7 @@ export function ShopPage() {
                 disabled={!esMiembroActivo}
                 className={`px-4 py-1.5 brutal-label text-xs transition-colors ${
                   esSocio
-                    ? "bg-white text-black"
+                    ? "bg-white text-[var(--page)]"
                     : esMiembroActivo
                       ? "text-neutral-300 hover:text-white"
                       : "cursor-not-allowed text-neutral-600"
@@ -300,6 +300,40 @@ function ProductoCard({
   );
 }
 
+// ── Descripción con "leer más / leer menos" ────────────────────
+
+const DESC_MAX_CHARS = 200;
+
+function DescripcionExpandible({ texto }: { texto: string }) {
+  const [expandido, setExpandido] = useState(false);
+
+  if (texto.length <= DESC_MAX_CHARS) {
+    return (
+      <div className="brutal-sub mb-5 whitespace-pre-line text-sm leading-relaxed text-neutral-300">
+        {texto}
+      </div>
+    );
+  }
+
+  // Cortar en el último espacio antes del límite para no partir palabras.
+  let recortado = texto.slice(0, DESC_MAX_CHARS);
+  const ultimoEspacio = recortado.lastIndexOf(" ");
+  if (ultimoEspacio > 0) recortado = recortado.slice(0, ultimoEspacio);
+  recortado = recortado.trimEnd();
+
+  return (
+    <div className="brutal-sub mb-5 text-sm leading-relaxed text-neutral-300">
+      <span className="whitespace-pre-line">{expandido ? texto : `${recortado}…`}</span>{" "}
+      <button
+        onClick={() => setExpandido((v) => !v)}
+        className="brutal-label whitespace-nowrap text-xs text-white underline underline-offset-2 transition-colors hover:text-neutral-300"
+      >
+        {expandido ? "Leer menos" : "Leer más"}
+      </button>
+    </div>
+  );
+}
+
 // ── Modal de detalle ────────────────────────────────────────────
 
 function ProductoModal({
@@ -390,12 +424,8 @@ function ProductoModal({
 
         {/* Contenido scrollable */}
         <div className="overflow-y-auto p-5">
-          {/* Descripción de venta */}
-          {p.descripcionVenta && (
-            <div className="brutal-sub mb-5 whitespace-pre-line text-sm leading-relaxed text-neutral-300">
-              {p.descripcionVenta}
-            </div>
-          )}
+          {/* Descripción de venta — con "leer más" si es larga */}
+          {p.descripcionVenta && <DescripcionExpandible texto={p.descripcionVenta} />}
 
           {/* Variantes */}
           {tieneVariantes && (

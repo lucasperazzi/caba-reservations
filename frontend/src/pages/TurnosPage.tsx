@@ -157,9 +157,9 @@ export function TurnosPage() {
               disabled={[{ before: hoy }, { after: hasta }]}
               weekStartsOn={1}
               style={{
-                "--rdp-accent-color": "#fff",
-                "--rdp-accent-background-color": "#262626",
-                "--rdp-today-color": "#fff",
+                "--rdp-accent-color": "var(--ink)",
+                "--rdp-accent-background-color": "var(--hover-tint)",
+                "--rdp-today-color": "var(--ink)",
                 "--rdp-day_button-border-radius": "0px",
                 "--rdp-day-width": "2.25rem",
                 "--rdp-day-height": "2.25rem",

@@ -30,6 +30,7 @@ export interface UserInfo {
   username?: string;
   puedeReservar?: boolean;
   puedeVerCatalogo?: boolean;
+  puedeCambiarTema?: boolean;
   esSocio?: boolean;
   phone?: string;
   mobile?: string;
