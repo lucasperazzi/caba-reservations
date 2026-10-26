@@ -156,15 +156,12 @@ export function TurnosPage() {
               locale={es}
               disabled={[{ before: hoy }, { after: hasta }]}
               weekStartsOn={1}
+              className="calendario-fluido"
               style={{
                 "--rdp-accent-color": "var(--ink)",
                 "--rdp-accent-background-color": "var(--hover-tint)",
                 "--rdp-today-color": "var(--ink)",
                 "--rdp-day_button-border-radius": "0px",
-                "--rdp-day-width": "2.25rem",
-                "--rdp-day-height": "2.25rem",
-                "--rdp-day_button-width": "2rem",
-                "--rdp-day_button-height": "2rem",
                 "--rdp-selected-border": "none",
               } as React.CSSProperties}
             />

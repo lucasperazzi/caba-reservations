@@ -221,6 +221,39 @@ body {
   font-weight: 700;
 }
 
+/* Calendario fluido (Turnos): ocupa todo el ancho de su contenedor en vez de
+   usar celdas fijas. Las 7 columnas se reparten el ancho (table-layout: fixed);
+   en desktop se limita para que las celdas no se estiren demasiado. */
+.calendario-fluido {
+  width: 100%;
+  max-width: 26rem;
+  --rdp-day-height: 2.75rem;
+  --rdp-day_button-width: calc(100% - 4px);
+  --rdp-day_button-height: 2.5rem;
+}
+
+.calendario-fluido .rdp-months {
+  width: 100%;
+  max-width: none;
+}
+
+.calendario-fluido .rdp-month {
+  width: 100%;
+}
+
+.calendario-fluido .rdp-month_grid {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.calendario-fluido .rdp-day {
+  width: auto;
+}
+
+.calendario-fluido .rdp-day_button {
+  margin: 0 auto;
+}
+
 /* ── Hold girando (loader temático) ── */
 @keyframes hold-spin {
   from { transform: rotate(0deg); }
